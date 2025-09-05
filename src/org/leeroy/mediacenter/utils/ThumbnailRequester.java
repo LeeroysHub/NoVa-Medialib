@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package org.leeroy.mediacenter.utils;
+package org.leeroy.mediaplayer.utils;
 
-import org.leeroy.mediacenter.utils.ThumbnailRequest;
+import org.leeroy.mediaplayer.utils.ThumbnailRequest;
 
 import android.database.DataSetObserver;
 import android.util.Log;

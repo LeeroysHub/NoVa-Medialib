@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package org.leeroy.mediacenter.utils.videodb;
+package org.leeroy.mediaplayer.utils.videodb;
 
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -26,8 +26,8 @@ import org.leeroy.filecorelibrary.MetaFile2;
 import org.leeroy.filecorelibrary.RawLister;
 import org.leeroy.filecorelibrary.FileUtils;
 import org.leeroy.filecorelibrary.AuthenticationException;
-import org.leeroy.mediacenter.filecoreextension.upnp2.FileEditorFactoryWithUpnp;
-import org.leeroy.mediacenter.filecoreextension.upnp2.RawListerFactoryWithUpnp;
+import org.leeroy.mediaplayer.filecoreextension.upnp2.FileEditorFactoryWithUpnp;
+import org.leeroy.mediaplayer.filecoreextension.upnp2.RawListerFactoryWithUpnp;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 

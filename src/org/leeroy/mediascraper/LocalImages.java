@@ -20,7 +20,7 @@ import android.text.TextUtils;
 
 import org.leeroy.filecorelibrary.FileEditor;
 import org.leeroy.filecorelibrary.FileUtils;
-import org.leeroy.mediacenter.filecoreextension.upnp2.FileEditorFactoryWithUpnp;
+import org.leeroy.mediaplayer.filecoreextension.upnp2.FileEditorFactoryWithUpnp;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -19,7 +19,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Locale;
 
-import org.leeroy.mediacenter.utils.MediaUtils;
+import org.leeroy.mediaplayer.utils.MediaUtils;
 
 import android.content.Context;
 import android.content.SharedPreferences;

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package org.leeroy.mediacenter;
+package org.leeroy.mediaplayer;
 
 import org.leeroy.medialib.IMediaMetadataRetriever;
 import org.leeroy.medialib.LibAvos;
@@ -38,16 +38,16 @@ public class LibAvosReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
 
-        if (action.equals("org.leeroy.mediacenter.NEW_PLUGINS")) {
+        if (action.equals("org.leeroy.mediaplayer.NEW_PLUGINS")) {
             Log.d("LibAvosReceiver", "NEW_PLUGINS: relaunching");
             System.exit(0);
-        } else if (action.equals("org.leeroy.mediacenter.DEBUG")) {
+        } else if (action.equals("org.leeroy.mediaplayer.DEBUG")) {
             LibAvos.init(context);
             LibAvos.debugInit();
-        } else if (action.equals("org.leeroy.mediacenter.AVSH")) {
+        } else if (action.equals("org.leeroy.mediaplayer.AVSH")) {
             LibAvos.init(context);
             LibAvos.avsh(intent.getStringExtra("cmd"));
-        } else if (action.equals("org.leeroy.mediacenter.DEBUG_SCAN")) {
+        } else if (action.equals("org.leeroy.mediaplayer.DEBUG_SCAN")) {
             if (intent.getData() != null) Log.d("IMetadataRetriever", intent.getData().getPath());
             final IMediaMetadataRetriever retriever = MediaFactory.createMetadataRetriever(context);
             try {

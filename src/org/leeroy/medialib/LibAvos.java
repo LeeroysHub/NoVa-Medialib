@@ -44,10 +44,10 @@ public class LibAvos {
         String pluginsPath = extFilesDir.getPath() + "/plugins/11";
 
         /*
-         * replace org.leeroy.mediacenter.video[aw|ti|rk|free] with org.leeroy.mediacenter.video
+         * replace org.leeroy.mediaplayer.video[aw|ti|rk|free] with org.leeroy.mediaplayer.video
          * concatenate strings because of the mighty sed.
          */
-        pluginsPath = pluginsPath.replaceAll("/org.leeroy.mediacenter."+"video[a-zA-Z0-9]*/", "/org.leeroy.mediacenter.video/");
+        pluginsPath = pluginsPath.replaceAll("/org.leeroy.mediaplayer."+"video[a-zA-Z0-9]*/", "/org.leeroy.mediaplayer.video/");
 
         File extLibsDir = new File(pluginsPath);
         if (DBG) Log.d(TAG, "installExtLibs: check folder: " + extLibsDir);

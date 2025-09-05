@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package org.leeroy.mediacenter.utils.imageview;
+package org.leeroy.mediaplayer.utils.imageview;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import org.leeroy.mediacenter.utils.BitmapUtils;
-import org.leeroy.mediacenter.utils.imageview.LoadResult.Status;
+import org.leeroy.mediaplayer.utils.BitmapUtils;
+import org.leeroy.mediaplayer.utils.imageview.LoadResult.Status;
 
 /** ImageProcessor loading images from files, expects the path to the image as String */
 public class SimpleFileProcessor extends ImageProcessor {

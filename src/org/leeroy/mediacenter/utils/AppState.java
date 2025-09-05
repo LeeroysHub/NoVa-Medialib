@@ -13,7 +13,7 @@
 // limitations under the License.
 
 
-package org.leeroy.mediacenter.utils;
+package org.leeroy.mediaplayer.utils;
 
 import android.app.Activity;
 import android.app.ActivityManager;

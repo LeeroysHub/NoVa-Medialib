@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package org.leeroy.mediacenter.filecoreextension.upnp2;
+package org.leeroy.mediaplayer.filecoreextension.upnp2;
 
 import android.net.Uri;
 
 import org.leeroy.filecorelibrary.MetaFile2;
 import org.leeroy.filecorelibrary.MetaFile2Factory;
-import org.leeroy.mediacenter.filecoreextension.HttpFile2;
+import org.leeroy.mediaplayer.filecoreextension.HttpFile2;
 
 public class MetaFileFactoryWithUpnp {
 

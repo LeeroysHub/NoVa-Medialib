@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package org.leeroy.mediacenter.filecoreextension.upnp2;
+package org.leeroy.mediaplayer.filecoreextension.upnp2;
 
 import android.content.Context;
 import android.net.Uri;
 
 import org.leeroy.filecorelibrary.FileEditor;
 import org.leeroy.filecorelibrary.FileEditorFactory;
-import org.leeroy.mediacenter.filecoreextension.HttpFileEditor;
+import org.leeroy.mediaplayer.filecoreextension.HttpFileEditor;
 
 /**
  * create a file editor

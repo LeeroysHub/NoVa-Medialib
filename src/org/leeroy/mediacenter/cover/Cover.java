@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package org.leeroy.mediacenter.cover;
+package org.leeroy.mediaplayer.cover;
 
-import org.leeroy.mediacenter.utils.InfoDialog;
+import org.leeroy.mediaplayer.utils.InfoDialog;
 
 import android.content.Context;
 import android.graphics.Bitmap;

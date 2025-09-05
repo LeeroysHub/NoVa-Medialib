@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package org.leeroy.mediacenter.utils.imageview;
+package org.leeroy.mediaplayer.utils.imageview;
 
 import android.graphics.Bitmap;
 import android.util.LruCache;

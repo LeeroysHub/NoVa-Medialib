@@ -23,7 +23,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import org.leeroy.filecorelibrary.FileEditor;
-import org.leeroy.mediacenter.filecoreextension.upnp2.FileEditorFactoryWithUpnp;
+import org.leeroy.mediaplayer.filecoreextension.upnp2.FileEditorFactoryWithUpnp;
 
 import java.io.File;
 import java.io.FileNotFoundException;

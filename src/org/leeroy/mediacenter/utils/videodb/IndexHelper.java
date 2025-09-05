@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package org.leeroy.mediacenter.utils.videodb;
+package org.leeroy.mediaplayer.utils.videodb;
 
 import androidx.loader.app.LoaderManager;
 
@@ -29,7 +29,7 @@ import android.provider.BaseColumns;
 import android.provider.MediaStore;
 
 import org.leeroy.filecorelibrary.FileUtils;
-import org.leeroy.mediacenter.filecoreextension.UriUtils;
+import org.leeroy.mediaplayer.filecoreextension.UriUtils;
 import org.leeroy.mediaprovider.video.LoaderUtils;
 import org.leeroy.mediaprovider.video.VideoStore;
 import org.leeroy.mediaprovider.video.VideoStore.MediaColumns;

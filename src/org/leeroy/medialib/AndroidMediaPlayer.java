@@ -19,7 +19,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Parcel;
 
-import org.leeroy.mediacenter.utils.MediaUtils;
+import org.leeroy.mediaplayer.utils.MediaUtils;
 
 import java.io.File;
 import java.io.FileFilter;

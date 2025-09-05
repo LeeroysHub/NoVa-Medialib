@@ -18,7 +18,7 @@ import android.net.Uri;
 import android.os.Looper;
 
 import org.leeroy.filecorelibrary.StreamOverHttp;
-import org.leeroy.mediacenter.filecoreextension.upnp2.StreamUriFinder;
+import org.leeroy.mediaplayer.filecoreextension.upnp2.StreamUriFinder;
 
 import java.io.IOException;
 import java.util.Map;

@@ -10,7 +10,7 @@ public class WrapperChannelManager {
     public static void refreshChannels(Context context){
         try
         {
-            Class c = Class.forName("org.leeroy.mediacenter.video.leanback.channels.ChannelManager");
+            Class c = Class.forName("org.leeroy.mediaplayer.video.leanback.channels.ChannelManager");
             Method m = c.getDeclaredMethod("refreshChannels", Context.class);
             m.invoke(null, context);
         }

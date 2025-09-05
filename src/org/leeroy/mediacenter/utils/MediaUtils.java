@@ -13,7 +13,7 @@
 // limitations under the License.
 
 
-package org.leeroy.mediacenter.utils;
+package org.leeroy.mediaplayer.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;

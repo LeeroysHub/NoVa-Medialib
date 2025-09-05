@@ -36,8 +36,8 @@ import android.text.TextUtils;
 
 import org.leeroy.filecorelibrary.ExtStorageManager;
 import org.leeroy.filecorelibrary.FileEditor;
-import org.leeroy.mediacenter.filecoreextension.upnp2.FileEditorFactoryWithUpnp;
-import org.leeroy.mediacenter.utils.trakt.TraktService;
+import org.leeroy.mediaplayer.filecoreextension.upnp2.FileEditorFactoryWithUpnp;
+import org.leeroy.mediaplayer.utils.trakt.TraktService;
 import org.leeroy.medialib.IMediaMetadataRetriever;
 import org.leeroy.medialib.MediaMetadata;
 import org.leeroy.mediaprovider.ArchosMediaFile;

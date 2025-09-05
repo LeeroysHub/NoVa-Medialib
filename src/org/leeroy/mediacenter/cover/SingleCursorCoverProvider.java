@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package org.leeroy.mediacenter.cover;
+package org.leeroy.mediaplayer.cover;
 
 import androidx.loader.app.LoaderManager;
 import android.content.Context;
@@ -25,7 +25,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.leeroy.mediacenter.utils.MediaUtils;
+import org.leeroy.mediaplayer.utils.MediaUtils;
 
 
 public abstract class SingleCursorCoverProvider extends CoverProvider implements LoaderManager.LoaderCallbacks<Cursor> {

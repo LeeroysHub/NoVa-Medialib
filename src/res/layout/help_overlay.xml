@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
     
-<org.leeroy.mediacenter.utils.HelpOverlayBackground
+<org.leeroy.mediaplayer.utils.HelpOverlayBackground
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root"
@@ -14,9 +14,9 @@
         app:srcCompat="@drawable/help_focus_shadow"
         android:scaleType="fitXY" />
     
-    <org.leeroy.mediacenter.utils.HelpOverlayPopup
+    <org.leeroy.mediaplayer.utils.HelpOverlayPopup
         android:id="@+id/help_popup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
         
-</org.leeroy.mediacenter.utils.HelpOverlayBackground>    
+</org.leeroy.mediaplayer.utils.HelpOverlayBackground>    

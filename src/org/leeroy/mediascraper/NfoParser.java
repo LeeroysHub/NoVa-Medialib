@@ -22,9 +22,9 @@ import android.text.TextUtils;
 import android.util.LruCache;
 
 import org.leeroy.filecorelibrary.FileUtils;
-import org.leeroy.mediacenter.filecoreextension.upnp2.FileEditorFactoryWithUpnp;
+import org.leeroy.mediaplayer.filecoreextension.upnp2.FileEditorFactoryWithUpnp;
 import org.leeroy.filecorelibrary.MetaFile2;
-import org.leeroy.mediacenter.filecoreextension.upnp2.MetaFileFactoryWithUpnp;
+import org.leeroy.mediaplayer.filecoreextension.upnp2.MetaFileFactoryWithUpnp;
 import org.leeroy.medialib.R;
 import org.leeroy.mediascraper.saxhandler.NfoEpisodeHandler;
 import org.leeroy.mediascraper.saxhandler.NfoMovieHandler;

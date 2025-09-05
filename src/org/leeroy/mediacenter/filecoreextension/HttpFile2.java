@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package org.leeroy.mediacenter.filecoreextension;
+package org.leeroy.mediaplayer.filecoreextension;
 
 import android.content.Context;
 import android.net.Uri;
@@ -22,7 +22,7 @@ import org.leeroy.filecorelibrary.FileUtils;
 import org.leeroy.filecorelibrary.MetaFile2;
 import org.leeroy.filecorelibrary.MimeUtils;
 import org.leeroy.filecorelibrary.RawLister;
-import org.leeroy.mediacenter.filecoreextension.upnp2.UpnpRawLister;
+import org.leeroy.mediaplayer.filecoreextension.upnp2.UpnpRawLister;
 
 public class HttpFile2 extends MetaFile2 {
 

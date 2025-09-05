@@ -26,13 +26,13 @@ public class NetworkScanner {
     private static final boolean DBG = false;
     private static final String TAG = "NetworkScanner";
 
-    /** sends broadcast that triggers mediacenter-video network scanning */
+    /** sends broadcast that triggers mediaplayer-video network scanning */
     public static void scanVideos(Context context, String location) {
         if (location != null)
             scanVideos(context, Uri.parse(location));
     }
 
-    /** sends broadcast that triggers mediacenter-video network scanning */
+    /** sends broadcast that triggers mediaplayer-video network scanning */
     public static void scanVideos(Context context, Uri uri) {
         if (context != null && uri != null) {
             if (DBG) Log.d(TAG, "scanVideos uri:" + uri);
@@ -42,7 +42,7 @@ public class NetworkScanner {
         }
     }
 
-    /** sends broadcast that triggers mediacenter-video removal of files */
+    /** sends broadcast that triggers mediaplayer-video removal of files */
     public static void removeVideos(Context context, String location) {
         if (location != null) {
             if (DBG) Log.d(TAG, "scanVideos location:" + location);
@@ -50,7 +50,7 @@ public class NetworkScanner {
         }
     }
 
-    /** sends broadcast that triggers mediacenter-video removal of files */
+    /** sends broadcast that triggers mediaplayer-video removal of files */
     public static void removeVideos(Context context, Uri uri) {
         if (context != null && uri != null) {
             if (DBG) Log.d(TAG, "removeVideos uri:" + uri);

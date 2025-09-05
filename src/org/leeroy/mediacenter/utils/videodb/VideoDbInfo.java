@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package org.leeroy.mediacenter.utils.videodb;
+package org.leeroy.mediaplayer.utils.videodb;
 
 import java.io.File;
 

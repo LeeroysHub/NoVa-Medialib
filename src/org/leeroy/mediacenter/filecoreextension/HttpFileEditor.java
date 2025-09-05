@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package org.leeroy.mediacenter.filecoreextension;
+package org.leeroy.mediaplayer.filecoreextension;
 
 import android.net.Uri;
 

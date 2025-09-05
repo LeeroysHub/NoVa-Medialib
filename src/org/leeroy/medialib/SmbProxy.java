@@ -22,7 +22,7 @@ import org.leeroy.filecorelibrary.MetaFile2;
 import org.leeroy.filecorelibrary.MetaFile2Factory;
 import org.leeroy.filecorelibrary.MimeUtils;
 import org.leeroy.filecorelibrary.StreamOverHttp;
-import org.leeroy.mediacenter.filecoreextension.UriUtils;
+import org.leeroy.mediaplayer.filecoreextension.UriUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
