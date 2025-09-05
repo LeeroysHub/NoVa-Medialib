@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <string name="tmdb_api_key">b545552f2950ca58727496219e1adc0c</string>
+    <string name="trakt_api_key">22308ca962035506ff38f76efd39f1600d0ddec158e281c3025e654d5ee30fd6</string>
+    <string name="trakt_api_secret">c4a39f0914fec44114739e83a001b22a8ec30f9c16c2b60ba411d80212631d07</string>
+    <string name="opensubtitles_api_key">dG06e2oE7fJYZ5hMWHhOL0dGacJueJhW</string>
+</resources>

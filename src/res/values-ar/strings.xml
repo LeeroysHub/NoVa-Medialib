@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!--
+    This string is used as the format string in a String.format call,
+    and 5 additional arguments are available for printing:
+    1 - hours
+    2 - minutes
+    3 - minutes%60
+    4 - seconds
+    5 - second%60
+    -->
+    <!-- Do not translate. Duration format for duration < 1 hour -->
+    <!-- Do not translate. Duration format for duration >= 1 hour -->
+    <!-- Notification Message when Indexing Network -->
+    <string name="network_scan_msg">فهرسة الميدافيليس</string>
+    <!-- .nfo export options -->
+    <!-- trakt.tv -->
+    <!-- Title of screen when no sd card is present -->
+    <string name="sdcard_missing_title">لا يوجد بطاقة SD</string>
+    <!-- label underneath icon used to indicate that no sd card is present -->
+    <string name="sdcard_missing_message">جهازك لا يحتوى على بطاقة SD</string>
+    <!-- label underneath icon used to indicate that the sd card is present, but currently unavailable -->
+    <string name="sdcard_busy_title">SD بطاقةغير متاحة</string>
+    <!-- label underneath icon used to indicate sd card is mounted to your computer via USB -->
+    <string name="sdcard_busy_message">عفوا,SD بطاقة مشغولة</string>
+    <!-- Title of screen when there was an error accessing the sd card -->
+    <string name="sdcard_error_title">خطأ فى بطاقة SD</string>
+    <!-- label underneath icon used to indicate there was an error accessing the sd card -->
+    <string name="sdcard_error_message">يوجد خطأ فى بطاقة SD.</string>
+    <!-- Title of screen when no storage is present -->
+    <string name="storage_missing_title">وحدة التخزين الداخلية غير متاحة</string>
+    <!-- label underneath icon used to indicate that no storage is present -->
+    <string name="storage_missing_message">وحدة تخزين جهازك الداخلية غير متاحة.</string>
+    <!-- label underneath icon used to indicate that the storage is present, but currently unavailable -->
+    <string name="storage_busy_title">وحدة التخزين الداخليه غير متاحة</string>
+    <!-- label underneath icon used to indicate storage is mounted to your computer via USB -->
+    <string name="storage_busy_message">لا يمكنك استخدام وحدة التخزين الداخلية في حالة التوصيل بواسطة USB.</string>
+    <!-- Title of screen when there was an error accessing the internal storage -->
+    <string name="storage_error_title">خطأ فى وحدة التخزين</string>
+    <!-- label underneath icon used to indicate there was an error accessing the internal storage -->
+    <string name="storage_error_message">يوجد خطأ فى وحدة التخزين الداخلية.</string>
+    <!-- There are official translations for the tmdb movie genres -->
+    <string name="movie_genre_action">حركة</string>
+    <string name="movie_genre_adventure">مغامرة</string>
+    <string name="movie_genre_animation">رسوم متحركة</string>
+    <string name="movie_genre_comedy">كوميديا</string>
+    <string name="movie_genre_crime">جريمة</string>
+    <string name="movie_genre_documentary">وثائقي</string>
+    <string name="movie_genre_drama">دراما</string>
+    <string name="movie_family">عائلي</string>
+    <string name="movie_genre_fantasy">فانتازيا</string>
+    <string name="movie_genre_history">تاريخ</string>
+    <string name="movie_genre_horror">رعب</string>
+    <string name="movie_genre_music">موسيقى</string>
+    <string name="movie_genre_mystery">غموض</string>
+    <string name="movie_genre_romance">رومنسية</string>
+    <string name="movie_genre_science_fiction">خيال علمي</string>
+    <string name="movie_genre_tv_movie">فيلم تلفازي</string>
+    <string name="movie_genre_thriller">إثارة</string>
+    <string name="movie_genre_war">حرب</string>
+    <string name="movie_genre_western">غربي</string>
+    <!-- There are official translations for the tmdb tv genres -->
+    <string name="tvshow_genre_action_adventure">حركة ومغامرة</string>
+    <string name="tvshow_genre_animation">رسوم متحركة</string>
+    <string name="tvshow_genre_comedy">كوميديا</string>
+    <string name="tvshow_genre_crime">جريمة</string>
+    <string name="tvshow_genre_documentary">وثائقي</string>
+    <string name="tvshow_genre_drama">دراما</string>
+    <string name="tvshow_genre_family">عائلي</string>
+    <string name="tvshow_genre_kids">أطفال</string>
+    <string name="tvshow_genre_mystery">غموض</string>
+    <string name="tvshow_genre_news">أخبار</string>
+    <string name="tvshow_genre_reality">واقع</string>
+    <string name="tvshow_genre_scifi_fantasy">خيال علمي وفانتازيا</string>
+    <string name="tvshow_genre_soap">أوبرا صابونية</string>
+    <string name="tvshow_genre_talk">حوار</string>
+    <string name="tvshow_genre_war_politics">حرب وسياسة</string>
+    <string name="tvshow_genre_western">غربي</string>
+    <!--
+      STRINGS BELOW ARE FOR MUSIC ONLY.
+      I KEPT THE DEFAULT ENGLISH VERSION ONLY FOR NOW
+      BECAUSE I DO NOT WANT TO DO THE MUSIC CLEANING/REMOVING NOW
+    -->
+    <!-- Audio Search displays this label when displaying an artist. Copy from packages/providers/MediaProvider/res -->
+</resources>

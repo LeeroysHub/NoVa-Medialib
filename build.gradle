@@ -28,7 +28,7 @@ configurations {
 }
 
 android {
-    namespace = 'com.archos.medialib'
+    namespace = 'org.leeroy.medialib'
     compileSdk = 36
     gradle.startParameter.getTaskNames().each { task ->
         if (task.contains("Open")) {
