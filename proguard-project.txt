@@ -1,16 +1,16 @@
--keep class com.archos.medialib.AvosMediaPlayer {
+-keep class org.leeroy.medialib.AvosMediaPlayer {
   private void postEventFromNative(java.lang.Object, int, int, int, java.lang.Object);
 }
--keep class com.archos.medialib.subtitle.TextSubtitle {
+-keep class org.leeroy.medialib.subtitle.TextSubtitle {
   public java.lang.Object create(int, int, java.lang.String);
 }
--keep class com.archos.medialib.subtitle.BitmapSubtitle {
+-keep class org.leeroy.medialib.subtitle.BitmapSubtitle {
   public java.lang.Object create(int, int, int, int, android.graphics.Bitmap);
 }
--keep class com.archos.medialib.AvosMediaMetadataRetriever {
+-keep class org.leeroy.medialib.AvosMediaMetadataRetriever {
   private int mMediaMetadataRetrieverHandle;
 }
--keep class com.archos.medialib.AvosMediaPlayer {
+-keep class org.leeroy.medialib.AvosMediaPlayer {
   private int mMediaPlayerHandle;
   private int mNativeWindowHandle;
 }

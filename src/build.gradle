@@ -1,0 +1,166 @@
+apply plugin: 'com.android.library'
+
+repositories {
+    google()
+    mavenCentral()
+    mavenLocal()
+}
+
+ext {
+    groupOpen = false
+    // jetty required by jupnp and going above 9.4.14 requires minSdkVersion 26
+}
+
+allprojects {
+    gradle.projectsEvaluated {
+        tasks.withType(JavaCompile).configureEach {
+            options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+        }
+        // to generate the required jar dependencies e.g. cling seamless
+        preBuild.dependsOn(ndkBuild)
+    }
+}
+
+configurations {
+    configureEach {
+        exclude group: 'org.json', module: 'json'
+    }
+}
+
+android {
+    namespace = 'org.leeroy.medialib'
+    compileSdk = 36
+    gradle.startParameter.getTaskNames().each { task ->
+        if (task.contains("Open")) {
+            groupOpen = true
+        }
+    }
+
+    compileOptions {
+        coreLibraryDesugaringEnabled = true
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            resources.srcDirs = ['src']
+            aidl.srcDirs = ['src']
+            res.srcDirs = ['res']
+            assets.srcDirs = ['assets']
+            //tmp prebuilt jni
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+
+    defaultConfig {
+        minSdkVersion = 23
+        targetSdkVersion = 35
+        multiDexEnabled = true
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        compileTask -> compileTask.dependsOn ndkBuild
+    }
+    clean.dependsOn 'ndkClean'
+
+    buildTypes {
+        release {
+            minifyEnabled = false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-project.txt'
+        }
+    }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/beans.xml'
+        exclude 'META-INF/maven'
+        exclude 'META-INF/versions/**/OSGI-INF/MANIFEST.MF'
+        exclude 'README'
+        pickFirst 'lib/arm64-v8a/libc++_shared.so'
+        pickFirst 'lib/armeabi-v7a/libc++_shared.so'
+        pickFirst 'lib/x86/libc++_shared.so'
+        pickFirst 'lib/x86_64/libc++_shared.so'
+    }
+
+    buildFeatures {
+        aidl = true
+        renderScript = false
+    }
+}
+
+tasks.register('ndkBuild', Exec) {
+    workingDir = "../"
+    List<String> myCmd = new ArrayList<String>()
+    myCmd.add("make")
+    myCmd.add("native_libyuv")
+    myCmd.add("native_libnativehelper")
+    myCmd.add("native_avos_full")
+    myCmd.add("native_torrentd")
+    commandLine = myCmd
+}
+
+tasks.register('ndkClean', Exec) {
+    workingDir = "../"
+    List<String> myCmd = new ArrayList<String>()
+    myCmd.add("make")
+    myCmd.add("native_clean")
+    commandLine = myCmd
+}
+
+def useSan = false
+if (useSan)
+    apply from: 'profiling.gradle'
+
+dependencies {
+    implementation project(':FileCoreLibrary')
+    implementation 'androidx.lifecycle:lifecycle-process:2.9.2'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
+    implementation 'androidx.core:core:1.17.0'
+    implementation 'androidx.legacy:legacy-support-core-utils:1.0.0'
+    implementation 'androidx.media:media:1.7.1'
+    implementation 'androidx.fragment:fragment:1.8.9'
+    implementation 'androidx.appcompat:appcompat:1.7.1'
+    implementation 'androidx.preference:preference:1.2.1'
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.5'
+    implementation 'org.json:json:20250517'
+    // see https://github.com/UweTrottmann/trakt-java?tab=readme-ov-file for threetenabp instead of threetenbp
+    implementation ('com.uwetrottmann.trakt5:trakt-java:6.16.0') {
+        exclude group: 'org.threeten', module: 'threetenbp'
+    }
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.4.9'
+    api ('org.apache.oltu.oauth2:org.apache.oltu.oauth2.client:1.0.2') {
+        exclude group:'org.apache.oltu.oauth2' , module: 'org.apache.oltu.oauth2.common'
+    }
+    implementation 'commons-codec:commons-codec:1.19.0'
+    implementation 'org.apache.commons:commons-text:1.14.0'
+    // version aligned with external dependencies trakt-java tmdb-java (check pom.xml)
+    implementation 'com.squareup.okhttp3:logging-interceptor:5.1.0'
+    // stick with 2.10.0 since errors are showing up in sentry when using 2.11.0
+    implementation 'com.uwetrottmann.tmdb2:tmdb-java:2.12.0'
+    // all below is linked to cling, jetty version locked to latest 8.1
+    api 'com.github.nova-video-player.cling:cling-core:2.1.7'
+    implementation 'com.github.nova-video-player.cling:cling-support:2.1.7'
+    implementation 'com.github.nova-video-player.seamless:seamless-swing:1.1.4'
+    implementation 'com.github.nova-video-player.seamless:seamless-xml:1.1.4'
+    implementation 'com.github.nova-video-player.seamless:seamless-util:1.1.4'
+    implementation 'com.github.nova-video-player.seamless:seamless-http:1.1.4'
+    implementation 'javax.servlet:javax.servlet-api:4.0.1'
+    // version aligned with cling dependencies
+    implementation ('org.eclipse.jetty:jetty-server:8.1.22.v20160922') {
+        exclude group: 'org.eclipse.jetty.orbit', module: 'javax.servlet'
+    }
+    implementation ('org.eclipse.jetty:jetty-servlet:8.1.22.v20160922')  {
+        exclude group: 'org.eclipse.jetty.orbit', module: 'javax.servlet'
+    }
+    implementation ('org.eclipse.jetty:jetty-client:8.1.22.v20160922') {
+        exclude group: 'org.eclipse.jetty.orbit', module: 'javax.servlet'
+    }
+    implementation 'io.sentry:sentry:8.19.1'
+}
