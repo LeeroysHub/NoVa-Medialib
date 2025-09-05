@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!--
+    This string is used as the format string in a String.format call,
+    and 5 additional arguments are available for printing:
+    1 - hours
+    2 - minutes
+    3 - minutes%60
+    4 - seconds
+    5 - second%60
+    -->
+    <!-- Do not translate. Duration format for duration < 1 hour -->
+    <!-- Do not translate. Duration format for duration >= 1 hour -->
+    <!-- Notification Message when Indexing Network -->
+    <string name="network_scan_msg">Médiafájlok indexelése</string>
+    <string name="network_unscan_msg">Médiafájlok eltávolítása a könyvtárból</string>
+    <!-- .nfo export options -->
+    <string name="nfo_export_category">Médiainformációk exportálása</string>
+    <string name="nfo_export_auto_title">Keresés után automatikus exportálás</string>
+    <string name="nfo_export_manual_title">Már feldolgozott videók exportálása</string>
+    <string name="nfo_export_auto_summary">.nfo fájlok automatikus exportálása sikeres internetes keresés után</string>
+    <string name="nfo_export_manual_summary">.nfo fájlok exportálása minden feldolgozott videóhoz</string>
+    <string name="nfo_export_button">.nfo exportálása</string>
+    <string name="nfo_export_folder">A mappa teljes tartalmának exportálása .nfo fájlba</string>
+    <string name="nfo_export_all">A könyvtár teljes tartalmának exportálása .nfo fájlba</string>
+    <string name="nfo_export_exporting">.nfo exportálása</string>
+    <string name="nfo_export_exporting_all">mindent</string>
+    <string name="nfo_export_in_progress">NFO exportálás folyamatban</string>
+    <string name="rescrap_in_progress">Teljes könyvtár feldolgozása...</string>
+    <string name="rescraping_collection">Gyűjtemény újrafeldolgozása folyamatban</string>
+    <string name="rescraping_collections">Gyűjtemények újrafeldolgozása folyamatban</string>
+    <string name="rescraping_noimage_collections">Gyűjtemények újrafeldolgozása folyamatban, fényképek nélkül</string>
+    <string name="rescrap_all_title">Teljes újrafeldolgozás</string>
+    <!-- trakt.tv -->
+    <string name="trakt_toast_syncing_error">trakt szinkronizálás nem lehetséges</string>
+    <!-- Title of screen when no sd card is present -->
+    <string name="sdcard_missing_title">Nincs SD kártya</string>
+    <!-- label underneath icon used to indicate that no sd card is present -->
+    <string name="sdcard_missing_message">A készülékbe nincs SD kártya behelyezve.</string>
+    <!-- label underneath icon used to indicate that the sd card is present, but currently unavailable -->
+    <string name="sdcard_busy_title">SD kártya nem elérhető</string>
+    <!-- label underneath icon used to indicate sd card is mounted to your computer via USB -->
+    <string name="sdcard_busy_message">Sajnos az SD kártya használatban van.</string>
+    <!-- Title of screen when there was an error accessing the sd card -->
+    <string name="sdcard_error_title">SD kártya hiba</string>
+    <!-- label underneath icon used to indicate there was an error accessing the sd card -->
+    <string name="sdcard_error_message">Hiba történt az SD kártya olvasásakor.</string>
+    <!-- Title of screen when no storage is present -->
+    <string name="storage_missing_title">Belső tárhely nem elérhető</string>
+    <!-- label underneath icon used to indicate that no storage is present -->
+    <string name="storage_missing_message">A készülék belső tárhelye nem elérhető.</string>
+    <!-- label underneath icon used to indicate that the storage is present, but currently unavailable -->
+    <string name="storage_busy_title">Belső tárhely nem elérhető</string>
+    <!-- label underneath icon used to indicate storage is mounted to your computer via USB -->
+    <string name="storage_busy_message">Nem használhatja a belső tárhelyet, amíg USB kapcsolaton keresztül csatlakoztatva és csatolva van.</string>
+    <!-- Title of screen when there was an error accessing the internal storage -->
+    <string name="storage_error_title">Belső tárhely hiba</string>
+    <!-- label underneath icon used to indicate there was an error accessing the internal storage -->
+    <string name="storage_error_message">Hiba történt a belső tárhely olvasásakor.</string>
+    <string name="tv_show_genre_action">Akció</string>
+    <string name="tv_show_genre_adventure">Kaland</string>
+    <string name="tv_show_genre_animation">Animáció</string>
+    <string name="tv_show_genre_anime">Anime</string>
+    <string name="tv_show_genre_awards_show">Díjkiosztó</string>
+    <string name="tv_show_genre_children">Gyerekek</string>
+    <string name="tv_show_genre_comedy">Vígjáték</string>
+    <string name="tv_show_genre_crime">Krimi</string>
+    <string name="tv_show_genre_documentary">Dokumentumfilm</string>
+    <string name="tv_show_genre_drama">Dráma</string>
+    <string name="tv_show_genre_family">Családi</string>
+    <string name="tv_show_genre_fantasy">Fantasy</string>
+    <string name="tv_show_genre_food">Gasztro</string>
+    <string name="tv_show_genre_game_show">Vetélkedő</string>
+    <string name="tv_show_genre_home_garden">Otthon és kert</string>
+    <string name="tv_show_genre_horror">Horror</string>
+    <string name="tv_show_genre_indie">Indie</string>
+    <string name="tv_show_genre_martial_arts">Harcművészet</string>
+    <string name="tv_show_genre_mini_series">Minisorozat</string>
+    <string name="tv_show_genre_musical">Musical</string>
+    <string name="tv_show_genre_mystery">Rejtély</string>
+    <string name="tv_show_genre_news">Hírek</string>
+    <string name="tv_show_genre_podcast">Podcast</string>
+    <string name="tv_show_genre_reality">Valóságshow</string>
+    <string name="tv_show_genre_romance">Romantikus</string>
+    <string name="tv_show_genre_science_fiction">Sci-fi</string>
+    <string name="tv_show_genre_soap">Szappanopera</string>
+    <string name="tv_show_genre_special_interest">Különleges</string>
+    <string name="tv_show_genre_sport">Sport</string>
+    <string name="tv_show_genre_suspense">Feszültség</string>
+    <string name="tv_show_genre_talk_show">Talk-Show</string>
+    <string name="tv_show_genre_thriller">Thriller</string>
+    <string name="tv_show_genre_travel">Utazás</string>
+    <string name="tv_show_genre_war">Háborús</string>
+    <string name="tv_show_genre_western">Western</string>
+    <!-- There are official translations for the tmdb movie genres -->
+    <string name="movie_genre_action">Akció</string>
+    <string name="movie_genre_adventure">Kaland</string>
+    <string name="movie_genre_animation">Animációs</string>
+    <string name="movie_genre_comedy">Vígjáték</string>
+    <string name="movie_genre_crime">Bűnügyi</string>
+    <string name="movie_genre_documentary">Dokumentum</string>
+    <string name="movie_genre_drama">Dráma</string>
+    <string name="movie_family">Családi</string>
+    <string name="movie_genre_fantasy">Fantasy</string>
+    <string name="movie_genre_history">Történelmi</string>
+    <string name="movie_genre_horror">Horror</string>
+    <string name="movie_genre_music">Zenei</string>
+    <string name="movie_genre_mystery">Rejtély</string>
+    <string name="movie_genre_romance">Romantikus</string>
+    <string name="movie_genre_science_fiction">Sci-Fi</string>
+    <string name="movie_genre_tv_movie">TV film</string>
+    <string name="movie_genre_thriller">Thriller</string>
+    <string name="movie_genre_war">Háborús</string>
+    <string name="movie_genre_western">Western</string>
+    <!-- There are official translations for the tmdb tv genres -->
+    <string name="tvshow_genre_action_adventure">Action &amp; Adventure</string>
+    <string name="tvshow_genre_animation">Animációs</string>
+    <string name="tvshow_genre_comedy">Vígjáték</string>
+    <string name="tvshow_genre_crime">Bűnügyi</string>
+    <string name="tvshow_genre_documentary">Dokumentum</string>
+    <string name="tvshow_genre_drama">Dráma</string>
+    <string name="tvshow_genre_family">Családi</string>
+    <string name="tvshow_genre_kids">Kids</string>
+    <string name="tvshow_genre_mystery">Rejtély</string>
+    <string name="tvshow_genre_news">News</string>
+    <string name="tvshow_genre_reality">Reality</string>
+    <string name="tvshow_genre_scifi_fantasy">Sci-Fi &amp; Fantasy</string>
+    <string name="tvshow_genre_soap">Soap</string>
+    <string name="tvshow_genre_talk">Talk</string>
+    <string name="tvshow_genre_war_politics">War &amp; Politics</string>
+    <string name="tvshow_genre_western">Western</string>
+    <!--
+      STRINGS BELOW ARE FOR MUSIC ONLY.
+      I KEPT THE DEFAULT ENGLISH VERSION ONLY FOR NOW
+      BECAUSE I DO NOT WANT TO DO THE MUSIC CLEANING/REMOVING NOW
+    -->
+    <!-- Audio Search displays this label when displaying an artist. Copy from packages/providers/MediaProvider/res -->
+    <string name="artist_label">Előadó</string>
+    <string name="scraping_in_progress">Keresés folyamatban</string>
+    <string name="remaining_videos_to_process">A még feldolgozandó médiafájlok:</string>
+    <string name="video_store_import">Helyi médiafájlok importálása</string>
+</resources>

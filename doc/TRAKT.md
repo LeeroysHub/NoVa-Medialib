@@ -22,10 +22,10 @@ Nova Video Player implements a sophisticated two-way synchronization system with
 ### Database Schema
 
 The sync state is stored in the video database with these key fields:
-- `ARCHOS_TRAKT_SEEN` - Local watched status (0=unwatched, 1=watched, 2=pending unmark)
-- `ARCHOS_TRAKT_LIBRARY` - Collection status (0=not in collection, 1=in collection, 2=pending removal)
-- `ARCHOS_TRAKT_RESUME` - Resume percentage; negative values indicate "set but not yet synced"
-- `ARCHOS_LAST_TIME_PLAYED` - Local timestamp of last playback
+- `LEEROYFLIX_TRAKT_SEEN` - Local watched status (0=unwatched, 1=watched, 2=pending unmark)
+- `LEEROYFLIX_TRAKT_LIBRARY` - Collection status (0=not in collection, 1=in collection, 2=pending removal)
+- `LEEROYFLIX_TRAKT_RESUME` - Resume percentage; negative values indicate "set but not yet synced"
+- `LEEROYFLIX_LAST_TIME_PLAYED` - Local timestamp of last playback
 
 ## Authentication Flow
 
@@ -489,24 +489,24 @@ The following specifications define the desired behavior for Nova Video Player's
 
 **Current Implementation:**
 - ✅ Videos marked as fully watched (90%+ completion or manually marked) are filtered out
-- ✅ Only videos with `ARCHOS_LAST_TIME_PLAYED > 0` appear
+- ✅ Only videos with `LEEROYFLIX_LAST_TIME_PLAYED > 0` appear
 - ✅ Cross-device timestamps sync properly via Trakt (UTC-based, multi-tier skip logic)
 
 **Specification:**
 ```sql
 -- Videos that should appear in "Recently Played"
 SELECT * FROM videos WHERE 
-    ARCHOS_LAST_TIME_PLAYED > 0 AND
-    (ARCHOS_TRAKT_SEEN IS NULL OR ARCHOS_TRAKT_SEEN != 1) AND
+    LEEROYFLIX_LAST_TIME_PLAYED > 0 AND
+    (LEEROYFLIX_TRAKT_SEEN IS NULL OR LEEROYFLIX_TRAKT_SEEN != 1) AND
     (BOOKMARK IS NULL OR BOOKMARK != -2)
-ORDER BY ARCHOS_LAST_TIME_PLAYED DESC LIMIT 100
+ORDER BY LEEROYFLIX_LAST_TIME_PLAYED DESC LIMIT 100
 ```
 
 #### Rule 2: Cross-Device Resume Point Consistency ✅ IMPLEMENTED
 **When a video is partially watched on Device A, it must appear in Device B's "Recently Played" with the correct resume point.**
 
 **Implementation Requirements:**
-- ✅ Trakt sync updates `ARCHOS_LAST_TIME_PLAYED` when remote timestamp is newer
+- ✅ Trakt sync updates `LEEROYFLIX_LAST_TIME_PLAYED` when remote timestamp is newer
 - ✅ Resume percentages sync bidirectionally via hybrid method
 - ✅ Immediate visibility after sync completion via ContentProvider notifyChange (no explicit UI refresh needed)
 - ✅ Incremental sync efficiently fetches only changed resume points
@@ -516,7 +516,7 @@ ORDER BY ARCHOS_LAST_TIME_PLAYED DESC LIMIT 100
 1. Device A: Start video → Local timestamp recorded
 2. Device A: Sync to Trakt → Upload timestamp + resume point
 3. Device B: Sync from Trakt → Download timestamp + resume point
-4. Device B: Update `ARCHOS_LAST_TIME_PLAYED` → Video appears in "Recently Played"
+4. Device B: Update `LEEROYFLIX_LAST_TIME_PLAYED` → Video appears in "Recently Played"
 5. Device B: Continue watching → Update local timestamp
 6. Device B: Sync to Trakt → Upload new timestamp + resume point
 7. Device A: Sync from Trakt → Video moves to top of "Recently Played"
@@ -536,7 +536,7 @@ ORDER BY ARCHOS_LAST_TIME_PLAYED DESC LIMIT 100
 **Adding/removing videos from Trakt collection should not affect "Recently Played" visibility.**
 
 **Current Behavior:**
-- ✅ Collection status (`ARCHOS_TRAKT_LIBRARY`) is independent of playback state
+- ✅ Collection status (`LEEROYFLIX_TRAKT_LIBRARY`) is independent of playback state
 - ✅ Collection sync doesn't interfere with resume point display
 - ✅ Collection updates via separate `syncLists()` method
 - ✅ Collection has its own sync timestamp preferences
@@ -545,8 +545,8 @@ ORDER BY ARCHOS_LAST_TIME_PLAYED DESC LIMIT 100
 **Partial playback progress made offline should sync correctly when connectivity returns.**
 
 **Implementation Requirements:**
-- ✅ Negative `ARCHOS_TRAKT_RESUME` values indicate "pending sync"
-- ✅ Local `ARCHOS_LAST_TIME_PLAYED` always updated during playback
+- ✅ Negative `LEEROYFLIX_TRAKT_RESUME` values indicate "pending sync"
+- ✅ Local `LEEROYFLIX_LAST_TIME_PLAYED` always updated during playback
 - ✅ Conflict resolution favors most recent timestamp when syncing
 - ✅ UTC-based timestamps tracked in preferences
 - ✅ Network errors queued for retry when connection returns
@@ -575,7 +575,7 @@ ORDER BY ARCHOS_LAST_TIME_PLAYED DESC LIMIT 100
 
 #### Scenario 3: Mixed Content Types
 1. **All Devices**: "Recently Played" shows both movies and TV episodes
-2. **Cross-device**: Each maintains proper ordering by `ARCHOS_LAST_TIME_PLAYED`
+2. **Cross-device**: Each maintains proper ordering by `LEEROYFLIX_LAST_TIME_PLAYED`
 3. **Episode completion**: Individual episodes disappear when fully watched
 4. **Series tracking**: Other episodes from same series remain if partially watched
 
