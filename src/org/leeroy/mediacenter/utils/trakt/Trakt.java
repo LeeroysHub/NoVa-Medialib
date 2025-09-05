@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package org.leeroy.mediacenter.utils.trakt;
+package org.leeroy.mediaplayer.utils.trakt;
 
 
 import android.content.Context;
@@ -21,7 +21,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import androidx.preference.PreferenceManager;
 
-import org.leeroy.environment.ArchosUtils;
+import org.leeroy.environment.LeeroyFlixUtils;
 import org.leeroy.mediaplayer.utils.trakt.Trakt.Result.ObjectType;
 import org.leeroy.mediaplayer.utils.trakt.TraktAPI.AuthParam;
 import org.leeroy.mediaplayer.utils.trakt.TraktAPI.MovieWatchingParam;

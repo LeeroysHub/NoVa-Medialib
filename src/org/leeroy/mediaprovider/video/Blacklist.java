@@ -23,7 +23,7 @@ import android.util.Log;
 import org.leeroy.filecorelibrary.ExtStorageManager;
 
 import org.leeroy.filecorelibrary.FileUtils;
-import org.leeroy.mediacenter.utils.BlacklistedDbAdapter;
+import org.leeroy.mediaplayer.utils.BlacklistedDbAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;

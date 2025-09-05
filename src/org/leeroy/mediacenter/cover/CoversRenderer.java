@@ -13,11 +13,11 @@
 // limitations under the License.
 
 
-package org.leeroy.mediacenter.cover;
+package org.leeroy.mediaplayer.cover;
 
 import static android.opengl.GLES10.*;
 
-import org.leeroy.mediacenter.cover.CoverGLSurfaceView.RendererListener;
+import org.leeroy.mediaplayer.cover.CoverGLSurfaceView.RendererListener;
 
 import android.graphics.Bitmap;
 import android.opengl.GLException;

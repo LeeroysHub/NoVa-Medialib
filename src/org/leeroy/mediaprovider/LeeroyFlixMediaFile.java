@@ -133,7 +133,7 @@ public class LeeroyFlixMediaFile {
     public static final int FILE_TYPE_MPL           = 1208;
     public static final int FILE_TYPE_TXT           = 1209;
 
-    // keep in sync with org.leeroy.mediacenter.video.utils.VideoUtils.SUBTITLES_ARRAY
+    // keep in sync with org.leeroy.mediaplayer.video.utils.VideoUtils.SUBTITLES_ARRAY
     private static final int FIRST_SUBTITLE_FILE_TYPE = FILE_TYPE_SRT;
     private static final int LAST_SUBTITLE_FILE_TYPE = FILE_TYPE_TXT;
 

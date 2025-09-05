@@ -39,7 +39,7 @@ import androidx.preference.PreferenceManager;
 import android.os.Looper;
 import android.provider.BaseColumns;
 
-import org.leeroy.mediacenter.utils.trakt.TraktService;
+import org.leeroy.mediaplayer.utils.trakt.TraktService;
 import org.leeroy.medialib.R;
 import org.leeroy.mediaprovider.DeleteFileCallback;
 import org.leeroy.environment.NetworkState;

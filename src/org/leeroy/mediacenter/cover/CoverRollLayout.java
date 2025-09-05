@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package org.leeroy.mediacenter.cover;
+package org.leeroy.mediaplayer.cover;
 
 import static android.opengl.GLES10.GL_MODELVIEW;
 

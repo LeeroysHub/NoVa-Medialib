@@ -13,7 +13,7 @@
 // limitations under the License.
 
 
-package org.leeroy.mediacenter.utils.imageview;
+package org.leeroy.mediaplayer.utils.imageview;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
@@ -21,7 +21,7 @@ import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 
-import org.leeroy.mediacenter.utils.imageview.LoadResult.Status;
+import org.leeroy.mediaplayer.utils.imageview.LoadResult.Status;
 import org.leeroy.mediascraper.ScraperImage;
 
 public class ScraperImageProcessor extends ImageProcessor {

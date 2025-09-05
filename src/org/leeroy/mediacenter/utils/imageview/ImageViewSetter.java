@@ -13,7 +13,7 @@
 // limitations under the License.
 
 
-package org.leeroy.mediacenter.utils.imageview;
+package org.leeroy.mediaplayer.utils.imageview;
 
 import android.content.Context;
 import android.graphics.Bitmap;

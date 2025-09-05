@@ -33,8 +33,8 @@ import androidx.lifecycle.ProcessLifecycleOwner;
 import org.leeroy.filecorelibrary.FileEditor;
 import org.leeroy.filecorelibrary.jcifs.JcifsFileEditor;
 import org.leeroy.filecorelibrary.samba.SambaDiscovery;
-import org.leeroy.mediacenter.filecoreextension.upnp2.FileEditorFactoryWithUpnp;
-import org.leeroy.mediacenter.filecoreextension.upnp2.UpnpServiceManager;
+import org.leeroy.mediaplayer.filecoreextension.upnp2.FileEditorFactoryWithUpnp;
+import org.leeroy.mediaplayer.filecoreextension.upnp2.UpnpServiceManager;
 import org.leeroy.environment.NetworkState;
 import org.leeroy.mediaprovider.video.VideoStore.MediaColumns;
 

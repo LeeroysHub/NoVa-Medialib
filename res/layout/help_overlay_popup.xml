@@ -8,7 +8,7 @@
     android:background="@drawable/help_overlay_box"
     android:orientation="vertical">
         
-    <org.leeroy.mediacenter.utils.HelpOverlayPopupContent
+    <org.leeroy.mediaplayer.utils.HelpOverlayPopupContent
         android:id="@+id/help_popup_content"
         android:layout_width="match_parent"
         android:layout_height="0dip"

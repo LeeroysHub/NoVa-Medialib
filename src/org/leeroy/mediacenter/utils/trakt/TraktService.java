@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package org.leeroy.mediacenter.utils.trakt;
+package org.leeroy.mediaplayer.utils.trakt;
 
 import android.app.Service;
 import android.content.ContentResolver;
@@ -39,8 +39,8 @@ import androidx.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.widget.Toast;
 
-import org.leeroy.mediacenter.utils.trakt.Trakt.Status;
-import org.leeroy.mediacenter.utils.videodb.VideoDbInfo;
+import org.leeroy.mediaplayer.utils.trakt.Trakt.Status;
+import org.leeroy.mediaplayer.utils.videodb.VideoDbInfo;
 import org.leeroy.medialib.R;
 import org.leeroy.environment.NetworkState;
 import org.leeroy.mediaprovider.video.VideoStore;
@@ -102,13 +102,13 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
     private static final long NETWORK_NETWORK_ON_DELAY = 600000; // in ms: 10min
     private static final long NOTIFY_DELAY = 5000; // in ms: 5sec
 
-    private static final String INTENT_ACTION_WATCHING = "leeroy.mediacenter.utils.trakt.action.WATCHING";
-    private static final String INTENT_ACTION_WATCHING_STOP = "leeroy.mediacenter.utils.trakt.action.WATCHING_STOP";
-    private static final String INTENT_ACTION_WATCHING_PAUSE = "leeroy.mediacenter.utils.trakt.action.WATCHING_PAUSE";
-    private static final String INTENT_ACTION_MARK_AS = "leeroy.mediacenter.utils.trakt.action.MARK_AS";
-    private static final String INTENT_ACTION_WIPE = "leeroy.mediacenter.utils.trakt.action.WIPE";
-    private static final String INTENT_ACTION_WIPE_COLLECTION = "leeroy.mediacenter.utils.trakt.action.WIPE_COLLECTION";
-    private static final String INTENT_ACTION_SYNC = "leeroy.mediacenter.utils.trakt.action.SYNC";
+    private static final String INTENT_ACTION_WATCHING = "leeroy.mediaplayer.utils.trakt.action.WATCHING";
+    private static final String INTENT_ACTION_WATCHING_STOP = "leeroy.mediaplayer.utils.trakt.action.WATCHING_STOP";
+    private static final String INTENT_ACTION_WATCHING_PAUSE = "leeroy.mediaplayer.utils.trakt.action.WATCHING_PAUSE";
+    private static final String INTENT_ACTION_MARK_AS = "leeroy.mediaplayer.utils.trakt.action.MARK_AS";
+    private static final String INTENT_ACTION_WIPE = "leeroy.mediaplayer.utils.trakt.action.WIPE";
+    private static final String INTENT_ACTION_WIPE_COLLECTION = "leeroy.mediaplayer.utils.trakt.action.WIPE_COLLECTION";
+    private static final String INTENT_ACTION_SYNC = "leeroy.mediaplayer.utils.trakt.action.SYNC";
 
     public static final int FLAG_SYNC_AUTO =                0x001;
     public static final int FLAG_SYNC_LAST_ACTIVITY_VETO =  0x002;

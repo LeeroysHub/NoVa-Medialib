@@ -14,7 +14,7 @@
 
 package org.leeroy.mediaprovider.video;
 
-import org.leeroy.mediacenter.utils.trakt.Trakt;
+import org.leeroy.mediaplayer.utils.trakt.Trakt;
 
 /**
  * Created by vapillon on 29/05/15.

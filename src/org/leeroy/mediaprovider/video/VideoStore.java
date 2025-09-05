@@ -37,7 +37,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 
 import org.leeroy.filecorelibrary.FileUtils;
-import org.leeroy.mediacenter.filecoreextension.UriUtils;
+import org.leeroy.mediaplayer.filecoreextension.UriUtils;
 import org.leeroy.mediaprovider.LeeroyFlixMediaCommon;
 import org.leeroy.mediaprovider.LeeroyFlixMediaIntent;
 

@@ -27,7 +27,7 @@ import android.util.LruCache;
 import android.util.Xml;
 
 import org.leeroy.filecorelibrary.FileEditor;
-import org.leeroy.mediacenter.filecoreextension.upnp2.FileEditorFactoryWithUpnp;
+import org.leeroy.mediaplayer.filecoreextension.upnp2.FileEditorFactoryWithUpnp;
 import org.leeroy.filecorelibrary.FileUtils;
 import org.leeroy.medialib.R;
 

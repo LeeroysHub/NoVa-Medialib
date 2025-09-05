@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package org.leeroy.mediacenter.utils;
+package org.leeroy.mediaplayer.utils;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -42,7 +42,7 @@ public enum FTPShortcutDbAdapter {
     // To be incremented each time the architecture of the database is changed
     private static final int DATABASE_VERSION = 4;
 
-    public static final String ACTION_SHORTCUTS_CHANGED = "org.leeroy.mediacenter.ftp_shortcuts_changed";
+    public static final String ACTION_SHORTCUTS_CHANGED = "org.leeroy.mediaplayer.ftp_shortcuts_changed";
     private static final String KEY_PATH = "path";
     private static final String KEY_HOST = "host";
     private static final String KEY_USERNAME = "username";

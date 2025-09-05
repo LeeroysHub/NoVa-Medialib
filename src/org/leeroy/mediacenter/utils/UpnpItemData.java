@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package org.leeroy.mediacenter.utils;
+package org.leeroy.mediaplayer.utils;
 
 import org.jupnp.model.meta.Device;
 import org.jupnp.support.model.container.Container;
