@@ -578,7 +578,7 @@ public class AutoScrapeService extends Service {
                                             searchResult.setFile(fileUri);
                                             searchResult.setScraper(new MovieScraper3(AutoScrapeService.this));
                                             result = MovieScraper3.getDetails(searchResult, null);
-                                        } else searchOnline = !searchOnline = !title.regionMatches(true, 0, "VOB_", 0, 4);
+                                        } else searchOnline = !title.regionMatches(true, 0, "VOB_", 0, 4);
                                     }
                                     if (searchOnline) {
                                         //log.trace("startScraping: searching online {}", title);
