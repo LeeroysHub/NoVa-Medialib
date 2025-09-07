@@ -1,6 +1,6 @@
-### MediaLib
+### LeeroyFlix - MediaLib
 
-This git repo is part of NOVA opeN sOurce Video plAyer, a video player software for Android.
-Please see the entry point repo: https://github.com/nova-video-player/aos-AVP
+Please see the main repo:
+https://github.com/LeeroysHub/LeeroyFLix.git
 
-This repo contains LeeroyFlix player java interfaces and scraping support.
+This library provides player java interfaces and scraping support.
