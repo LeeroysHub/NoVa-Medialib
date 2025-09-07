@@ -100,7 +100,7 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                 "format = NEW.format , \n" +
                 "parent = NEW.parent , \n" +
                 "storage_id = NEW.storage_id , \n" +
-                "LeeroyFlix_smbserver = 0 , \n" +
+                "lfx_smbserver = 0 , \n" +
                 "volume_hidden = 0\n" + // NEW - set hidden to false
                 "WHERE _data=NEW._data;\n" +
              "END";
@@ -157,9 +157,9 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
             "    format              INTEGER,\n" +
             "    parent              INTEGER DEFAULT ( -1 ),\n" +
             "    storage_id          INTEGER,\n" +
-            "    LeeroyFlix_smbserver    INTEGER DEFAULT ( 0 ),\n" +
-            "    LeeroyFlix_videoStereo  INTEGER DEFAULT (0),\n" +
-            "    LeeroyFlix_videoDefinition INTEGER DEFAULT (0),\n" +
+            "    lfx_smbserver    INTEGER DEFAULT ( 0 ),\n" +
+            "    lfx_videoStereo  INTEGER DEFAULT (0),\n" +
+            "    lfx_videoDefinition INTEGER DEFAULT (0),\n" +
             VideoColumns.LEEROYFLIX_UNIQUE_ID + " STRING DEFAULT (''),\n" +
             VideoColumns.LEEROYFLIX_GUESSED_AUDIO_FORMAT + " STRING,\n" +
             VideoColumns.LEEROYFLIX_GUESSED_VIDEO_FORMAT +" STRING\n" +
@@ -189,9 +189,9 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                 "format = NEW.format , \n" +
                 "parent = NEW.parent , \n" +
                 "storage_id = NEW.storage_id , \n" +
-                "LeeroyFlix_smbserver = NEW.LeeroyFlix_smbserver , \n" +
-                "LeeroyFlix_videoStereo = NEW.LeeroyFlix_videoStereo , \n" +
-                "LeeroyFlix_videoDefinition = NEW.LeeroyFlix_videoDefinition, \n" +
+                "lfx_smbserver = NEW.lfx_smbserver , \n" +
+                "lfx_videoStereo = NEW.lfx_videoStereo , \n" +
+                "lfx_videoDefinition = NEW.lfx_videoDefinition, \n" +
                 VideoColumns.LEEROYFLIX_GUESSED_AUDIO_FORMAT+" = NEW."+VideoColumns.LEEROYFLIX_GUESSED_AUDIO_FORMAT+", \n" + // new
                 VideoColumns.LEEROYFLIX_GUESSED_VIDEO_FORMAT+" = NEW."+VideoColumns.LEEROYFLIX_GUESSED_VIDEO_FORMAT+"\n" + // new
                 "WHERE remote_id=(NEW._id + " + SCANNED_ID_OFFSET + ");" +
@@ -233,7 +233,7 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
             "    format                          INTEGER,\n" +
             "    parent                          INTEGER DEFAULT ( -1 ),\n" +
             "    storage_id                      INTEGER,\n" +
-            "    LeeroyFlix_smbserver                INTEGER DEFAULT ( 0 ), \n" +
+            "    lfx_smbserver                INTEGER DEFAULT ( 0 ), \n" +
             "    remote_id                       INTEGER UNIQUE ON CONFLICT IGNORE,\n" +
             "    scan_state                      INTEGER DEFAULT ( 0 ),\n" +
             "    mime_type                       TEXT,\n" +
@@ -261,36 +261,36 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
             "    mini_thumb_data                 TEXT,\n" +
             "    mini_thumb_magic                INTEGER,\n" +
             "    bookmark                        INTEGER,\n" +
-            "    LeeroyFlix_favorite_track           INTEGER DEFAULT ( 0 ),\n" +
-            "    LeeroyFlix_bookmark                 INTEGER DEFAULT ( 0 ),\n" +
-            "    LeeroyFlix_lastTimePlayed           INTEGER DEFAULT ( 0 ),\n" +
-            "    LeeroyFlix_playerParams             INTEGER DEFAULT ( 0 ),\n" +
-            "    LeeroyFlix_playerSubtitleDelay      INTEGER DEFAULT ( 0 ),\n" +
+            "    lfx_favorite_track           INTEGER DEFAULT ( 0 ),\n" +
+            "    lfx_bookmark                 INTEGER DEFAULT ( 0 ),\n" +
+            "    lfx_lastTimePlayed           INTEGER DEFAULT ( 0 ),\n" +
+            "    lfx_playerParams             INTEGER DEFAULT ( 0 ),\n" +
+            "    lfx_playerSubtitleDelay      INTEGER DEFAULT ( 0 ),\n" +
             "    LeeroyFlixMediaScraper_id           INTEGER DEFAULT ( 0 ),\n" +
             "    LeeroyFlixMediaScraper_type         INTEGER DEFAULT ( 0 ),\n" +
-            "    LeeroyFlix_numberOfSubtitleTracks   INTEGER DEFAULT ( -1 ),\n" +
-            "    LeeroyFlix_numberOfAudioTracks      INTEGER DEFAULT ( -1 ),\n" +
-            "    LeeroyFlix_sampleRate               INTEGER DEFAULT ( 0 ),\n" +
-            "    LeeroyFlix_numberOfChannels         INTEGER DEFAULT ( 0 ),\n" +
-            "    LeeroyFlix_audioWaveCodec           INTEGER DEFAULT ( 0 ),\n" +
-            "    LeeroyFlix_audioBitRate             INTEGER DEFAULT ( 0 ),\n" +
-            "    LeeroyFlix_videoFourCCCodec         INTEGER DEFAULT ( 0 ),\n" +
-            "    LeeroyFlix_videoBitRate             INTEGER DEFAULT ( 0 ),\n" +
-            "    LeeroyFlix_framesPerThousandSeconds INTEGER DEFAULT ( 0 ),\n" +
-            "    LeeroyFlix_encodingProfile          TEXT    DEFAULT ( NULL ),\n" +
-            "    LeeroyFlix_playerSubtitleRatio      INTEGER DEFAULT ( 0 ),\n" +
-            "    LeeroyFlix_thumbTry                 INTEGER DEFAULT ( 0 ),\n" +
-            "    LeeroyFlix_hideFile                 INTEGER DEFAULT ( 0 ),\n" +
-            "    LeeroyFlix_title                    TEXT    DEFAULT ( NULL ),\n" +
+            "    lfx_numberOfSubtitleTracks   INTEGER DEFAULT ( -1 ),\n" +
+            "    lfx_numberOfAudioTracks      INTEGER DEFAULT ( -1 ),\n" +
+            "    lfx_sampleRate               INTEGER DEFAULT ( 0 ),\n" +
+            "    lfx_numberOfChannels         INTEGER DEFAULT ( 0 ),\n" +
+            "    lfx_audioWaveCodec           INTEGER DEFAULT ( 0 ),\n" +
+            "    lfx_audioBitRate             INTEGER DEFAULT ( 0 ),\n" +
+            "    lfx_videoFourCCCodec         INTEGER DEFAULT ( 0 ),\n" +
+            "    lfx_videoBitRate             INTEGER DEFAULT ( 0 ),\n" +
+            "    lfx_framesPerThousandSeconds INTEGER DEFAULT ( 0 ),\n" +
+            "    lfx_encodingProfile          TEXT    DEFAULT ( NULL ),\n" +
+            "    lfx_playerSubtitleRatio      INTEGER DEFAULT ( 0 ),\n" +
+            "    lfx_thumbTry                 INTEGER DEFAULT ( 0 ),\n" +
+            "    lfx_hideFile                 INTEGER DEFAULT ( 0 ),\n" +
+            "    lfx_title                    TEXT    DEFAULT ( NULL ),\n" +
             "    subtitle_count_ext INTEGER DEFAULT (0),\n" +
             "    autoscrape_status INTEGER DEFAULT (0)\n," +
             "    volume_hidden INTEGER DEFAULT (0)\n," +
-            "    LeeroyFlix_traktSeen INTEGER DEFAULT (0)\n," +
-            "    LeeroyFlix_traktLibrary INTEGER DEFAULT (0)\n," +
-            "    LeeroyFlix_videoStereo INTEGER DEFAULT (0)\n," +
-            "    LeeroyFlix_videoDefinition INTEGER DEFAULT (0),\n" +
-            "    LeeroyFlix_traktResume INTEGER DEFAULT (0),\n" +
-            "    LeeroyFlix_hiddenByUser INTEGER DEFAULT (0),\n" +
+            "    lfx_traktSeen INTEGER DEFAULT (0)\n," +
+            "    lfx_traktLibrary INTEGER DEFAULT (0)\n," +
+            "    lfx_videoStereo INTEGER DEFAULT (0)\n," +
+            "    lfx_videoDefinition INTEGER DEFAULT (0),\n" +
+            "    lfx_traktResume INTEGER DEFAULT (0),\n" +
+            "    lfx_hiddenByUser INTEGER DEFAULT (0),\n" +
             VideoColumns.LEEROYFLIX_CALCULATED_VIDEO_FORMAT + " STRING,\n" +
             VideoColumns.LEEROYFLIX_CALCULATED_BEST_AUDIOTRACK_FORMAT + " STRING,\n" +
             VideoColumns.LEEROYFLIX_GUESSED_AUDIO_FORMAT + " STRING,\n" +
@@ -368,9 +368,9 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
             "CREATE INDEX bucket_index ON " + FILES_TABLE_NAME + " (bucket_id, media_type" /*TODO ?? + ", datetaken"*/ + ", _id)";
     private static final String CREATE_FILES_IDX_PATH =
             "CREATE INDEX path_index ON " + FILES_TABLE_NAME + "(_data)";
-    // should speed up most queries on Video that contain the typical LeeroyFlix_hideFile = 0
+    // should speed up most queries on Video that contain the typical lfx_hideFile = 0
     private static final String CREATE_FILES_HIDDEN_IDX =
-            "CREATE INDEX files_hidden ON " + FILES_TABLE_NAME + " (volume_hidden, media_type, LeeroyFlix_hideFile)";
+            "CREATE INDEX files_hidden ON " + FILES_TABLE_NAME + " (volume_hidden, media_type, lfx_hideFile)";
 
     // ------------- ---##[ SMB Server mechanism ]## ---------------------------
     // smb_server table holds server identifier and active state
@@ -388,7 +388,7 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
     public static final String SMB_SERVER_ACTIVE_VIEW_NAME = "smb_server_acitve";
     private static final String CREATE_SMB_SERVER_ACTIVE_VIEW =
             "CREATE VIEW " + SMB_SERVER_ACTIVE_VIEW_NAME + " AS " +
-            "SELECT _id AS LeeroyFlix_smbserver FROM smb_server WHERE active != 0";
+            "SELECT _id AS lfx_smbserver FROM smb_server WHERE active != 0";
 
     /* ---------------------------------------------------------------------- */
     /* --                       VIDEO database part                           */
@@ -406,9 +406,9 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "    date_added,\n" +
                     "    date_modified,\n" +
                     "    inserted,\n" +
-                    "    coalesce( leeroyflix_title, title ) AS title,\n" +
+                    "    coalesce( lfx__title, title ) AS title,\n" +
                     "    title AS android_title,\n" +
-                    "    leeroyflix_title,\n" +
+                    "    lfx__title,\n" +
                     "    duration,\n" +
                     "    artist,\n" +
                     "    album,\n" +
@@ -428,28 +428,28 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "    bookmark,\n" +
                     "    width,\n" +
                     "    height,\n" +
-                    "    LeeroyFlix_favorite_track,\n" +
-                    "    LeeroyFlix_bookmark,\n" +
-                    "    LeeroyFlix_lastTimePlayed,\n" +
-                    "    LeeroyFlix_playerParams,\n" +
-                    "    LeeroyFlix_playerSubtitleDelay,\n" +
+                    "    lfx_favorite_track,\n" +
+                    "    lfx_bookmark,\n" +
+                    "    lfx_lastTimePlayed,\n" +
+                    "    lfx_playerParams,\n" +
+                    "    lfx_playerSubtitleDelay,\n" +
                     "    LeeroyFlixMediaScraper_id,\n" +
                     "    LeeroyFlixMediaScraper_type,\n" +
-                    "    LeeroyFlix_numberOfSubtitleTracks,\n" +
+                    "    lfx_numberOfSubtitleTracks,\n" +
                     "    subtitle_count_ext,\n" +
-                    "    LeeroyFlix_numberOfAudioTracks,\n" +
-                    "    LeeroyFlix_sampleRate,\n" +
-                    "    LeeroyFlix_numberOfChannels,\n" +
-                    "    LeeroyFlix_audioWaveCodec,\n" +
-                    "    LeeroyFlix_audioBitRate,\n" +
-                    "    LeeroyFlix_videoFourCCCodec,\n" +
-                    "    LeeroyFlix_videoBitRate,\n" +
-                    "    LeeroyFlix_framesPerThousandSeconds,\n" +
-                    "    LeeroyFlix_encodingProfile,\n" +
-                    "    LeeroyFlix_playerSubtitleRatio,\n" +
-                    "    LeeroyFlix_thumbTry,\n" +
-                    "    LeeroyFlix_hideFile,\n" +
-                    "    LeeroyFlix_hiddenByUser,\n" +  //NEW hidden by user feature
+                    "    lfx_numberOfAudioTracks,\n" +
+                    "    lfx_sampleRate,\n" +
+                    "    lfx_numberOfChannels,\n" +
+                    "    lfx_audioWaveCodec,\n" +
+                    "    lfx_audioBitRate,\n" +
+                    "    lfx_videoFourCCCodec,\n" +
+                    "    lfx_videoBitRate,\n" +
+                    "    lfx_framesPerThousandSeconds,\n" +
+                    "    lfx_encodingProfile,\n" +
+                    "    lfx_playerSubtitleRatio,\n" +
+                    "    lfx_thumbTry,\n" +
+                    "    lfx_hideFile,\n" +
+                    "    lfx_hiddenByUser,\n" +  //NEW hidden by user feature
                     "    m._id AS m_id,\n" +
                     "    s._id AS s_id,\n" +
                     "    e._id AS e_id,\n" +
@@ -543,11 +543,11 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "    mb.m_bd_large_url,\n" +
                     "    mb.m_bd_large_file,\n" +
                     "    autoscrape_status,\n" +
-                    "    LeeroyFlix_traktSeen,\n" +
-                    "    LeeroyFlix_traktLibrary,\n" +
-                    "    LeeroyFlix_videoStereo,\n" +
-                    "    LeeroyFlix_videoDefinition,\n" +
-                    "    LeeroyFlix_traktResume,\n" +
+                    "    lfx_traktSeen,\n" +
+                    "    lfx_traktLibrary,\n" +
+                    "    lfx_videoStereo,\n" +
+                    "    lfx_videoDefinition,\n" +
+                    "    lfx_traktResume,\n" +
                     "    "+VideoColumns.LEEROYFLIX_CALCULATED_VIDEO_FORMAT +",\n" +
                     "    "+VideoColumns.LEEROYFLIX_CALCULATED_BEST_AUDIOTRACK_FORMAT +",\n" +
                     "    "+VideoColumns.LEEROYFLIX_GUESSED_VIDEO_FORMAT+",\n" +
@@ -566,8 +566,8 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "WHERE\n" +
                     "    volume_hidden == 0 AND\n" +
                     "    media_type == 3 AND\n" +
-                    "    (LeeroyFlix_smbserver == 0 OR\n" +
-                    "    LeeroyFlix_smbserver IN (SELECT _id FROM smb_server WHERE active == 1))";
+                    "    (lfx_smbserver == 0 OR\n" +
+                    "    lfx_smbserver IN (SELECT _id FROM smb_server WHERE active == 1))";
 
 	private static final String CREATE_VIDEO_VIEW_V37 =
 			"CREATE VIEW " + VIDEO_VIEW_NAME + " AS SELECT \n" +
@@ -579,9 +579,9 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
 					"    date_added,\n" +
 					"    date_modified,\n" +
 					"    inserted,\n" +
-					"    coalesce( leeroyflix_title, title ) AS title,\n" +
+					"    coalesce( lfx__title, title ) AS title,\n" +
 					"    title AS android_title,\n" +
-					"    leeroyflix_title,\n" +
+					"    lfx__title,\n" +
 					"    duration,\n" +
 					"    artist,\n" +
 					"    album,\n" +
@@ -601,28 +601,28 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
 					"    bookmark,\n" +
 					"    width,\n" +
 					"    height,\n" +
-					"    LeeroyFlix_favorite_track,\n" +
-					"    LeeroyFlix_bookmark,\n" +
-					"    LeeroyFlix_lastTimePlayed,\n" +
-					"    LeeroyFlix_playerParams,\n" +
-					"    LeeroyFlix_playerSubtitleDelay,\n" +
+					"    lfx_favorite_track,\n" +
+					"    lfx_bookmark,\n" +
+					"    lfx_lastTimePlayed,\n" +
+					"    lfx_playerParams,\n" +
+					"    lfx_playerSubtitleDelay,\n" +
 					"    LeeroyFlixMediaScraper_id,\n" +
 					"    LeeroyFlixMediaScraper_type,\n" +
-					"    LeeroyFlix_numberOfSubtitleTracks,\n" +
+					"    lfx_numberOfSubtitleTracks,\n" +
 					"    subtitle_count_ext,\n" +
-					"    LeeroyFlix_numberOfAudioTracks,\n" +
-					"    LeeroyFlix_sampleRate,\n" +
-					"    LeeroyFlix_numberOfChannels,\n" +
-					"    LeeroyFlix_audioWaveCodec,\n" +
-					"    LeeroyFlix_audioBitRate,\n" +
-					"    LeeroyFlix_videoFourCCCodec,\n" +
-					"    LeeroyFlix_videoBitRate,\n" +
-					"    LeeroyFlix_framesPerThousandSeconds,\n" +
-					"    LeeroyFlix_encodingProfile,\n" +
-					"    LeeroyFlix_playerSubtitleRatio,\n" +
-					"    LeeroyFlix_thumbTry,\n" +
-					"    LeeroyFlix_hideFile,\n" +
-					"    LeeroyFlix_hiddenByUser,\n" +  //NEW hidden by user feature
+					"    lfx_numberOfAudioTracks,\n" +
+					"    lfx_sampleRate,\n" +
+					"    lfx_numberOfChannels,\n" +
+					"    lfx_audioWaveCodec,\n" +
+					"    lfx_audioBitRate,\n" +
+					"    lfx_videoFourCCCodec,\n" +
+					"    lfx_videoBitRate,\n" +
+					"    lfx_framesPerThousandSeconds,\n" +
+					"    lfx_encodingProfile,\n" +
+					"    lfx_playerSubtitleRatio,\n" +
+					"    lfx_thumbTry,\n" +
+					"    lfx_hideFile,\n" +
+					"    lfx_hiddenByUser,\n" +  //NEW hidden by user feature
 					"    m._id AS m_id,\n" +
 					"    s._id AS s_id,\n" +
 					"    e._id AS e_id,\n" +
@@ -716,11 +716,11 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
 					"    mb.m_bd_large_url,\n" +
 					"    mb.m_bd_large_file,\n" +
 					"    autoscrape_status,\n" +
-					"    LeeroyFlix_traktSeen,\n" +
-					"    LeeroyFlix_traktLibrary,\n" +
-					"    LeeroyFlix_videoStereo,\n" +
-					"    LeeroyFlix_videoDefinition,\n" +
-					"    LeeroyFlix_traktResume,\n" +
+					"    lfx_traktSeen,\n" +
+					"    lfx_traktLibrary,\n" +
+					"    lfx_videoStereo,\n" +
+					"    lfx_videoDefinition,\n" +
+					"    lfx_traktResume,\n" +
 					"    "+VideoColumns.LEEROYFLIX_CALCULATED_VIDEO_FORMAT +",\n" +
 					"    "+VideoColumns.LEEROYFLIX_CALCULATED_BEST_AUDIOTRACK_FORMAT +",\n" +
 					"    "+VideoColumns.LEEROYFLIX_GUESSED_VIDEO_FORMAT+",\n" +
@@ -740,8 +740,8 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
 					"WHERE\n" +
 					"    volume_hidden == 0 AND\n" +
 					"    media_type == 3 AND\n" +
-					"    (LeeroyFlix_smbserver == 0 OR\n" +
-					"    LeeroyFlix_smbserver IN (SELECT _id FROM smb_server WHERE active == 1))";
+					"    (lfx_smbserver == 0 OR\n" +
+					"    lfx_smbserver IN (SELECT _id FROM smb_server WHERE active == 1))";
 
 	// add movie collection information
     private static final String CREATE_VIDEO_VIEW_V38 =
@@ -754,9 +754,9 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "    date_added,\n" +
                     "    date_modified,\n" +
                     "    inserted,\n" +
-                    "    coalesce( leeroyflix_title, title ) AS title,\n" +
+                    "    coalesce( lfx__title, title ) AS title,\n" +
                     "    title AS android_title,\n" +
-                    "    leeroyflix_title,\n" +
+                    "    lfx__title,\n" +
                     "    duration,\n" +
                     "    artist,\n" +
                     "    album,\n" +
@@ -776,28 +776,28 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "    bookmark,\n" +
                     "    width,\n" +
                     "    height,\n" +
-                    "    LeeroyFlix_favorite_track,\n" +
-                    "    LeeroyFlix_bookmark,\n" +
-                    "    LeeroyFlix_lastTimePlayed,\n" +
-                    "    LeeroyFlix_playerParams,\n" +
-                    "    LeeroyFlix_playerSubtitleDelay,\n" +
+                    "    lfx_favorite_track,\n" +
+                    "    lfx_bookmark,\n" +
+                    "    lfx_lastTimePlayed,\n" +
+                    "    lfx_playerParams,\n" +
+                    "    lfx_playerSubtitleDelay,\n" +
                     "    LeeroyFlixMediaScraper_id,\n" +
                     "    LeeroyFlixMediaScraper_type,\n" +
-                    "    LeeroyFlix_numberOfSubtitleTracks,\n" +
+                    "    lfx_numberOfSubtitleTracks,\n" +
                     "    subtitle_count_ext,\n" +
-                    "    LeeroyFlix_numberOfAudioTracks,\n" +
-                    "    LeeroyFlix_sampleRate,\n" +
-                    "    LeeroyFlix_numberOfChannels,\n" +
-                    "    LeeroyFlix_audioWaveCodec,\n" +
-                    "    LeeroyFlix_audioBitRate,\n" +
-                    "    LeeroyFlix_videoFourCCCodec,\n" +
-                    "    LeeroyFlix_videoBitRate,\n" +
-                    "    LeeroyFlix_framesPerThousandSeconds,\n" +
-                    "    LeeroyFlix_encodingProfile,\n" +
-                    "    LeeroyFlix_playerSubtitleRatio,\n" +
-                    "    LeeroyFlix_thumbTry,\n" +
-                    "    LeeroyFlix_hideFile,\n" +
-                    "    LeeroyFlix_hiddenByUser,\n" +  //NEW hidden by user feature
+                    "    lfx_numberOfAudioTracks,\n" +
+                    "    lfx_sampleRate,\n" +
+                    "    lfx_numberOfChannels,\n" +
+                    "    lfx_audioWaveCodec,\n" +
+                    "    lfx_audioBitRate,\n" +
+                    "    lfx_videoFourCCCodec,\n" +
+                    "    lfx_videoBitRate,\n" +
+                    "    lfx_framesPerThousandSeconds,\n" +
+                    "    lfx_encodingProfile,\n" +
+                    "    lfx_playerSubtitleRatio,\n" +
+                    "    lfx_thumbTry,\n" +
+                    "    lfx_hideFile,\n" +
+                    "    lfx_hiddenByUser,\n" +  //NEW hidden by user feature
                     "    m._id AS m_id,\n" +
                     "    s._id AS s_id,\n" +
                     "    e._id AS e_id,\n" +
@@ -891,11 +891,11 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "    mb.m_bd_large_url,\n" +
                     "    mb.m_bd_large_file,\n" +
                     "    autoscrape_status,\n" +
-                    "    LeeroyFlix_traktSeen,\n" +
-                    "    LeeroyFlix_traktLibrary,\n" +
-                    "    LeeroyFlix_videoStereo,\n" +
-                    "    LeeroyFlix_videoDefinition,\n" +
-                    "    LeeroyFlix_traktResume,\n" +
+                    "    lfx_traktSeen,\n" +
+                    "    lfx_traktLibrary,\n" +
+                    "    lfx_videoStereo,\n" +
+                    "    lfx_videoDefinition,\n" +
+                    "    lfx_traktResume,\n" +
                     "    "+VideoColumns.LEEROYFLIX_CALCULATED_VIDEO_FORMAT +",\n" +
                     "    "+VideoColumns.LEEROYFLIX_CALCULATED_BEST_AUDIOTRACK_FORMAT +",\n" +
                     "    "+VideoColumns.LEEROYFLIX_GUESSED_VIDEO_FORMAT+",\n" +
@@ -927,8 +927,8 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "WHERE\n" +
                     "    volume_hidden == 0 AND\n" +
                     "    media_type == 3 AND\n" +
-                    "    (LeeroyFlix_smbserver == 0 OR\n" +
-                    "    LeeroyFlix_smbserver IN (SELECT _id FROM smb_server WHERE active == 1))";
+                    "    (lfx_smbserver == 0 OR\n" +
+                    "    lfx_smbserver IN (SELECT _id FROM smb_server WHERE active == 1))";
 
 
     // add movie collection information
@@ -942,9 +942,9 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "    date_added,\n" +
                     "    date_modified,\n" +
                     "    inserted,\n" +
-                    "    coalesce( leeroyflix_title, title ) AS title,\n" +
+                    "    coalesce( lfx__title, title ) AS title,\n" +
                     "    title AS android_title,\n" +
-                    "    leeroyflix_title,\n" +
+                    "    lfx__title,\n" +
                     "    duration,\n" +
                     "    artist,\n" +
                     "    album,\n" +
@@ -964,28 +964,28 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "    bookmark,\n" +
                     "    width,\n" +
                     "    height,\n" +
-                    "    LeeroyFlix_favorite_track,\n" +
-                    "    LeeroyFlix_bookmark,\n" +
-                    "    LeeroyFlix_lastTimePlayed,\n" +
-                    "    LeeroyFlix_playerParams,\n" +
-                    "    LeeroyFlix_playerSubtitleDelay,\n" +
+                    "    lfx_favorite_track,\n" +
+                    "    lfx_bookmark,\n" +
+                    "    lfx_lastTimePlayed,\n" +
+                    "    lfx_playerParams,\n" +
+                    "    lfx_playerSubtitleDelay,\n" +
                     "    LeeroyFlixMediaScraper_id,\n" +
                     "    LeeroyFlixMediaScraper_type,\n" +
-                    "    LeeroyFlix_numberOfSubtitleTracks,\n" +
+                    "    lfx_numberOfSubtitleTracks,\n" +
                     "    subtitle_count_ext,\n" +
-                    "    LeeroyFlix_numberOfAudioTracks,\n" +
-                    "    LeeroyFlix_sampleRate,\n" +
-                    "    LeeroyFlix_numberOfChannels,\n" +
-                    "    LeeroyFlix_audioWaveCodec,\n" +
-                    "    LeeroyFlix_audioBitRate,\n" +
-                    "    LeeroyFlix_videoFourCCCodec,\n" +
-                    "    LeeroyFlix_videoBitRate,\n" +
-                    "    LeeroyFlix_framesPerThousandSeconds,\n" +
-                    "    LeeroyFlix_encodingProfile,\n" +
-                    "    LeeroyFlix_playerSubtitleRatio,\n" +
-                    "    LeeroyFlix_thumbTry,\n" +
-                    "    LeeroyFlix_hideFile,\n" +
-                    "    LeeroyFlix_hiddenByUser,\n" +  //NEW hidden by user feature
+                    "    lfx_numberOfAudioTracks,\n" +
+                    "    lfx_sampleRate,\n" +
+                    "    lfx_numberOfChannels,\n" +
+                    "    lfx_audioWaveCodec,\n" +
+                    "    lfx_audioBitRate,\n" +
+                    "    lfx_videoFourCCCodec,\n" +
+                    "    lfx_videoBitRate,\n" +
+                    "    lfx_framesPerThousandSeconds,\n" +
+                    "    lfx_encodingProfile,\n" +
+                    "    lfx_playerSubtitleRatio,\n" +
+                    "    lfx_thumbTry,\n" +
+                    "    lfx_hideFile,\n" +
+                    "    lfx_hiddenByUser,\n" +  //NEW hidden by user feature
                     "    m._id AS m_id,\n" +
                     "    s._id AS s_id,\n" +
                     "    e._id AS e_id,\n" +
@@ -1083,11 +1083,11 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "    mb.m_bd_large_url,\n" +
                     "    mb.m_bd_large_file,\n" +
                     "    autoscrape_status,\n" +
-                    "    LeeroyFlix_traktSeen,\n" +
-                    "    LeeroyFlix_traktLibrary,\n" +
-                    "    LeeroyFlix_videoStereo,\n" +
-                    "    LeeroyFlix_videoDefinition,\n" +
-                    "    LeeroyFlix_traktResume,\n" +
+                    "    lfx_traktSeen,\n" +
+                    "    lfx_traktLibrary,\n" +
+                    "    lfx_videoStereo,\n" +
+                    "    lfx_videoDefinition,\n" +
+                    "    lfx_traktResume,\n" +
                     "    "+VideoColumns.LEEROYFLIX_CALCULATED_VIDEO_FORMAT +",\n" +
                     "    "+VideoColumns.LEEROYFLIX_CALCULATED_BEST_AUDIOTRACK_FORMAT +",\n" +
                     "    "+VideoColumns.LEEROYFLIX_GUESSED_VIDEO_FORMAT+",\n" +
@@ -1119,8 +1119,8 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "WHERE\n" +
                     "    volume_hidden == 0 AND\n" +
                     "    media_type == 3 AND\n" +
-                    "    (LeeroyFlix_smbserver == 0 OR\n" +
-                    "    LeeroyFlix_smbserver IN (SELECT _id FROM smb_server WHERE active == 1))";
+                    "    (lfx_smbserver == 0 OR\n" +
+                    "    lfx_smbserver IN (SELECT _id FROM smb_server WHERE active == 1))";
 
 
     // ------------- ---##[ Video Thumbnails     ]## ---------------------------
@@ -1140,7 +1140,7 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
     // Performance indexes for core video functionality
     private static final String CREATE_VIDEO_IDX_LAST_PLAYED =
             "CREATE INDEX IF NOT EXISTS idx_video_last_played_desc ON " + FILES_TABLE_NAME + 
-            "(LeeroyFlix_lastTimePlayed DESC) WHERE LeeroyFlix_lastTimePlayed > 0";
+            "(lfx_lastTimePlayed DESC) WHERE lfx_lastTimePlayed > 0";
     private static final String CREATE_VIDEO_IDX_DATE_ADDED =
             "CREATE INDEX IF NOT EXISTS idx_video_date_added ON " + FILES_TABLE_NAME + 
             "(date_added DESC) WHERE date_added IS NOT NULL";
@@ -1148,24 +1148,24 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
     // Core filtering indexes - CRITICAL for all loader performance
     private static final String CREATE_FILES_HIDDEN_BY_USER_IDX =
             "CREATE INDEX IF NOT EXISTS idx_files_hidden_by_user ON " + FILES_TABLE_NAME + 
-            "(LeeroyFlix_hiddenByUser) WHERE LeeroyFlix_hiddenByUser = 0";
+            "(lfx_hiddenByUser) WHERE lfx_hiddenByUser = 0";
     private static final String CREATE_FILES_BOOKMARK_IDX =
             "CREATE INDEX IF NOT EXISTS idx_files_bookmark ON " + FILES_TABLE_NAME + 
             "(bookmark) WHERE bookmark IS NOT NULL";
     private static final String CREATE_FILES_TRAKT_SEEN_IDX =
             "CREATE INDEX IF NOT EXISTS idx_files_trakt_seen ON " + FILES_TABLE_NAME + 
-            "(LeeroyFlix_traktSeen)";
+            "(lfx_traktSeen)";
     
     // Composite indexes for common query patterns - HIGH PRIORITY
     private static final String CREATE_FILES_HIDDEN_BOOKMARK_IDX =
             "CREATE INDEX IF NOT EXISTS idx_files_hidden_bookmark ON " + FILES_TABLE_NAME + 
-            "(LeeroyFlix_hiddenByUser, bookmark, LeeroyFlix_traktSeen)";
+            "(lfx_hiddenByUser, bookmark, lfx_traktSeen)";
     private static final String CREATE_FILES_DATE_ADDED_FILTERED_IDX =
             "CREATE INDEX IF NOT EXISTS idx_files_date_added_filtered ON " + FILES_TABLE_NAME + 
-            "(date_added DESC, LeeroyFlix_hiddenByUser, bookmark) WHERE date_added IS NOT NULL";
+            "(date_added DESC, lfx_hiddenByUser, bookmark) WHERE date_added IS NOT NULL";
     private static final String CREATE_FILES_LAST_PLAYED_FILTERED_IDX =
             "CREATE INDEX IF NOT EXISTS idx_files_last_played_filtered ON " + FILES_TABLE_NAME + 
-            "(LeeroyFlix_lastTimePlayed DESC, LeeroyFlix_hiddenByUser, bookmark) WHERE LeeroyFlix_lastTimePlayed > 0";
+            "(lfx_lastTimePlayed DESC, lfx_hiddenByUser, bookmark) WHERE lfx_lastTimePlayed > 0";
     
     // Search performance indexes
     private static final String CREATE_FILES_TITLE_SEARCH_IDX =

@@ -379,19 +379,19 @@ public final class VideoStore {
              * The Synchronization ID
              * <P>Type: TEXT</P>
              */
-            public static final String LEEROYFLIX_SYNC_ID = "LeeroyFlix_syncId";
+            public static final String LEEROYFLIX_SYNC_ID = "lfx_syncId";
 
             /**
              * Is this file consumable or not?
              * <P>Type: TEXT</P>
              */
-            public static final String LEEROYFLIX_NON_CONSUMABLE = "LeeroyFlix_nonConsumable";
+            public static final String LEEROYFLIX_NON_CONSUMABLE = "lfx_nonConsumable";
 
             /**
              * Used by MediaScanner in light-indexing mode to store the remote server id
              * <P>Type: INTEGER</P>
              */
-            public static final String LEEROYFLIX_SMB_SERVER = "LeeroyFlix_smbserver";
+            public static final String LEEROYFLIX_SMB_SERVER = "lfx_smbserver";
 
             /**
              * The bucket id of the video. This is a read-only property that
@@ -895,37 +895,37 @@ public final class VideoStore {
              * Units are seconds since 1970.
              * <P>Type: INTEGER (long)</P>
              */
-            public static final String IS_LEEROYFLIX_FAVORITE = "LeeroyFlix_favorite_track";
+            public static final String IS_LEEROYFLIX_FAVORITE = "lfx_favorite_track";
 
             /**
              * Private leeroyflix flag
              * <P>Type: INTEGER</P>
              */
-            public static final String LEEROYFLIX_BOOKMARK = "LeeroyFlix_bookmark";
+            public static final String LEEROYFLIX_BOOKMARK = "lfx_bookmark";
 
             /**
              * unique ID used for upnp
              */
-            public static final String LEEROYFLIX_UNIQUE_ID = "LeeroyFlix_unique_id";
+            public static final String LEEROYFLIX_UNIQUE_ID = "lfx_unique_id";
 
             /**
             * Private leeroyflix flag to store the last date a media was played
              * Units are seconds since 1970.
              * <P>Type: INTEGER (long)</P>
              */
-            public static final String LEEROYFLIX_LAST_TIME_PLAYED = "LeeroyFlix_lastTimePlayed";
+            public static final String LEEROYFLIX_LAST_TIME_PLAYED = "lfx_lastTimePlayed";
 
             /**
              * Private leeroyflix flag to store data needed by the Avos video player
              * <P>Type: INTEGER</P>
              */
-            public static final String LEEROYFLIX_PLAYER_PARAMS = "LeeroyFlix_playerParams";
+            public static final String LEEROYFLIX_PLAYER_PARAMS = "lfx_playerParams";
 
             /**
              * Private leeroyflix flag to store the subtitle delay (needed by the Avos video player)
              * <P>Type: INTEGER</P>
              */
-            public static final String LEEROYFLIX_PLAYER_SUBTITLE_DELAY = "LeeroyFlix_playerSubtitleDelay";
+            public static final String LEEROYFLIX_PLAYER_SUBTITLE_DELAY = "lfx_playerSubtitleDelay";
 
             /**
              * Private leeroyflix flag to store the subtitle (speed) ratio (needed by the Avos video player)<br>
@@ -936,7 +936,7 @@ public final class VideoStore {
              * </ol>
              * <P>Type: INTEGER</P>
              */
-            public static final String LEEROYFLIX_PLAYER_SUBTITLE_RATIO = "LeeroyFlix_playerSubtitleRatio";
+            public static final String LEEROYFLIX_PLAYER_SUBTITLE_RATIO = "lfx_playerSubtitleRatio";
 
             /**
              * Private leeroyflix flag to store the associated scraper id
@@ -954,80 +954,80 @@ public final class VideoStore {
              * Private leeroyflix flag to store the the number of subtitle tracks
              * <P>Type: INTEGER</P>
              */
-            public static final String LEEROYFLIX_NUMBER_OF_SUBTITLE_TRACKS = "LeeroyFlix_numberOfSubtitleTracks";
+            public static final String LEEROYFLIX_NUMBER_OF_SUBTITLE_TRACKS = "lfx_numberOfSubtitleTracks";
 
             /**
              * Private leeroyflix flag to store the number of audio tracks
              * <P>Type: INTEGER</P>
              */
-            public static final String LEEROYFLIX_NUMBER_OF_AUDIO_TRACKS = "LeeroyFlix_numberOfAudioTracks";
+            public static final String LEEROYFLIX_NUMBER_OF_AUDIO_TRACKS = "lfx_numberOfAudioTracks";
 
             /**
              * Private leeroyflix flag to store the video FourCCCodec
              * <P>Type: INTEGER</P>
              */
-            public static final String LEEROYFLIX_VIDEO_FOURCC_CODEC = "LeeroyFlix_videoFourCCCodec";
+            public static final String LEEROYFLIX_VIDEO_FOURCC_CODEC = "lfx_videoFourCCCodec";
 
             /**
              * Private leeroyflix flag to store the video bitrate
              * <P>Type: INTEGER</P>
              */
-            public static final String LEEROYFLIX_VIDEO_BITRATE = "LeeroyFlix_videoBitRate";
+            public static final String LEEROYFLIX_VIDEO_BITRATE = "lfx_videoBitRate";
 
             /**
              * Private leeroyflix flag to store the frames per thousand seconds
              * <P>Type: INTEGER</P>
              */
-            public static final String LEEROYFLIX_FRAMES_PER_THOUSAND_SECONDS = "LeeroyFlix_framesPerThousandSeconds";
+            public static final String LEEROYFLIX_FRAMES_PER_THOUSAND_SECONDS = "lfx_framesPerThousandSeconds";
 
             /**
              * Private leeroyflix flag to store the encoding profile
              * <P>Type: TEXT</P>
              */
-            public static final String LEEROYFLIX_ENCODING_PROFILE = "LeeroyFlix_encodingProfile";
+            public static final String LEEROYFLIX_ENCODING_PROFILE = "lfx_encodingProfile";
 
             /**
              * Private leeroyflix flag to store the scan type
              * <P>TYPE: INTEGER<P>
              */
-            public static final String LEEROYFLIX_SCAN_TYPE = "LeeroyFlix_scanType";
+            public static final String LEEROYFLIX_SCAN_TYPE = "lfx_scanType";
 
             /**
              * Private leeroyflix flag to hide some special Files. Used for multipart DVD video vobs.
              * <P>TYPE: INTEGER<P>
              */
-            public static final String LEEROYFLIX_HIDE_FILE = "LeeroyFlix_hideFile";
+            public static final String LEEROYFLIX_HIDE_FILE = "lfx_hideFile";
 
             /**
              * Private leeroyflix flag to hide files on user request.
              * <P>TYPE: INTEGER<P>
              */
-            public static final String LEEROYFLIX_HIDDEN_BY_USER = "LeeroyFlix_hiddenByUser";
+            public static final String LEEROYFLIX_HIDDEN_BY_USER = "lfx_hiddenByUser";
 
             /**
              * Custom title set by our apps. Use TITLE to query, it will show this one if it is set.
              * <P>TYPE: TEXT<P>
              */
-            public static final String LEEROYFLIX_TITLE = "LeeroyFlix_title";
+            public static final String LEEROYFLIX_TITLE = "lfx_title";
 
             /**
              * Private leeroyflix flag to store if video is seen on trakt.
              * <P>TYPE: INTEGER<P>
              */
-            public static final String LEEROYFLIX_TRAKT_SEEN = "LeeroyFlix_traktSeen";
+            public static final String LEEROYFLIX_TRAKT_SEEN = "lfx_traktSeen";
 
             /**
              * Private leeroyflix flag to store if video is on trakt library.
              * <P>TYPE: INTEGER<P>
              */
-            public static final String LEEROYFLIX_TRAKT_LIBRARY = "LeeroyFlix_traktLibrary";
+            public static final String LEEROYFLIX_TRAKT_LIBRARY = "lfx_traktLibrary";
 
             /**
              * Private leeroyflix flag to store trakt resume point for synchronisation.
              * <P>TYPE: INTEGER<P>
              */
             
-            public static final String LEEROYFLIX_TRAKT_RESUME = "LeeroyFlix_traktResume";
+            public static final String LEEROYFLIX_TRAKT_RESUME = "lfx_traktResume";
             
             /**
              * Private leeroyflix flag to store if video is 3D, and which type if it is.
@@ -1040,7 +1040,7 @@ public final class VideoStore {
              * </ol>
              * <P>Type: INTEGER</P>
              */
-            public static final String LEEROYFLIX_VIDEO_STEREO = "LeeroyFlix_videoStereo";
+            public static final String LEEROYFLIX_VIDEO_STEREO = "lfx_videoStereo";
 
             /**
              * Constant for the {@link #LEEROYFLIX_VIDEO_STEREO} column indicating that the video is 2D.
@@ -1076,7 +1076,7 @@ public final class VideoStore {
              * </ol>
              * <P>Type: INTEGER</P>
              */
-            public static final String LEEROYFLIX_VIDEO_DEFINITION = "LeeroyFlix_videoDefinition";
+            public static final String LEEROYFLIX_VIDEO_DEFINITION = "lfx_videoDefinition";
 
             /**
              * Constant for the {@link #LEEROYFLIX_VIDEO_DEFINITION} column indicating that we do not know the definition.
@@ -1103,15 +1103,15 @@ public final class VideoStore {
              */
             public static final int LEEROYFLIX_DEFINITION_SD = 4;
 
-            public static final String LEEROYFLIX_GUESSED_VIDEO_FORMAT = "LeeroyFlix_guessedVideoFormat";
+            public static final String LEEROYFLIX_GUESSED_VIDEO_FORMAT = "lfx_guessedVideoFormat";
 
-            public static final String LEEROYFLIX_GUESSED_AUDIO_FORMAT = "LeeroyFlix_guessedAudioFormat";
+            public static final String LEEROYFLIX_GUESSED_AUDIO_FORMAT = "lfx_guessedAudioFormat";
 
-            public static final String LEEROYFLIX_CALCULATED_VIDEO_FORMAT = "LeeroyFlix_calculatedVideoFormat";
+            public static final String LEEROYFLIX_CALCULATED_VIDEO_FORMAT = "lfx_calculatedVideoFormat";
 
-            public static final String LEEROYFLIX_CALCULATED_BEST_AUDIOTRACK_CHANNELS = "LeeroyFlix_bestAudiotrack";
+            public static final String LEEROYFLIX_CALCULATED_BEST_AUDIOTRACK_CHANNELS = "lfx_bestAudiotrack";
 
-            public static final String LEEROYFLIX_CALCULATED_BEST_AUDIOTRACK_FORMAT = "LeeroyFlix_bestAudiotrackFormat";
+            public static final String LEEROYFLIX_CALCULATED_BEST_AUDIOTRACK_FORMAT = "lfx_bestAudiotrackFormat";
 
 
             public static final int LEEROYFLIX_AUDIO_FIVEDOTONE = 1;
@@ -1522,31 +1522,31 @@ public final class VideoStore {
              * has failed for this media.
              * <P>Type: INTEGER</P>
              */
-            public static final String LEEROYFLIX_THUMB_TRY = "LeeroyFlix_thumbTry";
+            public static final String LEEROYFLIX_THUMB_TRY = "lfx_thumbTry";
 
             /**
              * Private leeroyflix flag to store the samplerate
              * <P> Type: INTEGER (long)</P>
              */
-            public static final String LEEROYFLIX_SAMPLERATE = "LeeroyFlix_sampleRate";
+            public static final String LEEROYFLIX_SAMPLERATE = "lfx_sampleRate";
 
             /**
              * Private leeroyflix flag to store the number of Channels
              * <P> Type: INTEGER (long)</P>
              */
-            public static final String LEEROYFLIX_NUMBER_OF_CHANNELS = "LeeroyFlix_numberOfChannels";
+            public static final String LEEROYFLIX_NUMBER_OF_CHANNELS = "lfx_numberOfChannels";
 
             /**
              * Private leeroyflix flag to store the audio bitrate
              * <P> Type: INTEGER (long) </P>
              */
-            public static final String LEEROYFLIX_AUDIO_BITRATE = "LeeroyFlix_audioBitRate";
+            public static final String LEEROYFLIX_AUDIO_BITRATE = "lfx_audioBitRate";
 
             /**
              * Private leeroyflix flag to store the audio wave codec
              * <P> Type: INTEGER (long) </P>
              */
-            public static final String LEEROYFLIX_AUDIO_WAVE_CODEC = "LeeroyFlix_audioWaveCodec";
+            public static final String LEEROYFLIX_AUDIO_WAVE_CODEC = "lfx_audioWaveCodec";
 
             /**
              * Amount of subtitles assiciated with this video in Subtitles table
