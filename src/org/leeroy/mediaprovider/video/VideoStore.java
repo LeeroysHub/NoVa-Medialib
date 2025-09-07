@@ -942,13 +942,13 @@ public final class VideoStore {
              * Private leeroyflix flag to store the associated scraper id
              * <P>Type: INTEGER</P>
              */
-            public static final String LEEROYFLIX_MEDIA_SCRAPER_ID = "LeeroyFlixMediaScraper_id";
+            public static final String LEEROYFLIX_MEDIA_SCRAPER_ID = "leeroyflixmediascraper_id";
 
             /**
              * Private leeroyflix flag to store the associated scraper media type
              * <P>Type: INTEGER</P>
              */
-            public static final String LEEROYFLIX_MEDIA_SCRAPER_TYPE = "LeeroyFlixMediaScraper_type";
+            public static final String LEEROYFLIX_MEDIA_SCRAPER_TYPE = "leeroyflixmediascraper_type";
 
             /**
              * Private leeroyflix flag to store the the number of subtitle tracks

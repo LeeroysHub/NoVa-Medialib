@@ -266,8 +266,8 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
             "    lfx_lastTimePlayed           INTEGER DEFAULT ( 0 ),\n" +
             "    lfx_playerParams             INTEGER DEFAULT ( 0 ),\n" +
             "    lfx_playerSubtitleDelay      INTEGER DEFAULT ( 0 ),\n" +
-            "    LeeroyFlixMediaScraper_id           INTEGER DEFAULT ( 0 ),\n" +
-            "    LeeroyFlixMediaScraper_type         INTEGER DEFAULT ( 0 ),\n" +
+            "    leeroyflixmediascraper_id           INTEGER DEFAULT ( 0 ),\n" +
+            "    leeroyflixmediascraper_type         INTEGER DEFAULT ( 0 ),\n" +
             "    lfx_numberOfSubtitleTracks   INTEGER DEFAULT ( -1 ),\n" +
             "    lfx_numberOfAudioTracks      INTEGER DEFAULT ( -1 ),\n" +
             "    lfx_sampleRate               INTEGER DEFAULT ( 0 ),\n" +
@@ -316,18 +316,18 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
 
     // triggers to remove scraper data on scraper id change
     private static final String CREATE_FILES_TRIGGER_SCRAPER_MOVIE_CLEANUP =
-            "CREATE TRIGGER scraper_movie_cleanup AFTER UPDATE OF LeeroyFlixMediaScraper_id ON " +
-            FILES_TABLE_NAME + " WHEN OLD.LeeroyFlixMediaScraper_type=" + ScraperStore.SCRAPER_TYPE_MOVIE +
-            " AND NEW.LeeroyFlixMediaScraper_id != OLD.LeeroyFlixMediaScraper_id " +
+            "CREATE TRIGGER scraper_movie_cleanup AFTER UPDATE OF leeroyflixmediascraper_id ON " +
+            FILES_TABLE_NAME + " WHEN OLD.leeroyflixmediascraper_type=" + ScraperStore.SCRAPER_TYPE_MOVIE +
+            " AND NEW.leeroyflixmediascraper_id != OLD.leeroyflixmediascraper_id " +
             "BEGIN " +
-            "DELETE FROM movie WHERE _id = OLD.LeeroyFlixMediaScraper_id; " +
+            "DELETE FROM movie WHERE _id = OLD.leeroyflixmediascraper_id; " +
             "END";
     private static final String CREATE_FILES_TRIGGER_SCRAPER_EPISODE_CLEANUP =
-            "CREATE TRIGGER scraper_episode_cleanup AFTER UPDATE OF LeeroyFlixMediaScraper_id ON " +
-            FILES_TABLE_NAME + " WHEN OLD.LeeroyFlixMediaScraper_type=" + ScraperStore.SCRAPER_TYPE_SHOW +
-            " AND NEW.LeeroyFlixMediaScraper_id != OLD.LeeroyFlixMediaScraper_id " +
+            "CREATE TRIGGER scraper_episode_cleanup AFTER UPDATE OF leeroyflixmediascraper_id ON " +
+            FILES_TABLE_NAME + " WHEN OLD.leeroyflixmediascraper_type=" + ScraperStore.SCRAPER_TYPE_SHOW +
+            " AND NEW.leeroyflixmediascraper_id != OLD.leeroyflixmediascraper_id " +
             "BEGIN " +
-            "DELETE FROM episode WHERE _id = OLD.LeeroyFlixMediaScraper_id; " +
+            "DELETE FROM episode WHERE _id = OLD.leeroyflixmediascraper_id; " +
             "END";
     /* VOB file detection to trigger code that hides unwanted vobs */
     // trigger to callback java VobHandler when a new vob is inserted
@@ -406,9 +406,9 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "    date_added,\n" +
                     "    date_modified,\n" +
                     "    inserted,\n" +
-                    "    coalesce( lfx__title, title ) AS title,\n" +
+                    "    coalesce( lfx_title, title ) AS title,\n" +
                     "    title AS android_title,\n" +
-                    "    lfx__title,\n" +
+                    "    lfx_title,\n" +
                     "    duration,\n" +
                     "    artist,\n" +
                     "    album,\n" +
@@ -433,8 +433,8 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "    lfx_lastTimePlayed,\n" +
                     "    lfx_playerParams,\n" +
                     "    lfx_playerSubtitleDelay,\n" +
-                    "    LeeroyFlixMediaScraper_id,\n" +
-                    "    LeeroyFlixMediaScraper_type,\n" +
+                    "    leeroyflixmediascraper_id,\n" +
+                    "    leeroyflixmediascraper_type,\n" +
                     "    lfx_numberOfSubtitleTracks,\n" +
                     "    subtitle_count_ext,\n" +
                     "    lfx_numberOfAudioTracks,\n" +
@@ -579,9 +579,9 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
 					"    date_added,\n" +
 					"    date_modified,\n" +
 					"    inserted,\n" +
-					"    coalesce( lfx__title, title ) AS title,\n" +
+					"    coalesce( lfx_title, title ) AS title,\n" +
 					"    title AS android_title,\n" +
-					"    lfx__title,\n" +
+					"    lfx_title,\n" +
 					"    duration,\n" +
 					"    artist,\n" +
 					"    album,\n" +
@@ -606,8 +606,8 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
 					"    lfx_lastTimePlayed,\n" +
 					"    lfx_playerParams,\n" +
 					"    lfx_playerSubtitleDelay,\n" +
-					"    LeeroyFlixMediaScraper_id,\n" +
-					"    LeeroyFlixMediaScraper_type,\n" +
+					"    leeroyflixmediascraper_id,\n" +
+					"    leeroyflixmediascraper_type,\n" +
 					"    lfx_numberOfSubtitleTracks,\n" +
 					"    subtitle_count_ext,\n" +
 					"    lfx_numberOfAudioTracks,\n" +
@@ -754,9 +754,9 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "    date_added,\n" +
                     "    date_modified,\n" +
                     "    inserted,\n" +
-                    "    coalesce( lfx__title, title ) AS title,\n" +
+                    "    coalesce( lfx_title, title ) AS title,\n" +
                     "    title AS android_title,\n" +
-                    "    lfx__title,\n" +
+                    "    lfx_title,\n" +
                     "    duration,\n" +
                     "    artist,\n" +
                     "    album,\n" +
@@ -781,8 +781,8 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "    lfx_lastTimePlayed,\n" +
                     "    lfx_playerParams,\n" +
                     "    lfx_playerSubtitleDelay,\n" +
-                    "    LeeroyFlixMediaScraper_id,\n" +
-                    "    LeeroyFlixMediaScraper_type,\n" +
+                    "    leeroyflixmediascraper_id,\n" +
+                    "    leeroyflixmediascraper_type,\n" +
                     "    lfx_numberOfSubtitleTracks,\n" +
                     "    subtitle_count_ext,\n" +
                     "    lfx_numberOfAudioTracks,\n" +
@@ -942,9 +942,9 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "    date_added,\n" +
                     "    date_modified,\n" +
                     "    inserted,\n" +
-                    "    coalesce( lfx__title, title ) AS title,\n" +
+                    "    coalesce( lfx_title, title ) AS title,\n" +
                     "    title AS android_title,\n" +
-                    "    lfx__title,\n" +
+                    "    lfx_title,\n" +
                     "    duration,\n" +
                     "    artist,\n" +
                     "    album,\n" +
@@ -969,8 +969,8 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "    lfx_lastTimePlayed,\n" +
                     "    lfx_playerParams,\n" +
                     "    lfx_playerSubtitleDelay,\n" +
-                    "    LeeroyFlixMediaScraper_id,\n" +
-                    "    LeeroyFlixMediaScraper_type,\n" +
+                    "    leeroyflixmediascraper_id,\n" +
+                    "    leeroyflixmediascraper_type,\n" +
                     "    lfx_numberOfSubtitleTracks,\n" +
                     "    subtitle_count_ext,\n" +
                     "    lfx_numberOfAudioTracks,\n" +

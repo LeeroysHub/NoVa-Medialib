@@ -532,7 +532,7 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
         //from db to trakt
         // get all videos watched on device not yet synced to trakt (traktResume < 0: negative traktResume means set but not yet synced)
         // filter videos that are scraped and that have been played and not synced yet
-        // SELECT _data, lfx_lastTimePlayed, lfx_traktSeen, lfx_traktLibrary, lfx_traktResume from video WHERE LeeroyFlixMediaScraper_id > 0 AND lfx_lastTimePlayed > 0 AND lfx_traktResume < 0
+        // SELECT _data, lfx_lastTimePlayed, lfx_traktSeen, lfx_traktLibrary, lfx_traktResume from video WHERE leeroyflixmediascraper_id > 0 AND lfx_lastTimePlayed > 0 AND lfx_traktResume < 0
         Cursor c1= cr.query(VideoStore.Video.Media.EXTERNAL_CONTENT_URI, VideoDbInfo.COLUMNS,
                 VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_ID + " > 0 AND " + VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_RESUME + " < 0 AND " + VideoStore.Video.VideoColumns.LEEROYFLIX_LAST_TIME_PLAYED + " > 0",
                 null, null);
