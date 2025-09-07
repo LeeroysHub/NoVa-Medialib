@@ -463,7 +463,7 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
             log.error("doScan: caught Exception failed to get MetaFile for {}", what, e);
         }
         if (f != null) {
-            log.debug("doScan path resolved to:{}", f.getUri().toString());
+            //log.debug("doScan path resolved to:{}", f.getUri().toString());
             ContentResolver cr = getContentResolver();
             WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
             if (wifiLock == null)
@@ -503,7 +503,7 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
                     if (f.isDirectory() && !path.endsWith("/"))
                         path = path + "/";
                 }
-                log.debug("doScan: path identified is {}", path);
+                //log.debug("doScan: path identified is {}", path);
                 // query database for all files we have already in that directory
                 String[] selectionArgs = new String[]{path};
                 Cursor prescan = cr.query(VideoStoreInternal.FILES_SCANNED, PrescanItem.PROJECTION, IN_FOLDER_SELECT, selectionArgs, null);
@@ -515,7 +515,7 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
                         if (upnpUri != null && !item._data.startsWith(upnpUri)) { // if this isn't in folder about to be listed, we won't need to delete it
                             item.needsDelete = false;
                         }
-                        log.trace("doScan: prescan item._data {}", item._data);
+                        //log.trace("doScan: prescan item._data {}", item._data);
                         if (item.unique_id != null && !item.unique_id.isEmpty())
                             prescanItemsMap.put(item.unique_id, item);
                         else
@@ -546,10 +546,10 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
                 int insertCount = bulkHandler.getInsertHandled();
                 int updateCount = bulkHandler.getUpdatesHandled();
                 int deleteCount = bulkHandler.getDeletesHandled();
-                log.debug("added:{} modified:{} deleted:{}", insertCount, updateCount, deleteCount);
+                //log.debug("added:{} modified:{} deleted:{}", insertCount, updateCount, deleteCount);
 
                 int newSubs = handleSubtitles(cr);
-                log.debug("added subtitles:{}", newSubs);
+                //log.debug("added subtitles:{}", newSubs);
                 // send a "done" notification
                 WrapperChannelManager.refreshChannels(this);
                 Intent intent = new Intent(LeeroyFlixMediaIntent.ACTION_VIDEO_SCANNER_SCAN_FINISHED, what);
@@ -558,7 +558,7 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
 
                 // Exit foreground mode and remove notification since scan is complete
                 stopForeground(true);
-                log.trace("doScan: added:{} modified:{} deleted:{} listed files {}", insertCount, updateCount, deleteCount, mFoundFiles);
+                //log.trace("doScan: added:{} modified:{} deleted:{} listed files {}", insertCount, updateCount, deleteCount, mFoundFiles);
                 if (traversalHadError && mRecordOnFailPreference != null) {
                     PreferenceManager.getDefaultSharedPreferences(this).edit().putInt(mRecordOnFailPreference, -1).commit();
                 }
@@ -668,7 +668,7 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
             if (LeeroyFlixMediaFile.isHiddenFile(file)) return;
             // shortcut for blacklist check for trailer/sample, full should be isBlacklisted
             if (mBlacklist.isFilenameBlacklisted(FileUtils.getName(file.getUri()))) return;
-            log.trace("FileVisitListener.onFile: File {}", file.getUri().toString());
+            //log.trace("FileVisitListener.onFile: File {}", file.getUri().toString());
             String p = file.getUri().toString();
             PrescanItem existingItem = null;
             String uniqueId = "";
@@ -682,11 +682,11 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
                 existingItem = mPrescanItemsMap.get(p);
                 uniqueId = p;
             }
-            log.trace("FileVisitListener.onFile: existingItem {}", existingItem);
+            //log.trace("FileVisitListener.onFile: existingItem {}", existingItem);
             if ((existingItem) != null) {
                 // file was already scanned, it does not need to be deleted
                 existingItem.needsDelete = false;
-                log.trace("FileVisitListener.onFile: File isn't new:{}", file.getName());
+                //log.trace("FileVisitListener.onFile: File isn't new:{}", file.getName());
                 // check if it is untouched or needs an update
                 long knownDate = existingItem.date_modified;
                 long newDate = file.lastModified() / 1000;
@@ -698,11 +698,11 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
                 }
             } else if(!mAlreadyAddedUpnpFiles.contains(uniqueId)){
                 // file is new, add as insert
-                log.trace("FileVisitListener.onFile: File is new, serverId={}, {}", mServerId, file.getUri().toString());
+                //log.trace("FileVisitListener.onFile: File is new, serverId={}, {}", mServerId, file.getUri().toString());
                 mAlreadyAddedUpnpFiles.add(uniqueId); // needed because main difference with usual indexing : a same file can be found twice in one round
                 mBulkHandler.addInsert(new FileScanInfo(file, mStorageId), mServerId);
             }
-            else log.trace("FileVisitListener.onFile: File already scanned {}", file.getName());
+            //else log.trace("FileVisitListener.onFile: File already scanned {}", file.getName());
             // nfo are now handled in autoscrapeservice
         }
 
