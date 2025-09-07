@@ -148,13 +148,18 @@ public class MediaFactory {
         return false;
     }
 
-    public static IMediaPlayer createPlayer(Context ctx, boolean forceSoftwareDecoding) {
-        if (preInit(ctx, true, forceSoftwareDecoding)) {
-            if (DBG) Log.d(TAG, "new AvosMediaPlayer");
-            return new AvosMediaPlayer();
-        } else {
+    public static IMediaPlayer createPlayer(Context ctx, boolean forceSoftwareDecoding, boolean forceAndroidDecode) {
+        if (forceAndroidDecode) {
             if (DBG) Log.d(TAG, "new AndroidMediaPlayer");
             return new AndroidMediaPlayer(ctx);
+        } else {
+            if (preInit(ctx, true, forceSoftwareDecoding)) {
+                if (DBG) Log.d(TAG, "new AvosMediaPlayer");
+                return new AvosMediaPlayer();
+            } else {
+                if (DBG) Log.d(TAG, "new AndroidMediaPlayer");
+                return new AndroidMediaPlayer(ctx);
+            }
         }
     }
 
