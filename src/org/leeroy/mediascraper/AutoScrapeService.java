@@ -578,7 +578,7 @@ public class AutoScrapeService extends Service {
                                             searchResult.setFile(fileUri);
                                             searchResult.setScraper(new MovieScraper3(AutoScrapeService.this));
                                             result = MovieScraper3.getDetails(searchResult, null);
-                                        } else searchOnline = !title.regionMatches(true, 0, "VOB_", 0, 4);
+                                        } else searchOnline = true;
                                     }
                                     if (searchOnline) {
                                         //log.trace("startScraping: searching online {}", title);
@@ -588,7 +588,7 @@ public class AutoScrapeService extends Service {
                                         //log.trace("startScraping: {} {}", ((result.tag != null) ? result.tag.getTitle() : null), ((result.tag != null) ? result.tag.getOnlineId() : null));
                                     }
 
-                                    if (result != null && result.tag != null && ID != -1 && !result.tag.getTitle().equals("(NULL)")) {
+                                    if (result != null && result.tag != null && ID != -1 && result.tag.getTitle() != null && !result.tag.getTitle().equals("(NULL)")) {
                                         result.tag.setVideoId(ID);
                                         //ugly but necessary to avoid poster delete when replacing tag
                                         if (result.tag.getDefaultPoster() != null) {
