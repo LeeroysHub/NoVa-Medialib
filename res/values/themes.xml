@@ -16,7 +16,7 @@
     </style>
 
     <style name="LeeroyFlixThemeBlueNoActionBar" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:windowBackground">@color/lightblue800</item>
+        <item name="android:windowBackground">@color/lightblue500</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="actionBarStyle">@style/Widget.Holo.ActionBar.LeeroyFlix</item>
         <item name="colorPrimary">@color/lightblue500</item>
