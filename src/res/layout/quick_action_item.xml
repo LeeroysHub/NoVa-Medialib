@@ -32,14 +32,6 @@
             android:textColor="#fff"/>
 
     </LinearLayout>
-    
-    <!-- optional bottom separator, to be shown only if this item is not the last one of the popup -->
-    <ImageView 
-            android:id="@+id/bottom_separator"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:scaleType="fitXY"
-            android:gravity="fill_horizontal"
-            app:srcCompat="@drawable/quick_action_item_separator"/>
+
 
 </LinearLayout>

@@ -295,10 +295,10 @@ public class QuickAction extends CustomPopupWindow {
 
             // Separators between items are directly included at the bottom of the layout
             // of each item so the separator of the last item must be hidden
-            if (i == actionList.size() - 1) {
-                View bottomSeparator = view.findViewById(R.id.bottom_separator);
-                bottomSeparator.setVisibility(View.GONE);
-            }
+            //if (i == actionList.size() - 1) {
+            //    View bottomSeparator = view.findViewById(R.id.bottom_separator);
+            //    bottomSeparator.setVisibility(View.GONE);
+            //}
         }
     }
 
