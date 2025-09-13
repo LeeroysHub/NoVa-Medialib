@@ -42,5 +42,4 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/popup_container"
         app:srcCompat="@drawable/quick_action_arrow_down" />
-
 </RelativeLayout>
