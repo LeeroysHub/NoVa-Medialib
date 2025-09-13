@@ -1,5 +1,9 @@
 apply plugin: 'com.android.library'
 
+// We have a full linux build, or we can use Android studio in Windows if we have all the libs built.
+def osName = System.getProperty("os.name")?.toLowerCase() ?: ""
+def isLinux = osName.contains("linux")
+    
 repositories {
     google()
     mavenCentral()
@@ -31,10 +35,6 @@ configurations {
 }
 
 android {
-    // We have a full linux build, or we can use Android studio in Windows if we have all the libs built.
-    def osName = System.getProperty("os.name")?.toLowerCase() ?: ""
-    def isLinux = osName.contains("linux")
-
     namespace = 'org.leeroy.medialib'
     compileSdk = 36
     gradle.startParameter.getTaskNames().each { task ->
