@@ -42,6 +42,7 @@
 
 
     <string name="rescrap_all_title">Rescrape all</string>
+    <string name="rescrape_title">Re-Scan</string>
 
     <!-- trakt.tv -->
     <string name="trakt_toast_syncing_error">Impossible to sync with trakt</string>
