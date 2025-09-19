@@ -30,6 +30,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.PowerManager;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.ServiceCompat;
@@ -99,6 +100,8 @@ public class AutoScrapeService extends Service {
     private static Handler mHandler = new Handler(Looper.getMainLooper());
 
     private static Context mContext;
+    
+    private static PowerManager.WakeLock mWakeLock;
 
     private static final int NOTIFICATION_ID = 4;
     private NotificationManager nm;
@@ -134,6 +137,8 @@ public class AutoScrapeService extends Service {
     public static void startService(Context context) {
         log.debug("startService in foreground");
         mContext = context.getApplicationContext();
+        
+        acquireWakeLock(context);
         ContextCompat.startForegroundService(context, new Intent(context, AutoScrapeService.class));
     }
 
@@ -181,6 +186,13 @@ public class AutoScrapeService extends Service {
         synchronized (networkScanLock) {
             return networkScanCount;
         }
+    }
+    
+    public static void acquireWakeLock(Context context) {
+        //Keep screen on for scraping.
+        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "LeeroyFlixScraper::WakeLock");
+        mWakeLock.acquire();
     }
 
     public void cleanup() {
@@ -766,6 +778,8 @@ public class AutoScrapeService extends Service {
     public void stopService() {
         log.debug("stopService");
         stopForeground(true);
+        if(mWakeLock!=null&&mWakeLock.isHeld())
+            mWakeLock.release();
     }
 
     private void saveDirtyState(boolean dirtyState) {
