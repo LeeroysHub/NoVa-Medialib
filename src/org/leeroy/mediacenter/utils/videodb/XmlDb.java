@@ -69,7 +69,7 @@ public class XmlDb implements Callback {
     private static final int MSG_PARSE_OK = 1;
     private static final int PARSING_TIMEOUT = 7; // Time in seconds
     public static final String FILE_EXTENSION = "xml";
-    public static final String FILE_NAME = ".leeroyflix.resume."+FILE_EXTENSION;
+    public static final String FILE_NAME = ".LeeroyFlix.resume."+FILE_EXTENSION;
     private final Handler mUiThreadHandler = new Handler(Looper.getMainLooper(), this);
     private static final Map<String, WriteTask> sRemoteWriteTasks = new HashMap<String, WriteTask>();
     private static final Map<String, ParseTask> sRemoteParseTasks = new HashMap<String, ParseTask>();
