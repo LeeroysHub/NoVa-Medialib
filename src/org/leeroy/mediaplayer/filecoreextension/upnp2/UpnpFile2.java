@@ -175,8 +175,7 @@ public class UpnpFile2 extends MetaFile2 {
     }
 
     public String getUniqueHash(){
-        return String.format("%016x", getUri().getHost().hashCode()+length() +getName().hashCode());
-
+        return "LF" + String.format("%018x", Math.abs(getUri().hashCode()) + length() * Math.abs(getName().hashCode()));
     }
 
     @Override
