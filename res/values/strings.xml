@@ -18,8 +18,8 @@
     <string translatable="false" name="durationformatlong"><xliff:g id="format">%1$d:%3$02d:%5$02d</xliff:g></string>
 
     <!-- Notification Message when Indexing Network -->
-    <string name="network_scan_msg">Indexing Mediafiles</string>
-    <string name="network_unscan_msg">Removing mediafiles from library</string>
+    <string name="network_scan_msg">Scanning for new Media</string>
+    <string name="network_unscan_msg">Removing old Media</string>
 
     <!-- .nfo export options -->
     <string name="nfo_export_category">Mediainformation export</string>
@@ -157,7 +157,7 @@
     <!-- Audio Search displays this label when displaying an artist. Copy from packages/providers/MediaProvider/res -->
     <string name="artist_label">Artist</string>
 
-    <string name="scraping_in_progress">Scanning Media Library</string>
-    <string name="remaining_videos_to_process">Files left to scan: </string>
+    <string name="scraping_in_progress">Downloading Media Information</string>
+    <string name="remaining_videos_to_process">Files remaining: </string>
     <string name="video_store_import">Scanning Device Storage</string>
 </resources>
