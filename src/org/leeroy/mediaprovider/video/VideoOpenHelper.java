@@ -206,7 +206,7 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
 
     // indexes for network scanner performance optimization
     private static final String CREATE_FILES_SCANNED_IDX_UNIQUE_ID =
-            "CREATE INDEX IF NOT EXISTS idx_archos_unique_id ON " + FILES_SCANNED_TABLE_NAME + "(archos_unique_id)";
+            "CREATE INDEX IF NOT EXISTS idx_leeroyflix_unique_id ON " + FILES_SCANNED_TABLE_NAME + "(lfx_unique_id)";
 
     private static final String CREATE_FILES_SCANNED_IDX_DATA =
             "CREATE INDEX IF NOT EXISTS idx_data_prefix ON " + FILES_SCANNED_TABLE_NAME + "(_data)";

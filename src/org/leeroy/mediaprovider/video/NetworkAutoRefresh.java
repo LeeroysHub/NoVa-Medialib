@@ -160,15 +160,15 @@ public class NetworkAutoRefresh extends BroadcastReceiver implements DefaultLife
                         refreshIntent.putExtra(NetworkScannerServiceVideo.RECORD_END_OF_SCAN_PREFERENCE, AUTO_RESCAN_LAST_SCAN);
                         refreshIntent.setPackage(LeeroyFlixUtils.getGlobalContext().getPackageName());
                         context.sendBroadcast(refreshIntent);
-                        triggeredScan = true;
-                        scanCount++;
-                        
-                        // Increment the network scan counter for each folder
-                        AutoScrapeService.incrementNetworkScanCount();
-                        //log.debug("onReceive: incremented network scan count for {}", uri);
                     }, (int) 100 + (scanCount * 2000L));
                 }
-
+                
+                // Increment the network scan counter for each folder
+                triggeredScan = true;
+                scanCount++;
+                //log.debug("onReceive: incremented network scan count for {}", uri);
+                AutoScrapeService.incrementNetworkScanCount();
+                        
                 // Start AutoScrapeService after network scanning to scrape newly found videos
                 if (triggeredScan && AutoScrapeService.isEnable(context)) {
                     log.debug("onReceive: starting AutoScrapeService after network scan, total folders: {}", scanCount);

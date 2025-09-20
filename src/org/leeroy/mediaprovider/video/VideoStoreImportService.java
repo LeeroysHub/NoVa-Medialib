@@ -513,9 +513,9 @@ public class VideoStoreImportService extends Service implements Handler.Callback
 
         // Explicitly start AutoScrapeService after scan completes to ensure scraping happens
         // This is needed because the ContentObserver may not reliably trigger during batch inserts
-        if (com.archos.mediascraper.AutoScrapeService.isEnable(this)) {
+        if (org.leeroy.mediascraper.AutoScrapeService.isEnable(this)) {
             log.debug("doImport: starting AutoScrapeService after scan completion");
-            com.archos.mediascraper.AutoScrapeService.startService(this);
+            org.leeroy.mediascraper.AutoScrapeService.startService(this);
         }
 
         // Exit foreground mode now that import is complete
