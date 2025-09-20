@@ -109,6 +109,7 @@ public class LocalImages {
     private static final String[] MATCH_LIST_DYNAMIC = {
         NfoParser.POSTER_EXTENSION,
         "-poster.jpg",
+        ".cover.jpg",
         "-poster.png",
         ".tbn",
         ".png",
@@ -119,6 +120,7 @@ public class LocalImages {
     private static final String[] MATCH_LIST_STATIC = {
         "poster.png",
         "poster.jpg",
+        "cover.jpg",
         "folder.tbn",
         "folder.jpg",
     };
@@ -164,6 +166,7 @@ public class LocalImages {
 
     private static final String[] SHOW_POSTERS = {
         "poster.jpg",
+        "cover.jpg",
         "poster.png",
         "season-all.tbn",
         "folder.jpg",
@@ -259,8 +262,8 @@ public class LocalImages {
     /** %filename% + this */
     private static final String[] MATCH_LIST_BD_DYNAMIC = {
         NfoParser.BACKDROP_EXTENSION,
-        "-fanart.jpg",
-        "-fanart.png",
+        ".fanart.jpg",
+        ".fanart.png",
     };
 
     /** this as filename */
