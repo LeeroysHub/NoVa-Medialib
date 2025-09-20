@@ -632,9 +632,7 @@ public class AutoScrapeService extends Service {
                                         notScraped = false;
                                         sNumberOfFilesScraped++;
                                         noScrapeError = true;
-                                        if (tags.getPosters() != null)
-                                            //log.trace("startScraping: posters : {}", tags.getPosters().size());
-                                        else if (tags.getPosters() == null && tags.getDefaultPoster() == null &&
+                                        if (tags.getPosters() == null && tags.getDefaultPoster() == null &&
                                                 (!(tags instanceof EpisodeTags) || ((EpisodeTags) tags).getShowTags().getPosters() == null)) {//special case for episodes : check show
                                             if (tags.getTitle() != null && !tags.getTitle().isEmpty()) { //if a title is specified in nfo, use it to scrap file
                                                 scrapUri = Uri.parse("/" + tags.getTitle() + ".mp4");
@@ -651,7 +649,7 @@ public class AutoScrapeService extends Service {
                                 if (notScraped && noScrapeError) { //look for online details
                                     //log.trace("startScraping: NFO NOT found");
                                     ScrapeDetailResult result = null;
-                                    boolean searchOnline = !shouldRescrapAll;
+                                    boolean searchOnline = true;
                                     if (shouldRescrapAll) {
                                         //log.trace("startScraping: rescraping all");
                                         long videoID = cursor.getLong(cursor.getColumnIndex(VideoStore.Video.VideoColumns.SCRAPER_VIDEO_ONLINE_ID));
@@ -674,15 +672,15 @@ public class AutoScrapeService extends Service {
                                             searchResult.setFile(fileUri);
                                             searchResult.setScraper(new MovieScraper3(AutoScrapeService.this));
                                             result = MovieScraper3.getDetails(searchResult, null);
-                                        } else searchOnline = !searchOnline = !title.regionMatches(true, 0, "VOB_", 0, 4);
+                                        } 
                                     }
-                                    if (searchOnline) {
-                                        //log.trace("startScraping: searching online {}", title);
-                                        SearchInfo searchInfo = SearchPreprocessor.instance().parseFileBased(fileUri, scrapUri);
-                                        Scraper scraper = new Scraper(AutoScrapeService.this);
-                                        result = scraper.getAutoDetails(searchInfo);
-                                        //log.trace("startScraping: {} {}", ((result.tag != null) ? result.tag.getTitle() : null), ((result.tag != null) ? result.tag.getOnlineId() : null));
-                                    }
+                                    
+                                    //log.trace("startScraping: searching online " + title);
+                                    SearchInfo searchInfo = SearchPreprocessor.instance().parseFileBased(fileUri, scrapUri);
+                                    Scraper scraper = new Scraper(AutoScrapeService.this);
+                                    result = scraper.getAutoDetails(searchInfo);                //SEARCH FOR MOVIE!
+                                    //log.trace("startScraping: " + ((result.tag != null) ? result.tag.getTitle() : null) + " " + ((result.tag != null) ? result.tag.getOnlineId() : null));
+                            
 
                                     //Don't get movies with the word (NULL), this means (NULL) movie wont scrape automatically by who cares?
                                     if (result != null && result.tag != null && ID != -1 && result.tag.getTitle() != null && !result.tag.getTitle().equals("(NULL)")) {
