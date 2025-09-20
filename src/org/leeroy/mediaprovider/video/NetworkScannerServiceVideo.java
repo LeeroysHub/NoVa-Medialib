@@ -523,7 +523,7 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
                     }
                     prescan.close();
                 }
-
+              
                 boolean nfoScanEnabled = NfoParser.isNetworkNfoParseEnabled(this);
                 BulkOperationHandler bulkHandler = new BulkOperationHandler(nfoScanEnabled, this);
 
@@ -532,13 +532,14 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
                 // ! this is the actual scanning process !
                 // extract server id string / number
                 // Note that extractSmbServer is not smb specific...
-                String server = extractSmbServer(f.getUri());
-                long serverId = getLightIndexServerId(server);
+                final String server = extractSmbServer(f.getUri());
+                final long serverId = getLightIndexServerId(server);
                 FileVisitListener fileVisitListener = new FileVisitListener(
                         mBlacklist, prescanItemsMap, nfoScanEnabled, bulkHandler, serverId);
 
                 FileVisitor.visit(f, RECURSION_LIMIT, fileVisitListener);
                 boolean traversalHadError = fileVisitListener.hadListingError();
+                                  
                 // once all files where visited we have inserted, updated or deleted files in the db.
                 // Nfo has also been processed
                 List<MetaFile2> lastPlayedDbs = fileVisitListener.getLastPlayedDbs();
@@ -552,9 +553,6 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
                 //log.debug("added subtitles:{}", newSubs);
                 // send a "done" notification
                 WrapperChannelManager.refreshChannels(this);
-                Intent intent = new Intent(LeeroyFlixMediaIntent.ACTION_VIDEO_SCANNER_SCAN_FINISHED, what);
-                intent.setPackage(LeeroyFlixUtils.getGlobalContext().getPackageName());
-                sendBroadcast(intent);
 
                 // Exit foreground mode and remove notification since scan is complete
                 stopForeground(true);

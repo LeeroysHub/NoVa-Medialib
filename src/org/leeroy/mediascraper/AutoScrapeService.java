@@ -632,9 +632,7 @@ public class AutoScrapeService extends Service {
                                         notScraped = false;
                                         sNumberOfFilesScraped++;
                                         noScrapeError = true;
-                                        if (tags.getPosters() != null)
-                                            //log.trace("startScraping: posters : {}", tags.getPosters().size());
-                                        else if (tags.getPosters() == null && tags.getDefaultPoster() == null &&
+                                        if (tags.getPosters() == null && tags.getDefaultPoster() == null &&
                                                 (!(tags instanceof EpisodeTags) || ((EpisodeTags) tags).getShowTags().getPosters() == null)) {//special case for episodes : check show
                                             if (tags.getTitle() != null && !tags.getTitle().isEmpty()) { //if a title is specified in nfo, use it to scrap file
                                                 scrapUri = Uri.parse("/" + tags.getTitle() + ".mp4");
