@@ -128,8 +128,7 @@ public class HttpFile2 extends MetaFile2 {
     }
 
     public String getUniqueHash(){
-        return String.format("%016x", getUri().getHost().hashCode()+length() +getName().hashCode());
-
+        return String.format("%016x", Math.abs(getUri().hashCode()) + length() * Math.abs(getName().hashCode()));
     }
 
     @Override
