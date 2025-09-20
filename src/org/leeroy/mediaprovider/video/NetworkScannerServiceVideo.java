@@ -140,7 +140,7 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
             serviceIntent.setAction(action);
             serviceIntent.setData(data);
             // Set identifier to avoid StrictMode UnsafeIntentLaunchViolation
-            if (data != null && Build.VERSION.SDK_INT >= 29)  {
+            if (data != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 serviceIntent.setIdentifier(data.toString());
             }
             if(broadcast.getExtras()!=null)
@@ -523,7 +523,7 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
                     }
                     prescan.close();
                 }
-
+              
                 boolean nfoScanEnabled = NfoParser.isNetworkNfoParseEnabled(this);
                 BulkOperationHandler bulkHandler = new BulkOperationHandler(nfoScanEnabled, this);
 
@@ -532,13 +532,14 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
                 // ! this is the actual scanning process !
                 // extract server id string / number
                 // Note that extractSmbServer is not smb specific...
-                String server = extractSmbServer(f.getUri());
-                long serverId = getLightIndexServerId(server);
+                final String server = extractSmbServer(f.getUri());
+                final long serverId = getLightIndexServerId(server);
                 FileVisitListener fileVisitListener = new FileVisitListener(
                         mBlacklist, prescanItemsMap, nfoScanEnabled, bulkHandler, serverId);
 
                 FileVisitor.visit(f, RECURSION_LIMIT, fileVisitListener);
                 boolean traversalHadError = fileVisitListener.hadListingError();
+                                  
                 // once all files where visited we have inserted, updated or deleted files in the db.
                 // Nfo has also been processed
                 List<MetaFile2> lastPlayedDbs = fileVisitListener.getLastPlayedDbs();
@@ -676,7 +677,7 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
             if(file instanceof UpnpFile2){
                 log.debug("FileVisitListener.onFile: File is upnp {}", ((UpnpFile2)file).getUniqueHash());
                 uniqueId = ((UpnpFile2)file).getUniqueHash();
-                existingItem = mPrescanItemsMap.get(((UpnpFile2)file).getUniqueHash());
+                existingItem = mPrescanItemsMap.get(uniqueId);
             }
             else{
                 existingItem = mPrescanItemsMap.get(p);
@@ -839,7 +840,7 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
         public void addInsert(FileScanInfo insert, long serverId) {
             log.debug("addInsert: adding in VideoStore and calling executor {} for serverId={}", insert._data, serverId);
             ContentValues item = insert.toContentValues();
-            item.put(VideoStore.Files.FileColumns.LEEROYFLIX_SMB_SERVER, Long.valueOf(serverId));
+            item.put(VideoStore.Files.FileColumns.LEEROYFLIX_SMB_SERVER, serverId);
             mInsertExecutor.add(item);
         }
 
@@ -1119,7 +1120,7 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
         public int format;
         public long parent;
         public int media_type;
-        public int storage_id;
+        public long storage_id;
         public int video_stereo;
         public int video_definition;
         public String videoFormat;
@@ -1129,7 +1130,7 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
         private static final int FORMAT_UNDEFINED = 0x3000;
         private static final int FORMAT_ASSOCIATION = 0x3001;
 
-        public FileScanInfo(MetaFile2 f, int storageId) {
+        public FileScanInfo(MetaFile2 f, long storageId) {
             if (f == null ) {
                 log.error("Not exists / null:{}", f);
                 return;
