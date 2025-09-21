@@ -214,9 +214,13 @@ public class RemoteStateService extends Service implements UpnpServiceManager.Li
                         }
                     } else if(server.startsWith("upnp")) {
                         mUpnpId.put(server,new Pair<>(id, active));
+                        
+                        //We are going to add them to the list all the time now.
+                        if (updateServerDb(id, cr, active, 1, now))
+                            mServerDbUpdated = true;
                     }
                 }
-                if(mUpnpId != null && !mUpnpId.isEmpty() &&hasLocalConnection){
+                if(mUpnpId != null && !mUpnpId.isEmpty() && hasLocalConnection){        //LOCAL SCAN ONLY
                     if(!mUpnpDiscoveryStarted) {
                         log.debug("handleDb: start upnp discovery");
                         //we start upnp discovery but we don't want to add the listener twice
