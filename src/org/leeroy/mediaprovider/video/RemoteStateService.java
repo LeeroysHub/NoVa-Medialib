@@ -176,7 +176,7 @@ public class RemoteStateService extends Service implements UpnpServiceManager.Li
                         if (updateServerDb(id, cr, active, 1, now))
                             mServerDbUpdated = true;
                     } else if(!server.startsWith("upnp")) { // SMB goes there even if on cellular only
-                        if (hasLocalConnection) { // perform the check of the server existing only if hasLocalConnection
+                        if (hasConnection) { // perform the check of the server existing only if hasLocalConnection
                             Uri serverUri = Uri.parse(server + "/");
                             final FileEditor serverFile;
                             // always use jcifs-ng to check if server exists
@@ -232,9 +232,10 @@ public class RemoteStateService extends Service implements UpnpServiceManager.Li
                     } else if(server.startsWith("upnp")) {
                         mUpnpId.put(server,new Pair<>(id, active));
                         
+                        //THIS WOULD MAKE THE UPNP FILES AVAILABLE, IF WE CAN PLAY THEM!
                         //We are going to add them to the list all the time now.
-                        if (updateServerDb(id, cr, active, 1, now))
-                            mServerDbUpdated = true;
+                        //if (updateServerDb(id, cr, active, 1, now))
+                        //    mServerDbUpdated = true;
                     }
                 }
                 if(mUpnpId != null && !mUpnpId.isEmpty() && hasLocalConnection){        //LOCAL SCAN ONLY
