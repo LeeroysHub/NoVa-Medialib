@@ -36,7 +36,8 @@ public class MediaFactory {
     private static final String KEY_DEC_CHOICE = "dec_choice";
     private static final String KEY_AUDIO_INTERFACE_CHOICE = "audio_interface_choice";
     private static final String KEY_CODEPAGE = "codepage";
-
+    //private static final String KEY_LEEROYS_OVERRRIDE = "leeroys_override";
+    
     private static final Method AUDIO_MANAGER_GET_PROPERTY_METHOD;
     private static final String PROPERTY_OUTPUT_SAMPLE_RATE = "android.media.property.OUTPUT_SAMPLE_RATE";
 
@@ -87,29 +88,34 @@ public class MediaFactory {
         return cp == null ? DEFAULT_CODEPAGE : cp.intValue();
     }
 
-    private static boolean preInit(Context ctx, boolean isPlayer, boolean forceSoftwareDecoding) {
+    private static boolean preInit(Context ctx, boolean isPlayer, boolean forceAndroidDecoding) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
         String subtitlePath = MediaUtils.getSubsDir(ctx).getPath()+"/";
         int decoder, codepage = 0;
         int audio_interface = 0;
 
+        //Get leeroysOverride from Preferences, MUJST BE BEFORE THE DECODE SELECTIO BELOW.
+        //forceAndroidDecoding &= prefs.getBoolean(KEY_LEEROYS_OVERRRIDE, false);
+
+        //Get decoder from preferences
         String str = prefs.getString(KEY_DEC_CHOICE, null);
-
-        if (str != null&&!forceSoftwareDecoding) {
+        if (str != null) {
             decoder = Integer.parseInt(str);
-            if (decoder == -1) {
-                // user wants Android MediaPlayer for playback
-                if (isPlayer) {
+            if ( decoder == -1 ) forceAndroidDecoding = true;
+        }
 
-                    // so return false here in order to fallback to android player
-                    return false;
-                } else {
-                    // but set default decoder for media retriver
-                    decoder = LibAvos.MP_DECODER_ANY;
-                }
+        //Using Android Media Player or FFMPeg?
+        if (forceAndroidDecoding) {
+            if (isPlayer) {
+                // so return false here in order to fallback to android player
+                return false;
+            } else {
+                // but set default decoder for media retriver
+                decoder = LibAvos.MP_DECODER_ANY;
             }
-        } else {
-            decoder = (prefs.getBoolean(KEY_FORCE_SW, false)||forceSoftwareDecoding) ? LibAvos.MP_DECODER_SW : LibAvos.MP_DECODER_ANY;
+        }  else {
+            //Not using Android, use Software if in prefs but we are using ffmpeg now.
+            decoder = (prefs.getBoolean(KEY_FORCE_SW, false)) ? LibAvos.MP_DECODER_SW : LibAvos.MP_DECODER_ANY;
         }
 
         str = prefs.getString(KEY_AUDIO_INTERFACE_CHOICE, null);
@@ -148,13 +154,13 @@ public class MediaFactory {
         return false;
     }
 
-    public static IMediaPlayer createPlayer(Context ctx, boolean forceSoftwareDecoding) {
+    public static IMediaPlayer createPlayer(Context ctx, boolean forceAndroidDecoding) {
         //, boolean forceAndroidDecode
         //if (forceAndroidDecode) {
         //    if (DBG) Log.d(TAG, "new AndroidMediaPlayer");
         //    return new AndroidMediaPlayer(ctx);
         //} else {
-            if (preInit(ctx, true, forceSoftwareDecoding)) {
+            if (preInit(ctx, true, forceAndroidDecoding)) {
                 if (DBG) Log.d(TAG, "new AvosMediaPlayer");
                 return new AvosMediaPlayer();
             } else {
