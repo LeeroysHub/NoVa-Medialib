@@ -195,6 +195,15 @@ public class AutoScrapeService extends Service {
         mWakeLock.acquire();
     }
 
+
+    public static void startServiceAfterNetworkScan(Context context) {
+        log.debug("startServiceAfterNetworkScan - forced start after network scan");
+        mContext = context;
+        Intent intent = new Intent(context, AutoScrapeService.class);
+        intent.putExtra("FORCE_AFTER_NETWORK_SCAN", true);
+        ContextCompat.startForegroundService(context, intent);
+    }
+
     public void cleanup() {
         log.debug("cleanup");
         if (mThread != null && mThread.isAlive()) {
