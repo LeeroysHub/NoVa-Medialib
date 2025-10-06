@@ -18,7 +18,7 @@
     <string translatable="false" name="durationformatlong"><xliff:g id="format">%1$d:%3$02d:%5$02d</xliff:g></string>
 
     <!-- Notification Message when Indexing Network -->
-    <string name="network_scan_msg">Indexing Mediafiles</string>
+    <string name="network_scan_msg">Scanning for new Media</string>
     <string name="network_unscan_msg">Removing mediafiles from library</string>
 
     <!-- .nfo export options -->
@@ -42,7 +42,7 @@
 
 
     <string name="rescrap_all_title">Rescrape all</string>
-    <string name="rescrape_title">Re-Scan</string>
+    <string name="rescrape_title">Re-scan</string>
 
     <!-- trakt.tv -->
     <string name="trakt_toast_syncing_error">Impossible to sync with trakt</string>
