@@ -42,7 +42,7 @@
 
 
     <string name="rescrap_all_title">Rescrape all</string>
-    <string name="rescrape_title">Re-Scan</string>
+    <string name="rescrape_title">Re-scan</string>
 
     <!-- trakt.tv -->
     <string name="trakt_toast_syncing_error">Impossible to sync with trakt</string>
@@ -158,7 +158,7 @@
     <!-- Audio Search displays this label when displaying an artist. Copy from packages/providers/MediaProvider/res -->
     <string name="artist_label">Artist</string>
 
-    <string name="scraping_in_progress">Downloading Media Information</string>
+    <string name="scraping_in_progress">Downloading Covers</string>
     <string name="remaining_videos_to_process">Files remaining: </string>
-    <string name="video_store_import">Scanning Device Storage</string>
+    <string name="video_store_import">Scanning Device</string>
 </resources>
