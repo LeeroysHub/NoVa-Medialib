@@ -49,10 +49,10 @@ public class NfoParser {
     private static final Logger log = LoggerFactory.getLogger(NfoParser.class);
 
     /** filename w/o extension + this */
-    public static final String CUSTOM_NFO_EXTENSION = ".LeeroyFlix.nfo";
+    public static final String CUSTOM_NFO_EXTENSION = ".nfo";
     /** Show title + this */
-    public static final String CUSTOM_SHOW_NFO_EXTENSION = "-tvshow.LeeroyFlix.nfo";
-    public static final String CUSTOM_SEASON_POSTER_FORMAT = "%s-season%02d.LeeroyFlix.jpg";
+    public static final String CUSTOM_SHOW_NFO_EXTENSION = ".tvshow.nfo";
+    public static final String CUSTOM_SEASON_POSTER_FORMAT = "cover.jpg";
     public static String getCustomSeasonPosterName(String showTitle, int season) {
         String titleEncoded = StringUtils.fileSystemEncode(showTitle);
         if (titleEncoded != null)
@@ -61,10 +61,10 @@ public class NfoParser {
     }
 
     /** showtitle / filename + this */
-    public static final String BACKDROP_EXTENSION = "-fanart.LeeroyFlix.jpg";
+    public static final String BACKDROP_EXTENSION = ".fanart.jpg";
 
     /** showtitle / filename + this */
-    public static final String POSTER_EXTENSION = "-poster.LeeroyFlix.jpg";
+    public static final String POSTER_EXTENSION = ".cover.jpg";
     public static String getCustomShowPosterName(String showTitle) {
         String titleEncoded = StringUtils.fileSystemEncode(showTitle);
         if (titleEncoded != null)
