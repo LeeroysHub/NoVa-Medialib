@@ -145,7 +145,7 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
             }
             if(broadcast.getExtras()!=null)
                 serviceIntent.putExtras(broadcast.getExtras()); //in case we have an extra... such as "recordLogExtra"
-            int pendingScans = com.archos.mediascraper.AutoScrapeService.getNetworkScanCount();
+            int pendingScans = org.leeroy.mediascraper.AutoScrapeService.getNetworkScanCount();
             if (isForeground || pendingScans > 0) {
                 log.debug("startIfHandles: starting service (isForeground={}, pendingScans={})", isForeground, pendingScans);
                 ContextCompat.startForegroundService(context, serviceIntent);
@@ -316,7 +316,7 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
                 log.debug("handleMessage: MESSAGE_KILL");
                 if (msg.arg1 != -1) {
                     // Check if there are more pending scans
-                    int remainingScans = com.archos.mediascraper.AutoScrapeService.getNetworkScanCount();
+                    int remainingScans = org.leeroy.mediascraper.AutoScrapeService.getNetworkScanCount();
                     log.debug("handleMessage: MESSAGE_KILL, remainingScans={}, isForeground={}", remainingScans, isForeground);
 
                     // If app is in background and no more pending scans, stop the service
@@ -339,7 +339,7 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
                 uri = (Uri) msg.obj;
                 key = uri.toString();
                 log.debug("handleMessage: MESSAGE_DO_SCAN {}", uri);
-                int pendingScans = com.archos.mediascraper.AutoScrapeService.getNetworkScanCount();
+                int pendingScans = org.leeroy.mediascraper.AutoScrapeService.getNetworkScanCount();
                 if (isForeground || pendingScans > 0) {
                     log.debug("handleMessage: processing scan (isForeground={}, pendingScans={})", isForeground, pendingScans);
                     mScanThread = new Thread(() -> {
@@ -571,17 +571,17 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
         }
 
         // Check if this is part of a multi-folder scan BEFORE decrementing
-        int scanCountBefore = com.archos.mediascraper.AutoScrapeService.getNetworkScanCount();
+        int scanCountBefore = org.leeroy.mediascraper.AutoScrapeService.getNetworkScanCount();
         boolean isMultiFolderScan = scanCountBefore > 0;
 
         // Decrement network scan counter for both success and failure paths
-        com.archos.mediascraper.AutoScrapeService.decrementNetworkScanCount();
+        org.leeroy.mediascraper.AutoScrapeService.decrementNetworkScanCount();
         log.debug("doScan: decremented network scan count, was multi-folder: {}", isMultiFolderScan);
 
         // If this was a standalone scan (not part of multi-folder), start AutoScrapeService
-        if (!isMultiFolderScan && f != null && com.archos.mediascraper.AutoScrapeService.isEnable(this)) {
+        if (!isMultiFolderScan && f != null && org.leeroy.mediascraper.AutoScrapeService.isEnable(this)) {
             log.debug("doScan: standalone scan completed, starting AutoScrapeService");
-            com.archos.mediascraper.AutoScrapeService.startService(this);
+            org.leeroy.mediascraper.AutoScrapeService.startService(this);
         }
 
         if (log.isDebugEnabled()) {
@@ -1292,7 +1292,7 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
     @Override
     public void onStop(LifecycleOwner owner) {
         // App in background
-        int pendingScans = com.archos.mediascraper.AutoScrapeService.getNetworkScanCount();
+        int pendingScans = org.leeroy.mediascraper.AutoScrapeService.getNetworkScanCount();
         log.debug("onStop: LifecycleOwner app in background, pendingScans={}", pendingScans);
         isForeground = false;
         // Only stop service if there are no pending network scans
