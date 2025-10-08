@@ -602,7 +602,7 @@ public class AutoScrapeService extends Service {
                                 if (sTotalNumberOfFilesRemainingToProcess > 0)
                                     nm.notify(NOTIFICATION_ID, nb.setContentText(getString(R.string.remaining_videos_to_process) + " " + sTotalNumberOfFilesRemainingToProcess).build());
 
-                                if (NfoParser.isNetworkNfoParseEnabled(AutoScrapeService.this)) {
+                                if (NfoParser.isNetworkNfoParseEnabled(AutoScrapeService.this) && !fileUri.toString().toLowerCase().startsWith("upnp")) {
 
                                     BaseTags tags = NfoParser.getTagForFile(fileUri, AutoScrapeService.this);
                                     if (tags != null) {
