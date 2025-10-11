@@ -57,8 +57,8 @@ public class SearchMovie2 {
         log.debug("search: quering tmdb for {} year {} in {}", query, annee, language);
         try {
             // by default no adult search
-            response = searchService.movie(query, null, language,
-                    null, adultScrape, null, annee).execute();
+            response = searchService.movie(query, 1, language,
+                    language, adultScrape, annee, annee).execute();
             // Check https://developer.themoviedb.org/docs/errors
             switch (response.code()) {
                 case 401 -> { // auth issue
