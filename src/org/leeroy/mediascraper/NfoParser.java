@@ -49,7 +49,7 @@ public class NfoParser {
     private static final Logger log = LoggerFactory.getLogger(NfoParser.class);
 
     /** filename w/o extension + this */
-    public static final String CUSTOM_NFO_EXTENSION = "LeeroyFlix.nfo";
+    public static final String CUSTOM_NFO_EXTENSION = ".LeeroyFlix.nfo";
     /** Show title + this */
     public static final String CUSTOM_SHOW_NFO_EXTENSION = ".LeeroyFlix.tvshow.nfo";
     public static final String CUSTOM_SEASON_POSTER_FORMAT = "cover.jpg";
