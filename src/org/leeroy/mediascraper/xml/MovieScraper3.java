@@ -101,9 +101,10 @@ public class MovieScraper3 extends BaseScraper2 {
         log.debug("movie search:{} year:{} language:{}", searchInfo.getName(), searchInfo.getYear(), language);
         
         //Check for UPNP and SMB differences, make sure we have a valid title.
-        String searchQuery = searchInfo.getFile() != null ? searchInfo.getFile().toString() : searchInfo.getName();
+        log.debug("movie search:" + searchInfo.getName() + " year:" + searchInfo.getYear() + " language:" + language);
+        String searchQuery = searchInfo.getSearchSuggestion().contains("null") ? searchInfo.getName() : searchInfo.getSearchSuggestion();
         if (searchQuery.toLowerCase().contains("null")) {
-            searchQuery = searchInfo.getName();
+            searchQuery = searchInfo.getFile().toString();
         }
         SearchMovieResult searchResult = SearchMovie2.search(searchQuery, language, searchInfo.getYear(), maxItems, searchService, adultScrape);
         // TODO: this triggers scrape for all search results, is this intended?
