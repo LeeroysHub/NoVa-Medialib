@@ -565,7 +565,7 @@ public class AutoScrapeService extends Service {
                                 if ((notScraped && noScrapeError) || shouldRescrapAll) { //look for online details
                                     //log.trace("startScraping: NFO NOT found");
                                     ScrapeDetailResult result = null;
-                                    boolean searchOnline = notScraped || shouldRescrapAll;
+                                    boolean searchOnline = true;
                                     if (shouldRescrapAll) {
                                         //log.trace("startScraping: rescraping all");
                                         long videoID = cursor.getLong(cursor.getColumnIndex(VideoStore.Video.VideoColumns.SCRAPER_VIDEO_ONLINE_ID));
@@ -588,15 +588,15 @@ public class AutoScrapeService extends Service {
                                             searchResult.setFile(fileUri);
                                             searchResult.setScraper(new MovieScraper3(AutoScrapeService.this));
                                             result = MovieScraper3.getDetails(searchResult, null);
-                                        } else searchOnline = true;
+                                        } 
                                     }
-                                    if (searchOnline) {
-                                        //log.trace("startScraping: searching online {}", title);
-                                        SearchInfo searchInfo = SearchPreprocessor.instance().parseFileBased(fileUri, scrapUri);
-                                        Scraper scraper = new Scraper(AutoScrapeService.this);
-                                        result = scraper.getAutoDetails(searchInfo);                //SEARCH FOR MOVIE!
-                                        //log.trace("startScraping: {} {}", ((result.tag != null) ? result.tag.getTitle() : null), ((result.tag != null) ? result.tag.getOnlineId() : null));
-                                    }
+                                    
+                                    //log.trace("startScraping: searching online " + title);
+                                    SearchInfo searchInfo = SearchPreprocessor.instance().parseFileBased(fileUri, scrapUri);
+                                    Scraper scraper = new Scraper(AutoScrapeService.this);
+                                    result = scraper.getAutoDetails(searchInfo);                //SEARCH FOR MOVIE!
+                                    //log.trace("startScraping: " + ((result.tag != null) ? result.tag.getTitle() : null) + " " + ((result.tag != null) ? result.tag.getOnlineId() : null));
+                            
 
                                     if (result != null && result.tag != null && ID != -1 && result.tag.getTitle() != null && !result.tag.getTitle().equals("(NULL)")) {
                                         result.tag.setVideoId(ID);
