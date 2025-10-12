@@ -48,6 +48,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import okhttp3.Cache;
 
