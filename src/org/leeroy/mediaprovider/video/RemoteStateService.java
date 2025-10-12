@@ -97,6 +97,7 @@ public class RemoteStateService extends Service implements UpnpServiceManager.Li
     @Override
     public void onDestroy() {
         log.debug("onDestroy");
+        ProcessLifecycleOwner.get().getLifecycle().removeObserver(this);
         UpnpServiceManager.startServiceIfNeeded(this).removeListener(this);
         if (mUpnpId != null) {
             mUpnpId.clear();
