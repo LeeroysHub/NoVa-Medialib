@@ -106,7 +106,23 @@ public class MovieScraper3 extends BaseScraper2 {
         if (searchQuery.toLowerCase().contains("null")) {
             searchQuery = searchInfo.getFile().toString();
         }
-        SearchMovieResult searchResult = SearchMovie2.search(searchQuery, language, searchInfo.getYear(), maxItems, searchService, adultScrape);
+
+        // Extract 4-digit year and trim string (If its still there.)
+        Pattern yearPattern = Pattern.compile("\\b(\\d{4})\\b");
+        Matcher matcher = yearPattern.matcher(searchQuery);
+        String year = null;
+        if (matcher.find()) {
+            year = matcher.group(1); // Extracted year
+            int yearIndex = matcher.start(); // Index where year starts
+            searchQuery = searchQuery.substring(0, yearIndex).trim(); // Keep string up to year
+            // You can use 'year' variable as needed
+        } else {
+            year = searchInfo.getYear();
+        }
+
+        //SEARCH TMDB FOR THE MOVIE!
+        SearchMovieResult searchResult = SearchMovie2.search(searchQuery, language, year, maxItems, searchService, adultScrape);
+        
         // TODO: this triggers scrape for all search results, is this intended?
         if (searchResult.status == ScrapeStatus.OKAY) {
             for (SearchResult result : searchResult.result) {
