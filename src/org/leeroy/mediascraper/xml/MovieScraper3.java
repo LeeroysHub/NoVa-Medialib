@@ -95,15 +95,15 @@ public class MovieScraper3 extends BaseScraper2 {
             return new ScrapeSearchResult(null, true, ScrapeStatus.ERROR, null);
         }
         MovieSearchInfo searchInfo = (MovieSearchInfo) info;
-        log.debug("getMatches2: movie search:{}", searchInfo.getName());
+        //log.debug("getMatches2: movie search:{}", searchInfo.getName());
         if (tmdb == null) reauth();
         if (searchService == null) searchService = tmdb.searchService();
         // get configured language
         String language = Scraper.getLanguage(mContext);
-        log.debug("movie search:{} year:{} language:{}", searchInfo.getName(), searchInfo.getYear(), language);
+        //log.debug("movie search:{} year:{} language:{}", searchInfo.getName(), searchInfo.getYear(), language);
         
         //Check for UPNP and SMB differences, make sure we have a valid title.
-        log.debug("movie search:" + searchInfo.getName() + " year:" + searchInfo.getYear() + " language:" + language);
+        //log.debug("movie search:" + searchInfo.getName() + " year:" + searchInfo.getYear() + " language:" + language);
         String searchQuery = searchInfo.getSearchSuggestion().contains("null") ? searchInfo.getName() : searchInfo.getSearchSuggestion();
         if (searchQuery.toLowerCase().contains("null")) {
             searchQuery = searchInfo.getFile().toString();
