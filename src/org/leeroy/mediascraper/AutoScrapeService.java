@@ -281,6 +281,19 @@ public class AutoScrapeService extends Service {
             log.error("onCreate: Unexpected error during service creation", t);
             mBinder = new AutoScraperBinder();
         }
+        nb = new NotificationCompat.Builder(this, notifChannelId)
+                .setSmallIcon(R.drawable.stat_notify_scraper)
+                .setContentTitle(getString(R.string.scraping_in_progress))
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .setTicker(null).setOnlyAlertOnce(true).setOngoing(true).setAutoCancel(true);
+        
+        //If we are starting and get a Foreground service unavailable error, dont fatal crash the app..
+        try {
+            ServiceCompat.startForeground(this, NOTIFICATION_ID, nb.build(), (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) ? ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC : 0);
+            mBinder = new AutoScraperBinder();
+        } catch (Exception e) {
+            log.error("onCreate: Exception in service operation", e);
+        }
     }
 
     @Override
