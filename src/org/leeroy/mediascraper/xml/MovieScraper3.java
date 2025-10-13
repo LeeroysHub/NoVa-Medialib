@@ -50,6 +50,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.Calendar;
 
 import okhttp3.Cache;
 
@@ -100,25 +101,40 @@ public class MovieScraper3 extends BaseScraper2 {
         if (searchService == null) searchService = tmdb.searchService();
         // get configured language
         String language = Scraper.getLanguage(mContext);
+        if (language == null || language.contains("null")) language = Locale.getDefault().getLanguage();
+
         //log.debug("movie search:{} year:{} language:{}", searchInfo.getName(), searchInfo.getYear(), language);
         
         //Check for UPNP and SMB differences, make sure we have a valid title.
         //log.debug("movie search:" + searchInfo.getName() + " year:" + searchInfo.getYear() + " language:" + language);
-        String searchQuery = searchInfo.getSearchSuggestion().contains("null") ? searchInfo.getName() : searchInfo.getSearchSuggestion();
-        if (searchQuery.toLowerCase().contains("null")) {
-            searchQuery = searchInfo.getFile().toString();
-        }
 
-        // Extract 4-digit year and trim string (If its still there.)
+        //Check Search Suggestion, Name and fallback to filename.
+        String searchQuery = searchInfo.getSearchSuggestion().contains("null") ? searchInfo.getName() : searchInfo.getSearchSuggestion();
+        String reversed = new StringBuilder(searchQuery).reverse().toString();
         Pattern yearPattern = Pattern.compile("\\b(\\d{4})\\b");
-        Matcher matcher = yearPattern.matcher(searchQuery);
+        Matcher matcher = yearPattern.matcher(reversed);
+
+        // Current Calendar year.
         String year = null;
-        if (matcher.find()) {
-            year = matcher.group(1); // Extracted year
-            int yearIndex = matcher.start(); // Index where year starts
-            searchQuery = searchQuery.substring(0, yearIndex).trim(); // Keep string up to year
-            // You can use 'year' variable as needed
-        } else {
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+
+        //Loop backwards through the string until we have a plausible year,
+        //Make sure we have at least a 2 DIGIT word left (IF Movie!)
+        while (matcher.find()) {
+            String candidateYear = new StringBuilder(matcher.group(1)).reverse().toString();
+            int parsedYear = Integer.parseInt(candidateYear);
+
+            if (parsedYear >= 1900 && parsedYear <= currentYear) {
+                int cutIndex = searchQuery.length() - matcher.start() - 4;
+                if (cutIndex >= 2) {
+                    searchQuery = searchQuery.substring(0, cutIndex).trim();
+                    year = candidateYear;
+                }
+                break;
+            }
+        }
+        //If we didn't get a year out, fallback to the searchInfo year
+        if (year == null) {
             year = searchInfo.getYear();
         }
 
