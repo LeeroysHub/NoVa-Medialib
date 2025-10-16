@@ -107,9 +107,21 @@ public class MovieScraper3 extends BaseScraper2 {
         
         //Check for UPNP and SMB differences, make sure we have a valid title.
         //log.debug("movie search:" + searchInfo.getName() + " year:" + searchInfo.getYear() + " language:" + language);
+        String[] candidates = {
+            searchInfo.getSearchSuggestion(),
+            searchInfo.getName()
+        };
 
-        //Check Search Suggestion, Name and fallback to filename.
-        String searchQuery = searchInfo.getSearchSuggestion().contains("null") ? searchInfo.getName() : searchInfo.getSearchSuggestion();
+        //Check Search Suggestion, Name and fallback to filename.       
+        String searchQuery = searchInfo.getFile().toString();
+        for (String candidate : candidates) {
+            if (!(candidate == null || candidate.isBlank() || candidate.contains("null"))) {
+                searchQuery = candidate;
+                break; // first valid match wins, fallback to file name.
+            }
+        }
+        
+        //Look for any years in the title
         String reversed = new StringBuilder(searchQuery).reverse().toString();
         Pattern yearPattern = Pattern.compile("\\b(\\d{4})\\b");
         Matcher matcher = yearPattern.matcher(reversed);
