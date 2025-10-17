@@ -435,11 +435,15 @@ public class AutoScrapeService extends Service {
                             long episodeID = cursor.getLong(cursor.getColumnIndex(VideoStore.Video.VideoColumns.SCRAPER_EPISODE_ID));
                             final int scraperType = cursor.getInt(cursor.getColumnIndex(VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_TYPE));
                             BaseTags baseTags = null;
-                            log.trace("startExporting: {} fileUri {}", movieID, fileUri);
-                            if (scraperType == BaseTags.TV_SHOW) {
-                                baseTags = TagsFactory.buildEpisodeTags(AutoScrapeService.this, episodeID);
-                            } else if (scraperType == BaseTags.MOVIE) {
-                                baseTags = TagsFactory.buildMovieTags(AutoScrapeService.this, movieID);
+                            if (fileUri.toString().startsWith("smb:")) {
+                                log.trace("startExporting: {} fileUri {}", movieID, fileUri);
+                                if (scraperType == BaseTags.TV_SHOW) {
+                                    baseTags = TagsFactory.buildEpisodeTags(AutoScrapeService.this, episodeID);
+                                } else if (scraperType == BaseTags.MOVIE) {
+                                    baseTags = TagsFactory.buildMovieTags(AutoScrapeService.this, movieID);
+                                }
+                            } else {
+                                log.trace("Skipping non-SMB file:" + fileUri);
                             }
                             sNumberOfFilesRemainingToProcess--;
                             sTotalNumberOfFilesRemainingToProcess--;
