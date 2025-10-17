@@ -291,9 +291,9 @@ public class NfoWriter {
         try {
             FileEditor editor = FileEditorFactoryWithUpnp.getFileEditorForUrl(exportTarget, null);
             // Delete existing file to avoid overwrite issue (end of previous content still there is the new content is shorter)
-            if (editor.exists()) {
-                editor.delete();
-            }
+            //if (editor.exists()) {
+            //    editor.delete();
+            //}
             BufferedWriter  writer = new BufferedWriter(new OutputStreamWriter(
                     editor.getOutputStream(), StringUtils.CHARSET_UTF8));
 
@@ -327,9 +327,9 @@ public class NfoWriter {
         try {
             FileEditor editor = FileEditorFactoryWithUpnp.getFileEditorForUrl(exportTarget,null);
             // Delete existing file to avoid overwrite issue (end of previous content still there is the new content is shorter)
-            if (editor.exists()) {
-                editor.delete();
-            }
+            //if (editor.exists()) {
+            //    editor.delete();
+            //}
             log.trace("exportInternal: {}", video);
             BufferedWriter  writer = new BufferedWriter(new OutputStreamWriter(
                     editor.getOutputStream(), StringUtils.CHARSET_UTF8));
@@ -367,9 +367,9 @@ public class NfoWriter {
         try {
             FileEditor editor = FileEditorFactoryWithUpnp.getFileEditorForUrl(exportTarget, null);
             // Delete existing file to avoid overwrite issue (end of previous content still there is the new content is shorter)
-            if (editor.exists()) {
-                editor.delete();
-            }
+            //if (editor.exists()) {
+            //    editor.delete();
+            //}
             BufferedWriter  writer = new BufferedWriter(new OutputStreamWriter(
                     editor.getOutputStream(), StringUtils.CHARSET_UTF8));
 
