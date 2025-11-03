@@ -131,7 +131,7 @@ public class NetworkAutoRefresh extends BroadcastReceiver implements DefaultLife
                 }
             }
             ShortcutDbAdapter.VIDEO.close();
-            if(NetworkState.isLocalNetworkConnected(context)) {
+            if(NetworkState.isNetworkConnected(context)) {
                 PreferenceManager.getDefaultSharedPreferences(context).edit().putInt(AUTO_RESCAN_ERROR, 0).commit();//reset error
                 // Reset network scan counter at the start of a new batch to prevent orphaned counts
                 AutoScrapeService.resetNetworkScanCount();
