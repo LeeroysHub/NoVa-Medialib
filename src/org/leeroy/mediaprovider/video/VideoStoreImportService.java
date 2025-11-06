@@ -288,6 +288,11 @@ public class VideoStoreImportService extends Service implements Handler.Callback
             stopSelf(startId);
             return Service.START_NOT_STICKY;
         }
+        
+        //Stop crash if mHandler is null.
+        if (mHandler == null)  {
+            return Service.START_STICKY;
+        }
 
         if (intent == null || intent.getAction() == null) {
             removeAllMessages(mHandler);
