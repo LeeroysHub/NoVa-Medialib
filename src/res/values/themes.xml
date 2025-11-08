@@ -7,7 +7,7 @@
         <item name="colorPrimary">@color/lightblue500</item>
         <item name="colorPrimaryDark">#002642</item>
         <item name="colorAccent">@color/lightblue400</item>
-        <item name="android:navigationBarColor">#001b30</item>
+        <item name="android:navigationBarColor">#000000</item>
         <item name="alertDialogTheme">@style/Theme.AlertDialog</item>
     </style>
 
@@ -31,7 +31,7 @@
         <item name="actionOverflowButtonStyle">@style/OverflowButtonStyle</item>
         <!-- for the white back arrow -->
         <item name="colorControlNormal">@android:color/white</item>
-        <item name="android:navigationBarColor">#001b30</item>
+        <item name="android:navigationBarColor">#000000</item>
     </style>
 
     <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
@@ -68,7 +68,7 @@
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="alertDialogTheme">@style/Theme.AlertDialog</item>
-        <item name="android:navigationBarColor">#001b30</item>
+        <item name="android:navigationBarColor">#000000</item>
     </style>
 
     <style name="Theme.Transparent" parent="Theme.AppCompat.NoActionBar">
