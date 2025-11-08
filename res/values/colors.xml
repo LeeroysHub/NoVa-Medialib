@@ -27,20 +27,21 @@
     <color name="lightblue900">#01579b</color>
     <color name="lightblue900_alpha50">#8001579b</color>
     <color name="white_alpha">#20ffffff</color>
+    <color name="lightgrey">#363636</color>
 
     <color name="lightblueA200">#448AFF</color>
     <color name="lightblueA700">#2962FF</color>
 
     <color name="green700">#388E3C</color>
-    <color name="leanback_background_transparent">#AA013a67</color>
+    <color name="leanback_background_transparent">#AA000000</color>
 
-    <color name="leanback_background">#ff013a67</color>
-    <color name="leanback_side">@color/lightblue900</color>
-    <color name="leanback_details_background">@color/lightblue800</color>
+    <color name="leanback_background">#AA000000</color>
+    <color name="leanback_side">#363636</color>
+    <color name="leanback_details_background">#363636</color>
 
     <color name="error_text_over_blue_background">#ff5533</color>
 
-    <color name="leanback_discreet_text_over_background">#ff074395</color>
+    <color name="leanback_discreet_text_over_background">#363636</color>
 
     <color name="leanback_no_episode_watched">#ff505050</color>
     <color name="leanback_n_episodes_watched">#ff40a040</color>
