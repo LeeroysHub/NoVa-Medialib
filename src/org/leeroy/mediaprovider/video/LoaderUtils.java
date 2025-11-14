@@ -20,7 +20,7 @@ import org.leeroy.mediaplayer.utils.trakt.Trakt;
  * Created by vapillon on 29/05/15.
  */
 public class LoaderUtils {
-
+static public boolean mMustHideWatchedVideo = false;
     public final static String HIDE_USER_HIDDEN_FILTER = VideoStore.Video.VideoColumns.LEEROYFLIX_HIDDEN_BY_USER+"=0";
 
     public final static String HIDE_WATCHED_FILTER = "("+VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_SEEN+" IS NULL OR "+
@@ -32,6 +32,6 @@ public class LoaderUtils {
     }
 
     static public boolean mustHideWatchedVideo() {
-        return false; // TODO
+        return mMustHideWatchedVideo;
     }
 }
