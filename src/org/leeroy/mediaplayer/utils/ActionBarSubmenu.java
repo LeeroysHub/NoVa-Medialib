@@ -108,7 +108,7 @@ public class ActionBarSubmenu implements OnMenuItemClickListener, OnItemClickLis
         mPopupWindow = new ListPopupWindow(context, null);
         mPopupWindow.setAdapter(mAdapter);
         mPopupWindow.setModal(true);
-        mPopupWindow.setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(context,R.color.primary_material_dark)));
+        mPopupWindow.setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(context,R.color.lightgrey)));
         mPopupWindow.setAnchorView(anchor);
         mPopupWindow.setOnItemClickListener(this);
 
