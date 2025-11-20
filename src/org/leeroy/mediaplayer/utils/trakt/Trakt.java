@@ -903,7 +903,7 @@ public class Trakt {
             editor.remove(KEY_TRAKT_USER);
             editor.remove(KEY_TRAKT_SHA1);
         }
-        editor.commit();
+        editor.apply();
     }
 
     public static void setAccessToken(SharedPreferences pref, String accessToken) {
@@ -913,7 +913,7 @@ public class Trakt {
         } else {
             editor.remove(KEY_TRAKT_ACCESS_TOKEN);
         }
-        editor.commit();
+        editor.apply();
     }
 
     public static String getAccessTokenFromPreferences(SharedPreferences pref) {
@@ -947,7 +947,7 @@ public class Trakt {
     public static void setAccountLocked(SharedPreferences preferences, boolean locked) {
         Editor editor = preferences.edit();
         editor.putBoolean(KEY_TRAKT_ACCOUNT_LOCKED, locked);
-        editor.commit();
+        editor.apply();
     }
 
     /**
@@ -962,7 +962,7 @@ public class Trakt {
         editor.remove(KEY_TRAKT_REFRESH_TOKEN);
         // Mark as locked so user knows why it was disabled
         editor.putBoolean(KEY_TRAKT_ACCOUNT_LOCKED, true);
-        editor.commit();
+        editor.apply();
         log.info("disableTraktOnAccountLock: Trakt disabled - user must re-authenticate to enable");
     }
 
@@ -972,7 +972,7 @@ public class Trakt {
             flag |= oldFlag;
         Editor editor = preferences.edit();
         editor.putInt(KEY_TRAKT_SYNC_FLAG, flag);
-        editor.commit();
+        editor.apply();
     }
 
     public static long getLastTimeShowWatched(SharedPreferences preferences) {
@@ -982,7 +982,7 @@ public class Trakt {
     public static void setLastTimeShowWatched(SharedPreferences preferences, long time) {
         Editor editor = preferences.edit();
         editor.putLong(KEY_TRAKT_LAST_TIME_SHOW_WATCHED, time);
-        editor.commit();
+        editor.apply();
     }
 
     public static long getLastTimeMovieWatched(SharedPreferences preferences) {
@@ -992,7 +992,7 @@ public class Trakt {
     public static void setLastTimeMovieWatched(SharedPreferences preferences, long time) {
         Editor editor = preferences.edit();
         editor.putLong(KEY_TRAKT_LAST_TIME_MOVIE_WATCHED, time);
-        editor.commit();
+        editor.apply();
     }
 
     public static boolean getSyncCollection(SharedPreferences preferences) {
@@ -1010,7 +1010,7 @@ public class Trakt {
         editor.remove(Trakt.KEY_TRAKT_SYNC_FLAG);
         editor.remove(Trakt.KEY_TRAKT_LAST_TIME_MOVIE_WATCHED);
         editor.remove(Trakt.KEY_TRAKT_LAST_TIME_SHOW_WATCHED);
-        editor.commit();
+        editor.apply();
     }
 
     public static boolean shouldMarkAsSeen(float progress) {
