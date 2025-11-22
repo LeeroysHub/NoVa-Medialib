@@ -673,7 +673,8 @@ public class AutoScrapeService extends Service {
                                         //log.trace("startScraping: {} {}", ((result.tag != null) ? result.tag.getTitle() : null), ((result.tag != null) ? result.tag.getOnlineId() : null));
                                     }
 
-                                    if (result != null && result.tag != null && ID != -1) {
+                                    //Don't get movies with the word (NULL), this means (NULL) movie wont scrape automatically by who cares?
+                                    if (result != null && result.tag != null && ID != -1 && result.tag.getTitle() != null && !result.tag.getTitle().equals("(NULL)")) {
                                         result.tag.setVideoId(ID);
                                         //ugly but necessary to avoid poster delete when replacing tag
                                         if (result.tag.getDefaultPoster() != null) {
