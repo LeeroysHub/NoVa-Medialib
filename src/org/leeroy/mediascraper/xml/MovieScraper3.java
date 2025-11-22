@@ -98,6 +98,8 @@ public class MovieScraper3 extends BaseScraper2 {
         if (searchService == null) searchService = tmdb.searchService();
         // get configured language
         String language = Scraper.getLanguage(mContext);
+        if (language == null || language.contains("null")) language = Locale.getDefault().getLanguage();
+
         //log.debug("movie search:{} year:{} language:{}", searchInfo.getName(), searchInfo.getYear(), language);
         SearchMovieResult searchResult = SearchMovie2.search(searchInfo.getName(), language, searchInfo.getYear(), maxItems, searchService, adultScrape);
         // TODO: this triggers scrape for all search results, is this intended?
