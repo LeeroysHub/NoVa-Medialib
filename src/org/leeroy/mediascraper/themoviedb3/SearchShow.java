@@ -60,11 +60,11 @@ public class SearchShow {
             }
 
             showKey = searchInfo.getShowName() + "|" + year + "|" + language;
-            log.debug("SearchShowResult: cache showKey {}", showKey);
+            //log.debug("SearchShowResult: cache showKey {}", showKey);
             response = showCache.get(showKey);
             if (log.isTraceEnabled()) debugLruCache(showCache);
             if (response == null) {
-                log.debug("SearchShowResult: no boost for {} year {}", searchInfo.getShowName(), year);
+                //log.debug("SearchShowResult: no boost for {} year {}", searchInfo.getShowName(), year);
                 // adult search false by default
                 response = tmdb.searchService().tv(searchInfo.getShowName(), null, language, year, false).execute();
                 if (response.code() != 404) notFoundIssue = false; // this is an AND
@@ -79,12 +79,12 @@ public class SearchShow {
                     isResponseEmpty = true;
                 else {
                     if (response.body().total_results == 0) notFoundIssue = true;
-                    log.debug("search: response body has {} results", response.body().total_results);
+                    //log.debug("search: response body has {} results", response.body().total_results);
                     if (notFoundIssue && searchInfo.getFirstAiredYear() == null) {
                         // reprocess name with year_extractor without parenthesis since we need to match The.Flash.2014.sXXeYY but not first to cope with Paris.Police.1900
                         name = searchInfo.getShowName();
                         Pair<String, String> nameYear = yearExtractor(name);
-                        log.debug("search: not found trying to extract year name={}, year={}", nameYear.first, nameYear.second);
+                        //log.debug("search: not found trying to extract year name={}, year={}", nameYear.first, nameYear.second);
                         if (nameYear.second != null) { // avoid infinite loop
                             // remember that it is a reboot show with date year to add to name to discriminate
                             myResult.year = nameYear.second;
@@ -94,30 +94,30 @@ public class SearchShow {
                     }
                 }
                 if (isResponseOk || isResponseEmpty) {
-                    log.debug("search: inserting in showCache {} and response ", showKey);
+                    //log.debug("search: inserting in showCache {} and response ", showKey);
                     showCache.put(showKey, response);
                 }
             } else {
-                log.debug("search: boost using cached searched show for {}", searchInfo.getShowName());
+                //log.debug("search: boost using cached searched show for {}", searchInfo.getShowName());
                 isResponseOk = true;
                 notFoundIssue = false;
                 if (response.body() == null) isResponseEmpty = true;
             }
             if (authIssue) {
-                log.debug("search: auth error");
+                //log.debug("search: auth error");
                 myResult.status = ScrapeStatus.AUTH_ERROR;
                 myResult.result = SearchShowResult.EMPTY_LIST;
                 ShowScraper4.reauth();
                 return myResult;
             }
             if (notFoundIssue || serviceError) {
-                log.debug("search: not found");
+                //log.debug("search: not found");
                 myResult.result = SearchShowResult.EMPTY_LIST;
                 if (serviceError) myResult.status = ScrapeStatus.ERROR;
                 else myResult.status = ScrapeStatus.NOT_FOUND;
             } else {
                 if (isResponseEmpty) {
-                    log.debug("search: error");
+                    //log.debug("search: error");
                     myResult.result = SearchShowResult.EMPTY_LIST;
                     myResult.status = ScrapeStatus.ERROR_PARSER;
                 } else {

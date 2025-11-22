@@ -93,12 +93,12 @@ public class MovieScraper3 extends BaseScraper2 {
             return new ScrapeSearchResult(null, true, ScrapeStatus.ERROR, null);
         }
         MovieSearchInfo searchInfo = (MovieSearchInfo) info;
-        log.debug("getMatches2: movie search:{}", searchInfo.getName());
+        //log.debug("getMatches2: movie search:{}", searchInfo.getName());
         if (tmdb == null) reauth();
         if (searchService == null) searchService = tmdb.searchService();
         // get configured language
         String language = Scraper.getLanguage(mContext);
-        log.debug("movie search:{} year:{} language:{}", searchInfo.getName(), searchInfo.getYear(), language);
+        //log.debug("movie search:{} year:{} language:{}", searchInfo.getName(), searchInfo.getYear(), language);
         SearchMovieResult searchResult = SearchMovie2.search(searchInfo.getName(), language, searchInfo.getYear(), maxItems, searchService, adultScrape);
         // TODO: this triggers scrape for all search results, is this intended?
         if (searchResult.status == ScrapeStatus.OKAY) {
