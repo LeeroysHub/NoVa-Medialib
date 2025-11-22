@@ -59,14 +59,16 @@ public class SearchShow {
                 }
             }
 
-            showKey = searchInfo.getShowName() + "|" + year + "|" + language;
+
+            String searchQueryString = searchInfo.getShowName();
+            showKey = searchQueryString + ((year != null) ? "|" + year : "") + "|" + language;
             //log.debug("SearchShowResult: cache showKey {}", showKey);
             response = showCache.get(showKey);
-            if (log.isTraceEnabled()) debugLruCache(showCache);
+            //if (log.isTraceEnabled()) debugLruCache(showCache);
             if (response == null) {
                 //log.debug("SearchShowResult: no boost for {} year {}", searchInfo.getShowName(), year);
                 // adult search false by default
-                response = tmdb.searchService().tv(searchInfo.getShowName(), null, language, year, false).execute();
+                response = tmdb.searchService().tv(searchQueryString, 1, language, year, false).execute();
                 if (response.code() != 404) notFoundIssue = false; // this is an AND
                 // Check https://developer.themoviedb.org/docs/errors
                 switch (response.code()) {
