@@ -646,7 +646,7 @@ public class AutoScrapeService extends Service {
                                         //log.trace("startScraping: NFO found, notScaped {}, noScrapeError {} for {}", notScraped, noScrapeError, fileUri);
                                     }
                                 }
-                                if (notScraped && noScrapeError) { //look for online details
+                                if ((notScraped && noScrapeError) || shouldRescrapAll) { //look for online details
                                     //log.trace("startScraping: NFO NOT found");
                                     ScrapeDetailResult result = null;
                                     boolean searchOnline = true;
@@ -736,7 +736,7 @@ public class AutoScrapeService extends Service {
                                     }
                                 }
 
-                                if (notScraped && noScrapeError && !shouldRescrapAll) { //in case of network error, don't go there, and don't save in case we are rescraping already scraped videos
+                                if (notScraped && noScrapeError) { //in case of network error, don't go there, and don't save in case we are rescraping already scraped videos
                                     // Failed => set the scraper fields to -1 so that we will be able
                                     // to skip this file when launching the automated process again
                                     //log.trace("startScraping: file {} not scraped without error -> mark it as not to be scraped again", fileUri);
