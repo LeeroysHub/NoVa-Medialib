@@ -43,7 +43,7 @@ public class GlobalResumeView extends RelativeLayout {
    }
 
     public void setImage(Bitmap bm) {
-        if (bm == null) {
+        /* if (bm == null) {
             setBackgroundResource(android.R.color.black);
         } else {
             int dstWidth = getWidth();
@@ -53,7 +53,7 @@ public class GlobalResumeView extends RelativeLayout {
             } else {
                 mImage = bm;
             }
-        }
+        } */ 
     }
 
     private void resizeImage(Bitmap bm, int dstWidth, int dstHeight) {
