@@ -27,7 +27,7 @@
 
     <!-- ============ MUSIC & VIDEO BROWSER ============ -->
     <dimen name="content_list_left_margin">4dip</dimen>
-    <dimen name="content_list_right_margin">0dip</dimen>
+    <dimen name="content_list_right_margin">10dip</dimen>
     <dimen name="content_list_vertical_spacing_between_items">2dip</dimen>
     <dimen name="content_grid_vertical_spacing_between_items">16dip</dimen>
     <dimen name="content_grid_horizontal_minimal_spacing_between_items">10dip</dimen>
@@ -49,7 +49,7 @@
     <dimen name="video_details_poster_width">116dip</dimen>       <!-- "video_details_poster_width" = 2 / 3 * video_details_poster_height -->
     <dimen name="video_details_poster_margin_top">2dip</dimen>    <!-- margin to have background visible around the thumbnail when pressed -->
     <dimen name="video_details_poster_margin_bottom">2dip</dimen> <!-- margin to have background visible around the thumbnail when pressed -->
-    <dimen name="video_details_poster_margin_left">2dip</dimen>   <!-- margin to have background visible around the thumbnail when pressed -->
+    <dimen name="video_details_poster_margin_left">10dip</dimen>   <!-- margin to have background visible around the thumbnail when pressed -->
     <dimen name="video_details_number_width">60dip</dimen>
     <dimen name="video_show_details_item_height">180dip</dimen>
 
