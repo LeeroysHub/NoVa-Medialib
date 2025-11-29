@@ -87,7 +87,7 @@ public class UpnpServiceManager {
         ERROR,
     }
 
-    private Context mContext;
+    private final Context mContext;
     private State mState;
 
     private AndroidUpnpService mAndroidUpnpService;
@@ -99,17 +99,17 @@ public class UpnpServiceManager {
     /**
      * Handler running on main UI thread, used to post listeners callbacks to the UI thread
      */
-    private Handler mUiHandler = new Handler(Looper.getMainLooper());
+    final private Handler mUiHandler = new Handler(Looper.getMainLooper());
 
     /**
      * Devices indexed by hash code
      */
-    private HashMap<Integer, Device> mDevices = new HashMap<>();
+    final private HashMap<Integer, Device> mDevices = new HashMap<>();
 
     /**
      * Pool of blocking requests
      */
-    private Set<BlockingDeviceRequest> mDeviceRequests = new HashSet<BlockingDeviceRequest>();
+    final private Set<BlockingDeviceRequest> mDeviceRequests = new HashSet<BlockingDeviceRequest>();
 
     public interface Listener {
         void onDeviceListUpdate(List<Device> devices);
