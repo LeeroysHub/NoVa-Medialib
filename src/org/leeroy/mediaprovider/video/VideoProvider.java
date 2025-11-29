@@ -185,22 +185,22 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
                             // In the past "uri needs to be encoded to check if file exists : fixes thumbnail creation with non ascii names".
                             // However this breaks thumbs generation on smb:// when dealing with file names with spaces that are turned into %20 making the file not found.
                             // Limit uri encoding to upnp.
-                            FileEditor editor;
-                            if (mCurrentThumbRequest.mPath.startsWith("upnp"))
-                                editor = FileEditorFactoryWithUpnp.getFileEditorForUrl(FileUtils.encodeUri(Uri.parse(mCurrentThumbRequest.mPath)), null);
-                            else
-                                editor = FileEditorFactoryWithUpnp.getFileEditorForUrl(Uri.parse(mCurrentThumbRequest.mPath), null);
-                            log.debug("{} does file exists ? {}", mCurrentThumbRequest.mPath, String.valueOf(editor.exists()));
+                            //FileEditor editor;
+                            //if (mCurrentThumbRequest.mPath.startsWith("upnp"))
+                            //    editor = FileEditorFactoryWithUpnp.getFileEditorForUrl(FileUtils.encodeUri(Uri.parse(mCurrentThumbRequest.mPath)), null);
+                            //else
+                            //    editor = FileEditorFactoryWithUpnp.getFileEditorForUrl(Uri.parse(mCurrentThumbRequest.mPath), null);
+                            //log.debug("{} does file exists ? {}", mCurrentThumbRequest.mPath, String.valueOf(editor.exists()));
 
-                            if (editor.exists()) {
+                            //if (editor.exists()) {
                                 log.debug("mCurrentThumbRequest");
                                 mCurrentThumbRequest.execute();
-                            } else {
-                                // original file hasn't been stored yet
-                                synchronized (mMediaThumbQueue) {
-                                    log.warn("original file hasn't been stored yet: {}", mCurrentThumbRequest.mPath);
-                                }
-                            }
+                            //} else {
+                            //    // original file hasn't been stored yet
+                            //    synchronized (mMediaThumbQueue) {
+                            //        log.warn("original file hasn't been stored yet: {}", mCurrentThumbRequest.mPath);
+                            //    }
+                            //}
                         } catch (IOException ex) {
                             log.error("handleMessage: caught IOException",ex);
                         } catch (UnsupportedOperationException ex) {
@@ -1283,16 +1283,16 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
         public static Bitmap createVideoThumbnail_(final Context ctx, final String filePath, int kind) {
             Bitmap bitmap = null;
             final Result result = new Result();
-            final IMediaThumbnailService service = MediaThumbnailService.bind_sync(ctx);
-            if ( service!= null) {
+            //final IMediaThumbnailService service = MediaThumbnailService.bind_sync(ctx);
+            /* if ( service!= null) {
                 try {
                     Thread t = new Thread(){
                         public void run(){
                             try {
                                 log.debug("get Thumb for {}", filePath);
                                 result.setBitmap(service.getThumbnail(filePath, -1));
-
-                            } catch (RemoteException e) {
+            
+                           } catch (RemoteException e) {
                                 log.debug("get Thumb for {} failed (RemoteException)", filePath);
 
                                 log.error("can't get thumbnail, service crashed?", e);
@@ -1307,32 +1307,45 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
                     e.printStackTrace();
                 }
                 MediaThumbnailService.release(ctx);
-            } else {
-                log.debug("no Thumbnail service, crash?");
+            } else { */
+                //log.debug("no Thumbnail service, crash?");
+            
+            //Use LibAvos Thumbnail Retriever.
+            try {
+                Thread t = new Thread(){
+                    public void run() {
+                        IMediaMetadataRetriever retriever = MediaFactory.createMetadataRetriever(ctx);
+                        try {
+                            retriever.setDataSource(filePath);
+                            log.debug("getFrameAtTime -1 ");
 
-                IMediaMetadataRetriever retriever = MediaFactory.createMetadataRetriever(ctx);
-                try {
-                    retriever.setDataSource(filePath);
-                    log.debug("getFrameAtTime -1 ");
+                            result.setBitmap(retriever.getFrameAtTime(-1));
 
-                    bitmap = retriever.getFrameAtTime(-1);
+                        } catch (IllegalArgumentException ex) {
+                            // Assume this is a corrupt video file
+                            log.debug("IllegalArgumentException {}", ex.toString());
 
-                } catch (IllegalArgumentException ex) {
-                    // Assume this is a corrupt video file
-                    log.debug("IllegalArgumentException {}", ex.toString());
+                        } catch (RuntimeException ex) {
+                            // Assume this is a corrupt video file.
+                            log.debug("RuntimeException {}", ex.toString());
 
-                } catch (RuntimeException ex) {
-                    // Assume this is a corrupt video file.
-                    log.debug("RuntimeException {}", ex.toString());
-
-                } finally {
-                    try {
-                        retriever.release();
-                    } catch (RuntimeException ex) {
-                        // Ignore failures while cleaning up.
+                        } finally {
+                            try {
+                                retriever.release();
+                            } catch (RuntimeException ex) {
+                                // Ignore failures while cleaning up.
+                            }
+                        }
                     }
-                }
+                };
+                t.start();
+                t.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
+            //}
+
+            bitmap = result.bm;
 
             if (bitmap == null) {
                 log.debug("bitmap is null ");

@@ -68,11 +68,15 @@ public class StreamUriFinder {
         new Thread(){
             public void run(){
                 // Start UPnP
-                if(UpnpServiceManager
-                        .startServiceIfNeeded(mContext).getDeviceByKey_blocking(Integer.valueOf(mDeviceID), 3000)!=null)
+                if (mContext == null) {
                     startListing();
-                else
-                    mListener.onError();
+                } else {
+                    if (UpnpServiceManager
+                            .startServiceIfNeeded(mContext).getDeviceByKey_blocking(Integer.valueOf(mDeviceID), 3000) != null)
+                        startListing();
+                    else
+                        mListener.onError();
+                }
             }
         }.start();
 

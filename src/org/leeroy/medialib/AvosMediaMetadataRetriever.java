@@ -36,7 +36,7 @@ public class AvosMediaMetadataRetriever implements IMediaMetadataRetriever
     // The field below is accessed by native methods
     private long mMediaMetadataRetrieverHandle;
 
-    private SmbProxy mSmbProxy = null;
+    private Proxy mFileProxy = null;
  
     private static final int EMBEDDED_PICTURE_TYPE_ANY = 0xFFFF;
 
@@ -54,24 +54,27 @@ public class AvosMediaMetadataRetriever implements IMediaMetadataRetriever
 
     public void setDataSource(String uri,  Map<String, String> headers)
             throws IllegalArgumentException {
-        if (SmbProxy.needToStream(Uri.parse(uri).getScheme())) {
-            mSmbProxy = SmbProxy.setDataSource(Uri.parse(uri), this, headers);
+        if (Proxy.needToStream(Uri.parse(uri).getScheme())) {
+            mFileProxy = Proxy.setDataSource(Uri.parse(uri), this, headers);
             return;
         }
-        if (headers != null) {
-            int i = 0;
 
-            String[] keys = new String[headers.size()];
-            String[] values = new String[headers.size()];
+        String[] keys = null;
+        String[] values = null;
+
+        if (headers != null) {
+            keys = new String[headers.size()];
+            values = new String[headers.size()];
+
+            int i = 0;
             for (Map.Entry<String, String> entry: headers.entrySet()) {
                 keys[i] = entry.getKey();
                 values[i] = entry.getValue();
                 ++i;
             }
-            setDataSource(uri, keys, values);
-        } else {
-            setDataSource(uri, null, null);
         }
+
+        setDataSource(uri, keys, values);
     }
 
     public void setDataSource(String uri)
@@ -100,9 +103,9 @@ public class AvosMediaMetadataRetriever implements IMediaMetadataRetriever
         }
         
         String scheme = uri.getScheme();
-        if (SmbProxy.needToStream(scheme)){
-            mSmbProxy = SmbProxy.setDataSource(uri, this, null);
-            return;
+        if (Proxy.needToStream(uri.getScheme())) {
+                mFileProxy = Proxy.setDataSource(uri, this, null);
+                return;
         }
         if(scheme == null || scheme.equals("file")) {
             setDataSource(uri.getPath());
@@ -148,9 +151,9 @@ public class AvosMediaMetadataRetriever implements IMediaMetadataRetriever
     private native void nativeRelease();
     public void release() {
         nativeRelease();
-        if (mSmbProxy != null) {
-            mSmbProxy.stop();
-            mSmbProxy = null;
+        if (mFileProxy != null) {
+            mFileProxy.stop();
+            mFileProxy = null;
         }
     }
 

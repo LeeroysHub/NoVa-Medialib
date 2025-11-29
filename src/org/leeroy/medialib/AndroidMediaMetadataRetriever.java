@@ -32,7 +32,7 @@ public class AndroidMediaMetadataRetriever extends MediaMetadataRetriever implem
 
     private static final Logger log = LoggerFactory.getLogger(AndroidMediaMetadataRetriever.class);
 
-    private SmbProxy mSmbProxy = null;
+    private Proxy mFileProxy = null;
 
     public MediaMetadata getMediaMetadata() {
         return null;
@@ -46,8 +46,8 @@ public class AndroidMediaMetadataRetriever extends MediaMetadataRetriever implem
     public void setDataSource(Context context, Uri uri) throws IllegalArgumentException,
             SecurityException {
         String scheme = uri.getScheme();
-        if (SmbProxy.needToStream(scheme)){
-            mSmbProxy = SmbProxy.setDataSource(uri, this, null);
+        if (Proxy.needToStream(scheme)){
+            mFileProxy = Proxy.setDataSource(uri, this, null);
             return;
         }
         super.setDataSource(context, uri);
@@ -55,8 +55,8 @@ public class AndroidMediaMetadataRetriever extends MediaMetadataRetriever implem
 
     @Override
     public void setDataSource(String path) throws IllegalArgumentException {
-        if (SmbProxy.needToStream(Uri.parse(path).getScheme())){
-            mSmbProxy = SmbProxy.setDataSource(Uri.parse(path), this, null);
+        if (Proxy.needToStream(Uri.parse(path).getScheme())){
+            mFileProxy = Proxy.setDataSource(Uri.parse(path), this, null);
             return;
         }
         super.setDataSource(path);
@@ -65,8 +65,8 @@ public class AndroidMediaMetadataRetriever extends MediaMetadataRetriever implem
     @Override
     public void setDataSource(String uri, Map<String, String> headers)
             throws IllegalArgumentException {
-        if (SmbProxy.needToStream(Uri.parse(uri).getScheme())){
-            mSmbProxy = SmbProxy.setDataSource(Uri.parse(uri), this, headers);
+        if (Proxy.needToStream(Uri.parse(uri).getScheme())){
+            mFileProxy = Proxy.setDataSource(Uri.parse(uri), this, headers);
             return;
         }
         super.setDataSource(uri, headers);
@@ -80,9 +80,9 @@ public class AndroidMediaMetadataRetriever extends MediaMetadataRetriever implem
         } catch (IOException ioe) {
             log.error("release: caught IOException", ioe);
         }
-        if (mSmbProxy != null) {
-            mSmbProxy.stop();
-            mSmbProxy = null;
+        if (mFileProxy != null) {
+            mFileProxy.stop();
+            mFileProxy = null;
         }
     }
 }
