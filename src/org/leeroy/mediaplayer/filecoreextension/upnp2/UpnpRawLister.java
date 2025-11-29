@@ -84,7 +84,7 @@ public class UpnpRawLister extends RawLister  {
         mUpnpServiceManager = UpnpServiceManager.getSingleton(null); //won't create, so we need to be sure it has already been created before
         mUri = uri;
         mLock = new Object();
-        log.debug("UpnpRawLister() uri={} lastPath={}", mUri, FileUtils.getName(mUri));
+        log.debug("UpnpRawLister() uri={} lastPath={}", mUri,  FileUtils.getName(mUri));
         // Get Device from its hash key that is in the Uri
         mDevice = mUpnpServiceManager.getDeviceByKey_blocking(Integer.parseInt(mUri.getHost()), 500); // NPE on subs listing
 

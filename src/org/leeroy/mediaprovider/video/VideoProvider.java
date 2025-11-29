@@ -90,7 +90,6 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
     private static final Logger log = LoggerFactory.getLogger(VideoProvider.class);
 
     private final static boolean SKIP_THUMBNAILS = false;
-    public static final boolean DEFER_THUMBNAILS_FOR_SCRAPING = true;
 
     private static volatile boolean isForeground = true;
 
@@ -695,7 +694,7 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
                     // if this is a request from MediaScanner, DATA should contains file path
                     // we only process update request from media scanner, otherwise the requests
                     // could be duplicate.
-                    if (count > 0 && values.getAsString(VideoStore.MediaColumns.DATA) != null) {
+                    if (count > 0 ) {
                         Cursor c = db.query(table,
                                 READY_FLAG_PROJECTION, where,
                                 whereArgs, null, null, null);
@@ -703,8 +702,8 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
                             try {
                                 while (c.moveToNext()) {
                                     long magic = c.getLong(2);
-                                    if (magic == 0 && !DEFER_THUMBNAILS_FOR_SCRAPING) {
-                                        requestMediaThumbnail(c.getString(1), uri,
+                                    if (magic == 0) {
+                                        requestMediaThumbnail(c.getString(1),c.getLong(0), uri,
                                                 MediaThumbRequest.PRIORITY_NORMAL, 0);
                                     }
                                 }
@@ -934,7 +933,7 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
                 return false;
             }
 
-            MediaThumbRequest req = requestMediaThumbnail(path, origUri,
+            MediaThumbRequest req = requestMediaThumbnail(path, id, origUri,
                     MediaThumbRequest.PRIORITY_HIGH, magic);
             log.debug("is MediaThumbRequest null ? {}", String.valueOf(req==null));
             if (req == null) {
@@ -991,12 +990,12 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
                 (req.mIsVideo == isVideo);
     }
 
-    private MediaThumbRequest requestMediaThumbnail(String path, Uri uri, int priority, long magic) {
+    private MediaThumbRequest requestMediaThumbnail(String path, long id, Uri uri, int priority, long magic) {
         synchronized (mMediaThumbQueue) {
             MediaThumbRequest req = null;
             try {
                 req = new MediaThumbRequest(
-                        getContext(), path, uri, priority, magic);
+                        getContext(), path,id, uri, priority, magic);
                 mMediaThumbQueue.add(req);
                 // Trigger the handler.
                 Message msg = mThumbHandler.obtainMessage(IMAGE_THUMB);
@@ -1130,7 +1129,7 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
      * Instances of this class are created and put in a queue to be executed sequentially to see if
      * it needs to (re)generate the thumbnails.
      */
-    public static class MediaThumbRequest {
+    static class MediaThumbRequest {
         private static final String TAG = LeeroyFlixMediaCommon.TAG_PREFIX + "MediaThumbRequest";
         private static final boolean DBG = false;
         static final int PRIORITY_LOW = 20;
@@ -1170,7 +1169,7 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
             };
         }
 
-        MediaThumbRequest(Context ctx, String path, Uri uri, int priority, long magic) {
+        MediaThumbRequest(Context ctx, String path, long id, Uri uri, int priority, long magic) {
             mContext = ctx;
             mCr = ctx.getContentResolver();
             mPath = path;
@@ -1178,7 +1177,7 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
             mMagic = magic;
             mUri = uri;
             mIsVideo = "video".equals(uri.getPathSegments().get(1));
-            mOrigId = ContentUris.parseId(uri);
+            mOrigId = id;
             mThumbUri = VideoStore.Video.Thumbnails.EXTERNAL_CONTENT_URI;
             mOrigColumnName = VideoStore.Video.Thumbnails.VIDEO_ID;
             // Only requests from Thumbnail API has this group_id parameter. In other cases,
