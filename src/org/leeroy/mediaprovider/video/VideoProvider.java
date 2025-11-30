@@ -701,11 +701,11 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
                         if (c != null) {
                             try {
                                 while (c.moveToNext()) {
-                                    long magic = c.getLong(2);
-                                    if (magic == 0) {
+                                    //long magic = c.getLong(2);
+                                    //if (magic == 0) {
                                         requestMediaThumbnail(c.getString(1),c.getLong(0), uri,
-                                                MediaThumbRequest.PRIORITY_NORMAL, 0);
-                                    }
+                                                MediaThumbRequest.PRIORITY_NORMAL);
+                                    //}
                                 }
                             } finally {
                                 c.close();
@@ -934,7 +934,7 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
             }
 
             MediaThumbRequest req = requestMediaThumbnail(path, id, origUri,
-                    MediaThumbRequest.PRIORITY_HIGH, magic);
+                    MediaThumbRequest.PRIORITY_HIGH);
             log.debug("is MediaThumbRequest null ? {}", String.valueOf(req==null));
             if (req == null) {
                 return false;
@@ -961,7 +961,6 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
                                 VideoColumns.LEEROYFLIX_THUMB_TRY}, null, null, null);
                         if (c == null) return result;
                         if (c.moveToFirst()) {
-                            magic = c.getLong(0);
                             nbTry = c.getInt(1) + 1;
                             log.debug("MediaThumbRequest set try to {}", String.valueOf(nbTry));
 
@@ -990,12 +989,12 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
                 (req.mIsVideo == isVideo);
     }
 
-    private MediaThumbRequest requestMediaThumbnail(String path, long id, Uri uri, int priority, long magic) {
+    private MediaThumbRequest requestMediaThumbnail(String path, long id, Uri uri, int priority) {
         synchronized (mMediaThumbQueue) {
             MediaThumbRequest req = null;
             try {
                 req = new MediaThumbRequest(
-                        getContext(), path,id, uri, priority, magic);
+                        getContext(), path,id, uri, priority);
                 mMediaThumbQueue.add(req);
                 // Trigger the handler.
                 Message msg = mThumbHandler.obtainMessage(IMAGE_THUMB);
@@ -1169,12 +1168,11 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
             };
         }
 
-        MediaThumbRequest(Context ctx, String path, long id, Uri uri, int priority, long magic) {
+        MediaThumbRequest(Context ctx, String path, long id, Uri uri, int priority) {
             mContext = ctx;
             mCr = ctx.getContentResolver();
             mPath = path;
             mPriority = priority;
-            mMagic = magic;
             mUri = uri;
             mIsVideo = "video".equals(uri.getPathSegments().get(1));
             mOrigId = id;
@@ -1224,30 +1222,6 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
          * @throws IOException
          */
         void execute() throws IOException {
-            log.debug("executing thumb creation ");
-
-            long magic = mMagic;
-            if (magic != 0) {
-                Cursor c = null;
-                ParcelFileDescriptor pfd = null;
-                try {
-                    c = mCr.query(mThumbUri, THUMB_PROJECTION,
-                            mOrigColumnName + " = " + mOrigId, null, null);
-                    if (c != null && c.moveToFirst()) {
-                        pfd = mCr.openFileDescriptor(
-                                mThumbUri.buildUpon().appendPath(c.getString(0)).build(), "r");
-                    }
-                } catch (IOException ex) {
-                    // MINI_THUMBNAIL not exists, ignore the exception and generate one.
-                } finally {
-                    if (c != null) c.close();
-                    if (pfd != null) {
-                        pfd.close();
-                        log.debug("ThumbRequest, already exists.");
-                    }
-                }
-                return;
-            }
             log.debug("ThumbRequest, creating.");
             // If we can't retrieve the thumbnail, first check if there is one
             // embedded in the EXIF data. If not, or it's not big enough,
@@ -1275,14 +1249,9 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 85, thumbOut);
                     thumbOut.close();
                     log.debug("ThumbRequest written bitmap");
-                    // also put some random mini_thumb_magic
-                    do {
-                        magic = sRandom.nextLong();
-                    } while (magic == 0);
 
                     ContentValues values = new ContentValues();
 
-                    values.put(VideoColumns.MINI_THUMB_MAGIC, magic);
                     mCr.update(mUri, values, null, null);
                 }
             }
