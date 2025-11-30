@@ -21,14 +21,11 @@ import android.app.NotificationManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ServiceInfo;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.NetworkOnMainThreadException;
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.ServiceCompat;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ProcessLifecycleOwner;
@@ -105,12 +102,12 @@ public class NfoExportService extends IntentService implements DefaultLifecycleO
         Intent serviceIntent = new Intent(context, NfoExportService.class);
         serviceIntent.setAction(INTENT_EXPORT_FILE);
         serviceIntent.setData(directory);
-        if (isForeground) ContextCompat.startForegroundService(context, serviceIntent);
+        if (isForeground) context.startService(serviceIntent);
     }
     public static void exportAll(Context context) {
         Intent serviceIntent = new Intent(context, NfoExportService.class);
         serviceIntent.setAction(INTENT_EXPORT_ALL);
-        if (isForeground) ContextCompat.startForegroundService(context, serviceIntent);
+        if (isForeground) context.startService(serviceIntent);
     }
 
     public NfoExportService() {
@@ -139,18 +136,12 @@ public class NfoExportService extends IntentService implements DefaultLifecycleO
                 .setContentText("")
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setTicker(null).setOnlyAlertOnce(true).setOngoing(true).setAutoCancel(true);
-        ServiceCompat.startForeground(this, NOTIFICATION_ID, nb.build(),
-                (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) ? ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC : 0);
         // Register as a lifecycle observer
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        ServiceCompat.startForeground(this, NOTIFICATION_ID, nb.setWhen(System.currentTimeMillis()).build(),
-                (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) ? ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC : 0);
-        isForeground = true;
-        
         String action = intent != null ? intent.getAction() : null;
         Uri data = intent != null ? intent.getData() : null;
         boolean processIntent = false;
@@ -187,8 +178,6 @@ public class NfoExportService extends IntentService implements DefaultLifecycleO
         nm.notify(NOTIFICATION_ID, nb.build());
         handleCursor(getAllCursor());
         removeAllTask();
-        // Exit foreground mode and terminate service (one-shot IntentService task complete)
-        stopForeground(true);
         stopSelf();
     }
 
@@ -209,8 +198,6 @@ public class NfoExportService extends IntentService implements DefaultLifecycleO
             handleCursor(getInDirectoryCursor(data));
         }
         removeDirTask(data);
-        // Exit foreground mode and terminate service (one-shot IntentService task complete)
-        stopForeground(true);
         stopSelf();
     }
 
@@ -295,12 +282,6 @@ public class NfoExportService extends IntentService implements DefaultLifecycleO
         sScheduledTasks.clear();
         // Cancel the notification
         nm.cancel(NOTIFICATION_ID);
-        stopService();
-    }
-
-    public void stopService() {
-        log.debug("stopService");
-        stopForeground(true);
     }
 
     @Override

@@ -26,7 +26,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.pm.ServiceInfo;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -44,8 +43,6 @@ import android.provider.MediaStore;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.ServiceCompat;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
@@ -144,7 +141,7 @@ public class VideoStoreImportService extends Service implements Handler.Callback
                 serviceIntent.putExtras(broadcast.getExtras()); //in case we have an extra... such as "recordLogExtra"
             log.debug("startIfHandles: apps is foreground startService and pass intent to self");
             LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.startIfHandles", "apps is foreground mContext.startService and pass intent to self");
-            ContextCompat.startForegroundService(context, serviceIntent);
+            context.startService(serviceIntent);
             return true;
         }
         log.debug("startIfHandles is false: do nothing");
@@ -176,30 +173,10 @@ public class VideoStoreImportService extends Service implements Handler.Callback
         log.debug("onCreate");
         // executed on each startService
         n = createNotification();
-        log.debug("onCreate: create notification + startService {}", NOTIFICATION_ID);
+        log.debug("onCreate: create notification + startService " + NOTIFICATION_ID);
         LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onCreate", "created notification + startService " + NOTIFICATION_ID + " notification null? " + (n == null));
-
-        //Check if we are in the Foreground.
-        if (!LoaderUtils.isAppInForeground()){
-            stopSelf();
-            return;
-        }
-
-        try {
-            ServiceCompat.startForeground(this, NOTIFICATION_ID, n,
-                    (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) ? ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC : 0);
-        } catch (Exception e) {
-            // Android 12+ (API 31+) throws ForegroundServiceStartNotAllowedException when app is in background
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && e instanceof ForegroundServiceStartNotAllowedException) {
-                log.warn("onCreate: Cannot start foreground service - app is in background", e);
-                LeeroyFlixUtils.addBreadcrumb(SentryLevel.WARNING, "VideoStoreImportService.onCreate", "ForegroundServiceStartNotAllowedException - stopping service");
-            } else {
-                log.error("onCreate: Unexpected error starting foreground service", e);
-                LeeroyFlixUtils.addBreadcrumb(SentryLevel.ERROR, "VideoStoreImportService.onCreate", "Unexpected error: " + e.getMessage());
-            }
-            stopSelf();
-            return;
-        }
+        // Register as a lifecycle observer
+        ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
         // importer logic
         mImporter = new VideoStoreImportImpl(this);
         // setup background worker thread
@@ -209,7 +186,7 @@ public class VideoStoreImportService extends Service implements Handler.Callback
         // associate a handler with the new thread
         mHandler = new Handler(looper, this);
         // associate content observer that reports in background thread
-        mContentObserver = new ContentChangeObserver(mHandler, this);
+        mContentObserver = new ContentChangeObserver(mHandler);
 
         // handles changes to mounted / unmounted volumes, needs to exist before foreground state
         // handler because it's used in there
@@ -271,41 +248,7 @@ public class VideoStoreImportService extends Service implements Handler.Callback
         // intents are delivered here.
         log.debug("onStartCommand:{} flags:{} startId:{} getAction {}", intent, flags, startId, ((intent != null) ? intent.getAction() : "null"));
 
-        // Safety check: ensure handler is initialized before proceeding
-        if (mHandler == null) {
-            log.warn("onStartCommand: mHandler is null, initialization not complete yet, deferring service start");
-            LeeroyFlixUtils.addBreadcrumb(SentryLevel.WARNING, "VideoStoreImportService.onStartCommand", "mHandler is null, deferring start");
-            // Return START_STICKY so the service will be restarted when onCreate completes
-            return Service.START_STICKY;
-        }
-
-        //Check if we are in the Foreground
-        if (!LoaderUtils.isAppInForeground()){
-            stopSelf(startId);
-            return Service.START_NOT_STICKY;
-        }
-
-        try {
-            ServiceCompat.startForeground(this, NOTIFICATION_ID, n,
-                    (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) ? ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC : 0);
-            LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStartCommand", "created notification + startService " + NOTIFICATION_ID + " notification null? " + (n == null));
-        } catch (Exception e) {
-            // Android 12+ (API 31+) throws ForegroundServiceStartNotAllowedException when app is in background
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && e instanceof ForegroundServiceStartNotAllowedException) {
-                log.warn("onStartCommand: Cannot start foreground service - app is in background", e);
-                LeeroyFlixUtils.addBreadcrumb(SentryLevel.WARNING, "VideoStoreImportService.onStartCommand", "ForegroundServiceStartNotAllowedException - stopping service");
-            } else {
-                log.error("onStartCommand: Unexpected error starting foreground service", e);
-                LeeroyFlixUtils.addBreadcrumb(SentryLevel.ERROR, "VideoStoreImportService.onStartCommand", "Unexpected error: " + e.getMessage());
-            }
-            stopSelf(startId);
-            return Service.START_NOT_STICKY;
-        }
-        
-        //Stop crash if mHandler is null.
-        if (mHandler == null)  {
-            return Service.START_STICKY;
-        }
+        LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStartCommand", "created notification + startService " + NOTIFICATION_ID + " notification null? " + (n == null));
 
         if (intent == null || intent.getAction() == null) {
             removeAllMessages(mHandler);
@@ -391,25 +334,28 @@ public class VideoStoreImportService extends Service implements Handler.Callback
                 stopSelf();
             }
         }
-        // START_STICKY: Persistent service that handles video imports and responds to media scanner events
-        // If killed by system, it will restart to continue monitoring for import requests
-        return Service.START_STICKY;
+        return Service.START_NOT_STICKY;
     }
 
     public static void startService(Context context) {
         // this one is called only by VideoProvider at start or when app turns background->foreground
         log.debug("startService");
-        if (! ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
-            log.debug("startService: app not in foreground, returning");
-            return;
+        if (! ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) return;
+        
+        // Ensure MediaRetrieverService is running before starting VideoStoreImportService
+        Intent mediaRetrieverIntent = new Intent(context, MediaRetrieverService.class);
+        try {
+            context.startService(mediaRetrieverIntent);
+            log.debug("startService: MediaRetrieverService start requested");
+        } catch (IllegalStateException e) {
+            log.warn("startService: Failed to start MediaRetrieverService despite lifecycle check - timing issue", e);
         }
-
-        // MediaRetrieverService will be auto-created when VideoStoreImportImpl binds to it (via BIND_AUTO_CREATE)
+        
         mContext = context;
         Intent intent = new Intent(context, VideoStoreImportService.class);
         LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.startService", "app in foreground calling startService");
-        log.debug("startService: app in foreground, calling ContextCompat.startForegroundService()");
-        ContextCompat.startForegroundService(context, intent); // triggers an initial video import on local storage because files might have been created meanwhile
+        log.debug("startService: app in foreground calling startService");
+        context.startService(intent); // triggers an initial video import on local storage because files might have been created meanwhile
     }
 
     public static void stopService(Context context) {
@@ -543,10 +489,6 @@ public class VideoStoreImportService extends Service implements Handler.Callback
             log.debug("doImport: starting AutoScrapeService after scan completion");
             org.leeroy.mediascraper.AutoScrapeService.startService(this);
         }
-
-        // Exit foreground mode now that import is complete
-        log.debug("doImport: CALLING stopForeground(true) to exit foreground mode and remove notification");
-        stopForeground(true);
     }
 
     private void processDeleteFileAndVobCallback() {
@@ -708,24 +650,6 @@ public class VideoStoreImportService extends Service implements Handler.Callback
             log.debug("handleVolumeMounted: cleared volume_hidden for {} rows", updated);
         }
 
-        //Check if we are in the Foreground.
-        if (!LoaderUtils.isAppInForeground()){
-            return;
-        }
-
-        try {
-            ServiceCompat.startForeground(this, NOTIFICATION_ID, n,
-                    (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) ? ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC : 0);
-        } catch (Exception e) {
-            // Android 12+ (API 31+) throws ForegroundServiceStartNotAllowedException when app is in background
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && e instanceof ForegroundServiceStartNotAllowedException) {
-                log.warn("handleVolumeMounted: Cannot start foreground service - app is in background", e);
-            } else {
-                log.error("handleVolumeMounted: Unexpected error starting foreground service", e);
-            }
-            return;
-        }
-
         // Key change: Use incremental import instead of full import for remounts
         // Files are already unhidden by updateVolumeHiddenStates(), so incremental scan will pick them up
         Message importMsg;
@@ -762,11 +686,9 @@ public class VideoStoreImportService extends Service implements Handler.Callback
     /** ContentObserver that triggers import when data changed. */
     private static class ContentChangeObserver extends ContentObserver {
         private final Handler mHandler;
-        private final VideoStoreImportService mService;
-        public ContentChangeObserver(Handler handler, VideoStoreImportService service) {
+        public ContentChangeObserver(Handler handler) {
             super(handler);
             mHandler = handler;
-            mService = service;
         }
         @Override
         public void onChange(boolean selfChange) {
@@ -775,26 +697,6 @@ public class VideoStoreImportService extends Service implements Handler.Callback
             // happens really often
             if (importOk() && mHandler != null) {
                 log.debug("onChange: triggering VIDEO_SCANNER_IMPORT_INCR");
-                // First ensure we're in foreground mode for the new import
-                log.debug("ContentChangeObserver.onChange: ensuring foreground mode for new import");
-
-                //Check if we are in the Foreground.
-                if (!LoaderUtils.isAppInForeground()){
-                    return;
-                }
-
-                try {
-                    ServiceCompat.startForeground(mService, NOTIFICATION_ID, mService.n,
-                        (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) ? ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC : 0);
-                } catch (Exception e) {
-                    // Android 12+ (API 31+) throws ForegroundServiceStartNotAllowedException when app is in background
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && e instanceof ForegroundServiceStartNotAllowedException) {
-                        log.warn("ContentChangeObserver.onChange: Cannot start foreground service - app is in background", e);
-                    } else {
-                        log.error("ContentChangeObserver.onChange: Unexpected error starting foreground service", e);
-                    }
-                    return;
-                }
                 removeAllMessages(mHandler);
                 Message msg = mHandler.obtainMessage(MESSAGE_IMPORT_INCR, DONT_KILL_SELF, 0);
                 mHandler.sendMessageDelayed(msg, 1000);
@@ -867,12 +769,6 @@ public class VideoStoreImportService extends Service implements Handler.Callback
         }
         // Cancel the notification
         nm.cancel(NOTIFICATION_ID);
-        stopService();
-    }
-
-    public void stopService() {
-        log.debug("stopService: CALLING stopForeground(true) to exit foreground and remove notification");
-        stopForeground(true);
     }
 
     @Override
@@ -885,7 +781,7 @@ public class VideoStoreImportService extends Service implements Handler.Callback
 
         // App in foreground - restart MediaRetrieverService
         isForeground = true;
-        log.debug("onStart: LifecycleOwner app moved to FOREGROUND restarting MediaRetrieverService");
+        log.debug("onStart: LifecycleOwner app in foreground, restarting MediaRetrieverService");
         
         // Restart MediaRetrieverService for foreground operation
         Intent mediaRetrieverIntent = new Intent(this, MediaRetrieverService.class);
@@ -922,33 +818,8 @@ public class VideoStoreImportService extends Service implements Handler.Callback
         // (checkDatabaseForUnmountedVolumes() is called during import via updateVolumeHiddenStatesByPath())
         if (ImportState.VIDEO.isDirty()) {
             log.debug("onStart: onForeGround && ImportState.isDirty MESSAGE_IMPORT_FULL");
-
-            //Check if we are in the Foreground.
-            if (!LoaderUtils.isAppInForeground()){
-                return;
-            }
-
-            // First ensure we're in foreground mode for the new import
-            try {
-                ServiceCompat.startForeground(this, NOTIFICATION_ID, n,
-                    (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) ? ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC : 0);
-            } catch (Exception e) {
-                // Android 12+ (API 31+) throws ForegroundServiceStartNotAllowedException when app is in background
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && e instanceof ForegroundServiceStartNotAllowedException) {
-                    log.warn("onStart: Cannot start foreground service - app is in background", e);
-                    LeeroyFlixUtils.addBreadcrumb(SentryLevel.WARNING, "VideoStoreImportService.onStart", "ForegroundServiceStartNotAllowedException");
-                } else {
-                    log.error("onStart: Unexpected error starting foreground service", e);
-                    LeeroyFlixUtils.addBreadcrumb(SentryLevel.ERROR, "VideoStoreImportService.onStart", "Unexpected error: " + e.getMessage());
-                }
-                return;
-            }
             LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStart", "app is foreground ImportState.isDirty MESSAGE_IMPORT_FULL");
             mHandler.obtainMessage(MESSAGE_IMPORT_FULL, DONT_KILL_SELF, 0).sendToTarget();
-        } else {
-            // Even if not dirty, do incremental import to check volume states
-            log.debug("onStart: onForeGround but not dirty, triggering MESSAGE_IMPORT_INCR to check volumes");
-            mHandler.obtainMessage(MESSAGE_IMPORT_INCR, DONT_KILL_SELF, 0).sendToTarget();
         }
     }
 

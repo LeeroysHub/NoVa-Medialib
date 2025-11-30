@@ -20,14 +20,14 @@ import android.app.NotificationManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ServiceInfo;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.Build;
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.ServiceCompat;
-import androidx.core.content.ContextCompat;
+import androidx.lifecycle.DefaultLifecycleObserver;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.ProcessLifecycleOwner;
 
 import org.leeroy.medialib.R;
 import org.leeroy.mediaprovider.video.ScraperStore;
@@ -44,7 +44,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import okhttp3.Cache;
 
-public class AllCollectionScrapeService extends IntentService {
+public class AllCollectionScrapeService extends IntentService implements DefaultLifecycleObserver {
     private static final String PREFERENCE_NAME = "themoviedb.org";
 
     private static final Logger log = LoggerFactory.getLogger(AllCollectionScrapeService.class);
@@ -126,8 +126,6 @@ public class AllCollectionScrapeService extends IntentService {
             handleCursor(getCollectionCursor(collectionId));
         }
         removeTask(collectionId);
-        // Exit foreground mode and terminate service (one-shot IntentService task complete)
-        stopForeground(true);
         stopSelf();
     }
 
@@ -135,8 +133,6 @@ public class AllCollectionScrapeService extends IntentService {
         log.debug("rescrapeAllCollections");
         handleCursor(getAllCursor());
         removeAllTask();
-        // Exit foreground mode and terminate service (one-shot IntentService task complete)
-        stopForeground(true);
         stopSelf();
     }
 
@@ -144,8 +140,6 @@ public class AllCollectionScrapeService extends IntentService {
         log.debug("rescrapeNoImageCollections");
         handleCursor(getNoImageCursor());
         removeNoImageTask();
-        // Exit foreground mode and terminate service (one-shot IntentService task complete)
-        stopForeground(true);
         stopSelf();
     }
 
@@ -179,8 +173,9 @@ public class AllCollectionScrapeService extends IntentService {
                 .setContentText("")
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setTicker(null).setOnlyAlertOnce(true).setOngoing(true).setAutoCancel(true);
-        ServiceCompat.startForeground(this, NOTIFICATION_ID, nb.build(),
-                (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) ? ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC : 0);
+
+        // Register as a lifecycle observer
+        ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
     }
 
     @Override
@@ -192,11 +187,6 @@ public class AllCollectionScrapeService extends IntentService {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        ServiceCompat.startForeground(this, NOTIFICATION_ID, nb.setWhen(System.currentTimeMillis()).build(),
-                (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) ? ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC : 0);
-        
-        isForeground = true;
-        
         String action = intent != null ? intent.getAction() : null;
         Long collectionId = intent != null ? intent.getLongExtra("collectionId", -1) : null;
         boolean processIntent = false;
@@ -238,8 +228,6 @@ public class AllCollectionScrapeService extends IntentService {
         nm.notify(NOTIFICATION_ID, nb.build());
         handleCursor(getAllCursor());
         removeAllTask();
-        // Exit foreground mode and terminate service (one-shot IntentService task complete)
-        stopForeground(true);
         stopSelf();
     }
 
@@ -249,8 +237,6 @@ public class AllCollectionScrapeService extends IntentService {
         nm.notify(NOTIFICATION_ID, nb.build());
         handleCursor(getNoImageCursor());
         removeNoImageTask();
-        // Exit foreground mode and terminate service (one-shot IntentService task complete)
-        stopForeground(true);
         stopSelf();
     }
 
@@ -263,8 +249,6 @@ public class AllCollectionScrapeService extends IntentService {
             handleCursor(getCollectionCursor(collectionId));
         }
         removeTask(collectionId);
-        // Exit foreground mode and terminate service (one-shot IntentService task complete)
-        stopForeground(true);
         stopSelf();
     }
 
@@ -336,11 +320,20 @@ public class AllCollectionScrapeService extends IntentService {
         sScheduledTasks.clear();
         // Cancel the notification
         nm.cancel(NOTIFICATION_ID);
-        stopService();
     }
 
-    public void stopService() {
-        log.debug("stopService");
-        stopForeground(true);
+    @Override
+    public void onStop(LifecycleOwner owner) {
+        // App in background
+        log.debug("onStop: LifecycleOwner app in background stopSelf");
+        cleanup();
+        stopSelf();
+    }
+
+    @Override
+    public void onStart(LifecycleOwner owner) {
+        log.debug("onStart: LifecycleOwner app in foreground");
+        isForeground = true;
+        // App in foreground
     }
 }

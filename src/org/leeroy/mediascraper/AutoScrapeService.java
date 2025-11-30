@@ -20,7 +20,6 @@ import android.app.Service;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ServiceInfo;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
@@ -33,8 +32,10 @@ import android.os.IBinder;
 import android.os.PowerManager;
 
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.ServiceCompat;
-import androidx.core.content.ContextCompat;
+import androidx.lifecycle.DefaultLifecycleObserver;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.ProcessLifecycleOwner;
 import androidx.preference.PreferenceManager;
 
 import android.os.Looper;
@@ -60,7 +61,7 @@ import java.io.IOException;
 /**
  * Created by alexandre on 20/05/15.
  */
-public class AutoScrapeService extends Service {
+public class AutoScrapeService extends Service implements DefaultLifecycleObserver {
     public static final String EXPORT_EVERYTHING = "export_everything";
     public static final String RESCAN_EVERYTHING = "rescan_everything";
     public static final String RESCAN_MOVIES = "rescan_movies";
@@ -138,18 +139,11 @@ public class AutoScrapeService extends Service {
 
     public static void startService(Context context) {
         log.debug("startService in foreground");
-        mContext = context.getApplicationContext();
-        acquireWakeLock(context);
+        mContext = context;
+        acquireWakeLock(context.getApplicationContext());
         Intent intent = new Intent(context, AutoScrapeService.class);
-        try {
-            // Try to start as foreground service, but fall back if not allowed
-            // This can fail when the app is in the background on Android 12+
-            ContextCompat.startForegroundService(context, intent);
-        } catch (IllegalStateException e) {
-            log.warn("startService: Unable to start foreground service, falling back to regular service", e);
-            // Fall back to regular startService which is allowed when app is in background
-            context.startService(intent);
-        }
+        mContext = context;
+        context.startService(new Intent(context, AutoScrapeService.class));
     }
 
     public static void startServiceAfterNetworkScan(Context context) {
@@ -157,21 +151,7 @@ public class AutoScrapeService extends Service {
         mContext = context.getApplicationContext();
         Intent intent = new Intent(context, AutoScrapeService.class);
         intent.putExtra("FORCE_AFTER_NETWORK_SCAN", true);
-        try {
-            // Try to start as foreground service
-            // This is called from BroadcastReceiver (NetworkAutoRefresh) which may not have permission
-            // in certain conditions (app in background, Android 12+)
-            ContextCompat.startForegroundService(context, intent);
-        } catch (Exception e) {
-            // If startForegroundService fails (ForegroundServiceStartNotAllowedException or similar),
-            // fall back to regular startService which is allowed from BroadcastReceiver
-            log.warn("startServiceAfterNetworkScan: Unable to start foreground service ({}), falling back to regular service", e.getClass().getSimpleName());
-            try {
-                context.startService(intent);
-            } catch (Exception fallbackError) {
-                log.error("startServiceAfterNetworkScan: Both startForegroundService and startService failed", fallbackError);
-            }
-        }
+        context.startService(intent);
     }
 
     public static void resetNetworkScanCount() {
@@ -239,7 +219,6 @@ public class AutoScrapeService extends Service {
         }
         // Cancel the notification
         nm.cancel(NOTIFICATION_ID);
-        stopService();
     }
 
     // Used by system. Don't call
@@ -249,38 +228,27 @@ public class AutoScrapeService extends Service {
 
     @Override
     public void onCreate() {
-        try {
-            super.onCreate();
-            log.debug("onCreate() {}", this);
+        super.onCreate();
+        log.debug("onCreate() {}", this);
 
-            // need to do that early to avoid ANR on Android 26+
-            nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                NotificationChannel nc = new NotificationChannel(notifChannelId, notifChannelName,
-                        nm.IMPORTANCE_LOW);
-                nc.setDescription(notifChannelDescr);
-                if (nm != null)
-                    nm.createNotificationChannel(nc);
-            }
-            nb = new NotificationCompat.Builder(this, notifChannelId)
-                    .setSmallIcon(R.drawable.stat_notify_scraper)
-                    .setContentTitle(getString(R.string.scraping_in_progress))
-                    .setPriority(NotificationCompat.PRIORITY_LOW)
-                    .setTicker(null).setOnlyAlertOnce(true).setOngoing(true).setAutoCancel(true);
-            try {
-                ServiceCompat.startForeground(this, NOTIFICATION_ID, nb.build(),
-                        (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) ? ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC : 0);
-            } catch (Exception e) {
-                // Handle ForegroundServiceStartNotAllowedException on Android 12+ when permission is not available
-                // The service will still run but without the foreground notification
-                log.warn("onCreate: Unable to start foreground service ({}), service will continue without foreground priority", e.getClass().getSimpleName());
-            }
-            mBinder = new AutoScraperBinder();
-        } catch (Throwable t) {
-            // Catch any unexpected exceptions during onCreate to prevent service crash
-            log.error("onCreate: Unexpected error during service creation", t);
-            mBinder = new AutoScraperBinder();
+        // need to do that early to avoid ANR on Android 26+
+        nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel nc = new NotificationChannel(notifChannelId, notifChannelName,
+                    nm.IMPORTANCE_LOW);
+            nc.setDescription(notifChannelDescr);
+            if (nm != null)
+                nm.createNotificationChannel(nc);
         }
+        nb = new NotificationCompat.Builder(this, notifChannelId)
+                .setSmallIcon(R.drawable.stat_notify_scraper)
+                .setContentTitle(getString(R.string.scraping_in_progress))
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .setTicker(null).setOnlyAlertOnce(true).setOngoing(true).setAutoCancel(true);
+        
+        log.debug("onCreate: register lifecycle observer");
+        ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
+        mBinder = new AutoScraperBinder();
     }
 
     @Override
@@ -307,21 +275,6 @@ public class AutoScrapeService extends Service {
                         .setTicker(null).setOnlyAlertOnce(true).setOngoing(true).setAutoCancel(true);
             }
 
-            // Call startForeground to satisfy the requirement of startForegroundService()
-            if (nb != null && nm != null) {
-                try {
-                    ServiceCompat.startForeground(this, NOTIFICATION_ID, nb.build(),
-                            (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) ? ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC : 0);
-                } catch (Exception e) {
-                    // Handle ForegroundServiceStartNotAllowedException on Android 12+ when permission is not available
-                    log.warn("onStartCommand: Unable to start foreground service ({}), service will continue without foreground priority", e.getClass().getSimpleName());
-                }
-            } else {
-                log.warn("onStartCommand: Unable to start foreground - notification resources not available");
-                // If we can't start foreground, stop the service immediately to avoid crash
-                stopSelf();
-                return START_NOT_STICKY;
-            }
         } catch (Throwable t) {
             // Catch any unexpected exceptions during initialization to prevent service crash
             log.error("onStartCommand: Unexpected error during initialization", t);
@@ -448,9 +401,6 @@ public class AutoScrapeService extends Service {
                         cursor.close();
                     } while (index < numberOfRows && (isForeground || isForceAfterNetworkScan) && !Thread.currentThread().isInterrupted());
                     sIsScraping = false;
-                    // Note: isForceAfterNetworkScan is now managed by networkScanCount
-                    // Exit foreground mode and remove notification since export is complete
-                    stopForeground(true);
                     cursor.close();
                 }
             };
@@ -523,7 +473,7 @@ public class AutoScrapeService extends Service {
 
     protected void startScraping(final boolean rescrapAlreadySearched, final boolean onlyNotFound) {
         log.debug("startScraping: {}", String.valueOf(mThread == null || !mThread.isAlive()));
-        nb.setContentTitle(getString(R.string.scraping_in_progress)).setWhen(System.currentTimeMillis());
+        nb.setContentTitle(getString(R.string.scraping_in_progress));
 
         if(mThread==null || !mThread.isAlive()) {
             mThread = new Thread() {
@@ -794,9 +744,6 @@ public class AutoScrapeService extends Service {
                     } while(restartOnNextRound && (isForeground || isForceAfterNetworkScan) && !Thread.currentThread().isInterrupted()
                             &&PreferenceManager.getDefaultSharedPreferences(AutoScrapeService.this).getBoolean(AutoScrapeService.KEY_ENABLE_AUTO_SCRAP, true)); //if we had something to do, we look for new videos
                     sIsScraping = false;
-                    // Note: isForceAfterNetworkScan is now managed by networkScanCount
-                    // Exit foreground mode and remove notification since scraping is complete
-                    stopForeground(true);
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -811,6 +758,9 @@ public class AutoScrapeService extends Service {
                         .putLong(PREFERENCE_LAST_TIME_VIDEO_SCRAPED_UTC, utcSeconds).apply();
                         TraktService.onNewVideo(AutoScrapeService.this); // should be done only at the end to not resync in loop
                     }
+                   
+                    //Kill notififaction.
+                    nm.cancel(NOTIFICATION_ID);
                 }
             };
             mThread.start();
@@ -869,11 +819,26 @@ public class AutoScrapeService extends Service {
         }
     }
 
-    public void stopService() {
-        log.debug("stopService");
-        stopForeground(true);
+    @Override
+    public void onStop(LifecycleOwner owner) {
+        // App in background
+        log.debug("onStop: LifecycleOwner app in background, stopSelf");
+        cleanup();
+        stopSelf();
         if(mWakeLock!=null&&mWakeLock.isHeld())
             mWakeLock.release();
+    }
+
+    @Override
+    public void onStart(LifecycleOwner owner) {
+        log.debug("onStart: LifecycleOwner app in foreground");
+        isForeground = true;
+        if (isDirtyState()) {
+            log.debug("onStart: Rescanning everything due to dirty state");
+            // Reset the dirty flag in SharedPreferences
+            saveDirtyState(false);
+            startScraping(false, false);
+        }
     }
 
     private void saveDirtyState(boolean dirtyState) {
