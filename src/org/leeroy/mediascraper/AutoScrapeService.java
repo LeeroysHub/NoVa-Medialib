@@ -102,8 +102,6 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
     private static Handler mHandler = new Handler(Looper.getMainLooper());
 
     private static Context mContext;
-    
-    private static PowerManager.WakeLock mWakeLock;
 
     private static final int NOTIFICATION_ID = 4;
     private NotificationManager nm;
@@ -138,8 +136,7 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
 
     public static void startService(Context context) {
         log.debug("startService in foreground");
-        mContext = context;
-        acquireWakeLock(context.getApplicationContext());
+        mContext = context.getApplicationContext();
         Intent intent = new Intent(context, AutoScrapeService.class);
         mContext = context;
         context.startService(new Intent(context, AutoScrapeService.class));
@@ -189,13 +186,6 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
         synchronized (networkScanLock) {
             return networkScanCount;
         }
-    }
-    
-    public static void acquireWakeLock(Context context) {
-        //Keep screen on for scraping.
-        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "LeeroyFlixScraper::WakeLock");
-        mWakeLock.acquire();
     }
 
     public void cleanup() {
@@ -809,8 +799,6 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
         log.debug("onStop: LifecycleOwner app in background, stopSelf");
         cleanup();
         stopSelf();
-        if(mWakeLock!=null&&mWakeLock.isHeld())
-            mWakeLock.release();
     }
 
     @Override
