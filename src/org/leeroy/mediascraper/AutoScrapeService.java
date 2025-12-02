@@ -374,7 +374,7 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                             long episodeID = cursor.getLong(cursor.getColumnIndex(VideoStore.Video.VideoColumns.SCRAPER_EPISODE_ID));
                             final int scraperType = cursor.getInt(cursor.getColumnIndex(VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_TYPE));
                             BaseTags baseTags = null;
-                            if (fileUri.toString().startsWith("smb:")) {
+                            if (!fileUri.toString().startsWith("upnp://")) {
                                 log.trace("startExporting: {} fileUri {}", movieID, fileUri);
                                 if (scraperType == BaseTags.TV_SHOW) {
                                     baseTags = TagsFactory.buildEpisodeTags(AutoScrapeService.this, episodeID);
@@ -382,7 +382,7 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                                     baseTags = TagsFactory.buildMovieTags(AutoScrapeService.this, movieID);
                                 }
                             } else {
-                                log.trace("Skipping non-SMB file:" + fileUri);
+                                log.trace("startExporting: Skipping UPnP file: {}", fileUri);
                             }
                             sNumberOfFilesRemainingToProcess--;
                             sTotalNumberOfFilesRemainingToProcess--;
