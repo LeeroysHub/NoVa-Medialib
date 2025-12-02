@@ -70,7 +70,7 @@ public class SmbProxy extends Proxy{
         } catch (IOException e) {
             return null;
         }
-        return mStream.getUri(file != null ? file.getName():encodedUri.getLastPathSegment());
+        return mStream.getEncodedUri(file != null ? file.getName():encodedUri.getLastPathSegment());
     }
     
     public void stop() {
