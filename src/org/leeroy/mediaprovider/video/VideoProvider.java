@@ -106,7 +106,7 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
 
     private static final int IMAGE_THUMB = 2;
     // yes max retry of 5 is not enough I saw it fail and succeed at 7...
-    private static final int THUMB_TRY_MAX = 5    ;
+    private static final int THUMB_TRY_MAX = 10    ;
     private ContentResolver mCr;
 
     private static final int LIGHT_INDEX_STORAGE_MIN_ID = LeeroyFlixMediaCommon.LIGHT_INDEX_MIN_STORAGE_ID;
@@ -694,24 +694,24 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
                     // if this is a request from MediaScanner, DATA should contains file path
                     // we only process update request from media scanner, otherwise the requests
                     // could be duplicate.
-                    if (count > 0 ) {
-                        Cursor c = db.query(table,
-                                READY_FLAG_PROJECTION, where,
-                                whereArgs, null, null, null);
-                        if (c != null) {
-                            try {
-                                while (c.moveToNext()) {
-                                    //long magic = c.getLong(2);
-                                    //if (magic == 0) {
-                                        requestMediaThumbnail(c.getString(1),c.getLong(0), uri,
-                                                MediaThumbRequest.PRIORITY_NORMAL);
-                                    //}
-                                }
-                            } finally {
-                                c.close();
-                            }
-                        }
-                    }
+                    //if (count > 0 ) {
+                        //Cursor c = db.query(table,
+                        //        READY_FLAG_PROJECTION, where,
+                        //        whereArgs, null, null, null);
+                        //if (c != null) {
+                         //   try {
+                         //       while (c.moveToNext()) {
+                         //           long magic = c.getLong(2);
+                         //           if (magic == 0) {
+ //                                       requestMediaThumbnail(c.getString(1),c.getLong(0), uri,
+  //                                              MediaThumbRequest.PRIORITY_NORMAL);
+                         //           }
+                          //      }
+                          //  } finally {
+                         //       c.close();
+                         //   }
+                      //  }
+                    //}
                 }
                 break;
                 default:
@@ -925,7 +925,7 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
 
             long magic = c.getLong(2);
             int nbTry = c.getInt(3);
-            if (magic == 0 && nbTry >= THUMB_TRY_MAX|| !FileUtils.isLocal(Uri.parse(path))&&!PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PREFERENCE_CREATE_REMOTE_THUMBS, false)) {
+            if (magic == 0 &&  nbTry >= THUMB_TRY_MAX|| !FileUtils.isLocal(Uri.parse(path))&&!PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PREFERENCE_CREATE_REMOTE_THUMBS, false)) {
                 // thumbnail creation failed more than one time: abort.
                 log.debug("thumbnail creation failed more than {} times: abort. ", THUMB_TRY_MAX);
 
@@ -933,9 +933,14 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
                 return false;
             }
 
-            MediaThumbRequest req = requestMediaThumbnail(path, id, origUri,
-                    MediaThumbRequest.PRIORITY_HIGH);
-            log.debug("is MediaThumbRequest null ? {}", String.valueOf(req==null));
+            MediaThumbRequest req = null;
+            if (magic == 0) {
+                req = requestMediaThumbnail(path, id, origUri,
+                        MediaThumbRequest.PRIORITY_HIGH);
+            } /* else {
+                log.debug("Don't need to generate, we have a magic number {}", String.valueOf(magic));
+            } */
+
             if (req == null) {
                 return false;
             }
@@ -1187,22 +1192,23 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
         }
 
         Uri updateDatabase(Bitmap thumbnail) {
-            Cursor c = mCr.query(mThumbUri, THUMB_PROJECTION,
-                    mOrigColumnName+ " = " + mOrigId, null, null);
-            if (c == null) return null;
-            try {
-                if (c.moveToFirst()) {
-                    return ContentUris.withAppendedId(mThumbUri, c.getLong(0));
-                }
-            } finally {
-                if (c != null) c.close();
-            }
+            //Cursor c = mCr.query(mThumbUri, THUMB_PROJECTION,
+            //        mOrigColumnName+ " = " + mOrigId, null, null);
+            //if (c == null) return null;
+            //try {
+            //    if (c.moveToFirst()) {
+            //        return ContentUris.withAppendedId(mThumbUri, c.getLong(0));
+            //    }
+            //} finally {
+            //    if (c != null) c.close();
+           // }
 
-            ContentValues values = new ContentValues(4);
+            ContentValues values = new ContentValues(5);
             values.put(Video.Thumbnails.KIND, Integer.valueOf(Video.Thumbnails.MINI_KIND));
-            values.put(mOrigColumnName, Long.valueOf(mOrigId));
-            values.put(Video.Thumbnails.WIDTH, Integer.valueOf(thumbnail.getWidth()));
-            values.put(Video.Thumbnails.HEIGHT, Integer.valueOf(thumbnail.getHeight()));
+            values.put(mOrigColumnName, mOrigId);
+            values.put(Video.Thumbnails.WIDTH, thumbnail.getWidth());
+            values.put(Video.Thumbnails.HEIGHT, thumbnail.getHeight());
+
             try {
                 log.debug("insert Thumbnail {} val:{}", mThumbUri, values);
                 return mCr.insert(mThumbUri, values);
@@ -1251,7 +1257,8 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
                     log.debug("ThumbRequest written bitmap");
 
                     ContentValues values = new ContentValues();
-
+                    long magic = sRandom.nextLong();
+                    values.put(VideoColumns.MINI_THUMB_MAGIC, magic);
                     mCr.update(mUri, values, null, null);
                 }
             }
