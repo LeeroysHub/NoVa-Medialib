@@ -58,7 +58,7 @@ public class ScraperCache {
         }
     }
 
-    public static Cache getCache(Context context) {
+    public static synchronized Cache getCache(Context context) {
         if (cache == null) {
             File cacheDir = new File(context.getCacheDir(), SCRAPER_CACHE);
             log.debug("getCache: directory {}/{}", context.getCacheDir(), SCRAPER_CACHE);

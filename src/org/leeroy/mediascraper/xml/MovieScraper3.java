@@ -68,10 +68,10 @@ public class MovieScraper3 extends BaseScraper2 {
     // Add caching for OkHttpClient so that queries for episodes from a same tvshow will get a boost in resolution
     static Cache cache;
 
-    static MyTmdb tmdb = null;
-    static SearchService searchService = null;
-    static MoviesService moviesService = null;
-    static CollectionsService collectionService = null;
+    private static volatile MyTmdb tmdb = null;
+    private static volatile SearchService searchService = null;
+    private static volatile MoviesService moviesService = null;
+    private static volatile CollectionsService collectionService = null;
 
     static String apiKey = null;
 
@@ -84,8 +84,31 @@ public class MovieScraper3 extends BaseScraper2 {
         }
     }
 
-    public static void reauth() {
+    public static synchronized void reauth() {
         tmdb = new MyTmdb(apiKey, cache);
+        searchService = tmdb.searchService();
+        moviesService = tmdb.moviesService();
+        collectionService = tmdb.collectionService();
+    }
+
+    public static synchronized MyTmdb getTmdb() {
+        if (tmdb == null) reauth();
+        return tmdb;
+    }
+
+    public static synchronized SearchService getSearchService() {
+        if (searchService == null) reauth();
+        return searchService;
+    }
+
+    public static synchronized MoviesService getMoviesService() {
+        if (moviesService == null) reauth();
+        return moviesService;
+    }
+
+    public static synchronized CollectionsService getCollectionService() {
+        if (collectionService == null) reauth();
+        return collectionService;
     }
 
     @Override
@@ -96,63 +119,12 @@ public class MovieScraper3 extends BaseScraper2 {
             return new ScrapeSearchResult(null, true, ScrapeStatus.ERROR, null);
         }
         MovieSearchInfo searchInfo = (MovieSearchInfo) info;
-        //log.debug("getMatches2: movie search:{}", searchInfo.getName());
-        if (tmdb == null) reauth();
-        if (searchService == null) searchService = tmdb.searchService();
+        log.debug("getMatches2: movie search:{}", searchInfo.getName());
+        
         // get configured language
         String language = Scraper.getLanguage(mContext);
-        if (language == null || language.contains("null")) language = Locale.getDefault().getLanguage();
-
-        //log.debug("movie search:{} year:{} language:{}", searchInfo.getName(), searchInfo.getYear(), language);
-        
-        //Check for UPNP and SMB differences, make sure we have a valid title.
-        //log.debug("movie search:" + searchInfo.getName() + " year:" + searchInfo.getYear() + " language:" + language);
-        String[] candidates = {
-            searchInfo.getSearchSuggestion(),
-            searchInfo.getName()
-        };
-
-        //Check Search Suggestion, Name and fallback to filename.       
-        String searchQuery = searchInfo.getFile().toString();
-        for (String candidate : candidates) {
-            if (!(candidate == null || candidate.isBlank() || candidate.contains("null"))) {
-                searchQuery = candidate;
-                break; // first valid match wins, fallback to file name.
-            }
-        }
-        
-        //Look for any years in the title
-        String reversed = new StringBuilder(searchQuery).reverse().toString();
-        Pattern yearPattern = Pattern.compile("\\b(\\d{4})\\b");
-        Matcher matcher = yearPattern.matcher(reversed);
-
-        // Current Calendar year.
-        String year = null;
-        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-
-        //Loop backwards through the string until we have a plausible year,
-        //Make sure we have at least a 2 DIGIT word left (IF Movie!)
-        while (matcher.find()) {
-            String candidateYear = new StringBuilder(matcher.group(1)).reverse().toString();
-            int parsedYear = Integer.parseInt(candidateYear);
-
-            if (parsedYear >= 1900 && parsedYear <= currentYear) {
-                int cutIndex = searchQuery.length() - matcher.start() - 4;
-                if (cutIndex >= 2) {
-                    searchQuery = searchQuery.substring(0, cutIndex).trim();
-                    year = candidateYear;
-                }
-                break;
-            }
-        }
-        //If we didn't get a year out, fallback to the searchInfo year
-        if (year == null) {
-            year = searchInfo.getYear();
-        }
-
-        //SEARCH TMDB FOR THE MOVIE!
-        SearchMovieResult searchResult = SearchMovie2.search(searchQuery, language, year, maxItems, searchService, adultScrape);
-        
+        log.debug("movie search:{} year:{} language:{}", searchInfo.getName(), searchInfo.getYear(), language);
+        SearchMovieResult searchResult = SearchMovie2.search(searchInfo.getName(), language, searchInfo.getYear(), maxItems, getSearchService(), adultScrape);
         // TODO: this triggers scrape for all search results, is this intended?
         if (searchResult.status == ScrapeStatus.OKAY) {
             for (SearchResult result : searchResult.result) {
@@ -172,11 +144,8 @@ public class MovieScraper3 extends BaseScraper2 {
         long movieId = result.getId();
         Uri searchFile = result.getFile();
 
-        if (tmdb == null) reauth();
-        if (moviesService == null) moviesService = tmdb.moviesService();
-
         // get base info
-        MovieIdResult search = MovieId2.getBaseInfo(movieId, language, moviesService, mContext);
+        MovieIdResult search = MovieId2.getBaseInfo(movieId, language, getMoviesService(), mContext);
         if (search.status != ScrapeStatus.OKAY) {
             return new ScrapeDetailResult(search.tag, true, null, search.status, search.reason);
         }
@@ -194,8 +163,7 @@ public class MovieScraper3 extends BaseScraper2 {
 
         // MovieCollection poster/backdrops and information are handled in the MovieTag because it is easier
         if (tag.getCollectionId() != -1 && ! isCollectionAlreadyKnown(tag.getCollectionId(), mContext)) { // in presence of a movie collection/saga
-            if (collectionService == null) collectionService = tmdb.collectionService();
-            CollectionResult collectionResult = MovieCollection.getInfo(tag.getCollectionId(), language, collectionService);
+            CollectionResult collectionResult = MovieCollection.getInfo(tag.getCollectionId(), language, getCollectionService());
             if (collectionResult.status == ScrapeStatus.OKAY && collectionResult.collectionInfo != null) {
                 CollectionInfo collectionInfo = collectionResult.collectionInfo;
                 if (collectionInfo.name != null) tag.setCollectionName(collectionInfo.name);
@@ -214,7 +182,7 @@ public class MovieScraper3 extends BaseScraper2 {
         // if there was no movie description in the native language get it from default
         if (tag.getPlot() == null || tag.getPlot().isEmpty()) {
             log.debug("ScrapeDetailResult: getting description in en because plot non existent in {}", language);
-            MovieIdDescription2.addDescription(movieId, tag, moviesService);
+            MovieIdDescription2.addDescription(movieId, tag, getMoviesService());
         }
         tag.downloadPoster(mContext);
         // TODO MARC ?
