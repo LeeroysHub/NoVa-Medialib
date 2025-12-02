@@ -25,6 +25,7 @@ public class LoaderUtils {
 
     static public boolean mMustHideWatchedVideo = false;
     static public boolean mSmartRecentlyRows = false;
+    static public boolean mScrapeInProgress = false;
     public final static String HIDE_USER_HIDDEN_FILTER = VideoStore.Video.VideoColumns.LEEROYFLIX_HIDDEN_BY_USER+"=0";
 
     public final static String HIDE_WATCHED_FILTER = "("+VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_SEEN+" IS NULL OR "+
@@ -39,6 +40,14 @@ public class LoaderUtils {
         return mMustHideWatchedVideo;
     }
 
+    static public boolean getScrapeInProgress() {
+        return mScrapeInProgress;
+    }
+
+    static public boolean setScrapeInProgress(boolean isScrapeInProgress) {
+        return mScrapeInProgress = isScrapeInProgress;
+    }
+    
     static public boolean isSmartRecentlyRows() {
         return mSmartRecentlyRows;
     }

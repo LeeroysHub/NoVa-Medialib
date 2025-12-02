@@ -29,11 +29,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.PowerManager;
+//import android.os.PowerManager;
 
 import androidx.core.app.NotificationCompat;
 import androidx.lifecycle.DefaultLifecycleObserver;
-import androidx.lifecycle.Lifecycle;
+//import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ProcessLifecycleOwner;
 import androidx.preference.PreferenceManager;
@@ -45,6 +45,7 @@ import org.leeroy.mediaplayer.utils.trakt.TraktService;
 import org.leeroy.medialib.R;
 import org.leeroy.mediaprovider.DeleteFileCallback;
 import org.leeroy.environment.NetworkState;
+import org.leeroy.mediaprovider.video.LoaderUtils;
 import org.leeroy.mediaprovider.video.VideoStore;
 import org.leeroy.mediaprovider.video.WrapperChannelManager;
 import org.leeroy.mediascraper.preprocess.SearchInfo;
@@ -473,6 +474,9 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                 int totalNumberOfFilesScraped = 0;
 
                 public void run() {
+                    //Global Scrape in Progress, so the browser can skip thumbs in scrape and not waste space in storage
+                    LoaderUtils.setScrapeInProgress(true);
+                    
                     sIsScraping = true;
                     boolean shouldRescrapAll = rescrapAlreadySearched;
                     log.debug("startScraping: startThread {}", (mThread==null || !mThread.isAlive()) );
@@ -530,6 +534,9 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                                     sNumberOfFilesRemainingToProcess = 0;
                                     log.debug("startScraping disconnected from network calling stopSelf");
                                     stopSelf();
+                    
+                                    //Global Scrape in Progress, so the browser can skip thumbs in scrape and not waste space in storage
+                                    LoaderUtils.setScrapeInProgress(false);                
                                     return;
                                 }
 
@@ -735,6 +742,9 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                    
                     //Kill notififaction.
                     nm.cancel(NOTIFICATION_ID);
+                    
+                    //Global Scrape in Progress, so the browser can skip thumbs in scrape and not waste space in storage
+                    LoaderUtils.setScrapeInProgress(false);     
                 }
             };
             mThread.start();

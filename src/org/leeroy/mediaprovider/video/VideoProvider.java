@@ -89,7 +89,7 @@ import io.sentry.SentryLevel;
 public class VideoProvider extends ContentProvider implements DefaultLifecycleObserver {
     private static final Logger log = LoggerFactory.getLogger(VideoProvider.class);
 
-    private final static boolean SKIP_THUMBNAILS = false;
+    //private final static boolean SKIP_THUMBNAILS = false;
 
     private static volatile boolean isForeground = true;
 
@@ -1272,7 +1272,7 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
          * @param kind could be MINI_KIND or MICRO_KIND
          */
         public static Bitmap createVideoThumbnail(Context ctx, String filePath, int kind) {
-            if (SKIP_THUMBNAILS) {
+            if (LoaderUtils.getScrapeInProgress()) {
                 return null;
             } else {
                 Bitmap res = createVideoThumbnail_(ctx, filePath, kind);
