@@ -124,7 +124,21 @@ public class MovieScraper3 extends BaseScraper2 {
         // get configured language
         String language = Scraper.getLanguage(mContext);
         log.debug("movie search:{} year:{} language:{}", searchInfo.getName(), searchInfo.getYear(), language);
-        SearchMovieResult searchResult = SearchMovie2.search(searchInfo.getName(), language, searchInfo.getYear(), maxItems, getSearchService(), adultScrape);
+        String[] candidates = {
+                searchInfo.getSearchSuggestion(),
+                searchInfo.getName()
+        };
+
+        //Check Search Suggestion, Name and fallback to filename.
+        String searchQuery = searchInfo.getFile().toString();
+        for (String candidate : candidates) {
+            if (!(candidate == null || candidate.isBlank() || candidate.contains("null"))) {
+                searchQuery = candidate;
+                break; // first valid match wins, fallback to file name.
+            }
+        }
+        SearchMovieResult searchResult = SearchMovie2.search(searchQuery, language, searchInfo.getYear(), maxItems, getSearchService(), adultScrape);
+
         // TODO: this triggers scrape for all search results, is this intended?
         if (searchResult.status == ScrapeStatus.OKAY) {
             for (SearchResult result : searchResult.result) {
