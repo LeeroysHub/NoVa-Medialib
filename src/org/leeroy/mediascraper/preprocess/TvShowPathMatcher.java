@@ -58,7 +58,7 @@ class TvShowPathMatcher implements InputMatcher {
     // negative look behind (?<![\p{L}]) previous letter was not a Letter
     // (?i).*\/((?:[\p{L}\p{N}]++[\s._-]*+)++)\/[^\/]*?(?<![\p{L}])(?:S|SEAS|SEASON)[\s._-]*+(\d{1,2})(?!\d)[^\/]*+\/[^\/]*?(?<![\p{L}])(?:E|EP|EPISODE)[\s._-]*+(\d{1,2})(?!\d)[^\/]*+
     private static final String SEP_OPTIONAL = "[[\\p{Punct}&&[^()]]\\s]*+";
-    private static final String SEP_MANDATORY = "[[\\p{Punct}&&[^()]]\\s]++";
+    //private static final String SEP_MANDATORY = "[[.\\p{Punct}&&[^()]]\\s.]++";
     private static final String NOT_SLASH_LAZY = "[^/]*?"; // lazy
     private static final String NOT_SLASH_GREEDY = "[^/]*+"; // lazy
     private static final String PREVIOUS_NOT_LETTER = "(?<!\\p{L})";
