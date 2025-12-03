@@ -231,10 +231,15 @@ public class VideoStoreImportService extends Service implements Handler.Callback
 
     @Override
     public void onDestroy() {
-        log.debug("onDestroy");
+        log.debug("onDestroy - ImportState before: {}", ImportState.VIDEO.getState());
         isForeground = false;
         cleanup();
-        if (ImportState.VIDEO.isInitialImport()) ImportState.VIDEO.setState(State.IDLE);
+        // Reset ImportState to IDLE regardless of current state to prevent stuck spinner
+        if (ImportState.VIDEO.isInitialImport() || ImportState.VIDEO.isRegularImport()) {
+            log.debug("onDestroy - Resetting ImportState to IDLE");
+            ImportState.VIDEO.setState(State.IDLE);
+        }
+        log.debug("onDestroy - ImportState after: {}", ImportState.VIDEO.getState());
     }
 
     /** whether it's ok do do an import now, will mark db dirty if not */
@@ -390,7 +395,13 @@ public class VideoStoreImportService extends Service implements Handler.Callback
         log.debug("handleMessage:{} what:{} startid:{}", msg, msg.what, msg.arg1);
         switch (msg.what) {
             case MESSAGE_KILL:
-                if (ImportState.VIDEO.isInitialImport()) ImportState.VIDEO.setState(State.IDLE);
+                log.debug("handleMessage: MESSAGE_KILL - ImportState before: {}", ImportState.VIDEO.getState());
+                // Reset ImportState to IDLE regardless of current state to prevent stuck spinner
+                if (ImportState.VIDEO.isInitialImport() || ImportState.VIDEO.isRegularImport()) {
+                    log.debug("handleMessage: MESSAGE_KILL - Resetting ImportState to IDLE");
+                    ImportState.VIDEO.setState(State.IDLE);
+                }
+                log.debug("handleMessage: MESSAGE_KILL - ImportState after: {}", ImportState.VIDEO.getState());
                 // this service used to be created through bind. So it couldn't be killed with stopself unless it was unbind
                 // (which wasn't done). To have the same behavior, do not stop service for now
                 log.debug("handleMessage: MESSAGE_KILL -> leaving foreground");
