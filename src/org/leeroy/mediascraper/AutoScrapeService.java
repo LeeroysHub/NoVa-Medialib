@@ -623,14 +623,13 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                                             searchResult.setScraper(new MovieScraper3(AutoScrapeService.this));
                                             result = MovieScraper3.getDetails(searchResult, null);
                                         } 
+                                    } else {
+                                        //log.trace("startScraping: searching online " + title);
+                                        SearchInfo searchInfo = SearchPreprocessor.instance().parseFileBased(fileUri, scrapUri);
+                                        Scraper scraper = new Scraper(AutoScrapeService.this);
+                                        result = scraper.getAutoDetails(searchInfo);                //SEARCH FOR MOVIE!
+                                        //log.trace("startScraping: " + ((result.tag != null) ? result.tag.getTitle() : null) + " " + ((result.tag != null) ? result.tag.getOnlineId() : null));
                                     }
-                                    
-                                    //log.trace("startScraping: searching online " + title);
-                                    SearchInfo searchInfo = SearchPreprocessor.instance().parseFileBased(fileUri, scrapUri);
-                                    Scraper scraper = new Scraper(AutoScrapeService.this);
-                                    result = scraper.getAutoDetails(searchInfo);                //SEARCH FOR MOVIE!
-                                    //log.trace("startScraping: " + ((result.tag != null) ? result.tag.getTitle() : null) + " " + ((result.tag != null) ? result.tag.getOnlineId() : null));
-                            
 
                                     //Don't get movies with the word (NULL), this means (NULL) movie wont scrape automatically by who cares?
                                     if (result != null && result.tag != null && ID != -1 && result.tag.getTitle() != null && !result.tag.getTitle().equals("(NULL)")) {
