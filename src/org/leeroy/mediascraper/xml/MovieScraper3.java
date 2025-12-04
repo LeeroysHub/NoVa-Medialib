@@ -137,6 +137,37 @@ public class MovieScraper3 extends BaseScraper2 {
                 break; // first valid match wins, fallback to file name.
             }
         }
+
+        //Look for any years in the title
+        String reversed = new StringBuilder(searchQuery).reverse().toString();
+        Pattern yearPattern = Pattern.compile("\\b(\\d{4})\\b");
+        Matcher matcher = yearPattern.matcher(reversed);
+
+        // Current Calendar year.
+        String year = null;
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+
+        //Loop backwards through the string until we have a plausible year,
+        //Make sure we have at least a 2 DIGIT word left (IF Movie!)
+        while (matcher.find()) {
+            String candidateYear = new StringBuilder(matcher.group(1)).reverse().toString();
+            int parsedYear = Integer.parseInt(candidateYear);
+
+            if (parsedYear >= 1900 && parsedYear <= currentYear) {
+                int cutIndex = searchQuery.length() - matcher.start() - 4;
+                if (cutIndex >= 2) {
+                    searchQuery = searchQuery.substring(0, cutIndex).trim();
+                    year = candidateYear;
+                }
+                break;
+            }
+        }
+        //If we didn't get a year out, fallback to the searchInfo year
+        if (year == null) {
+            year = searchInfo.getYear();
+        }
+
+        //SEARCH TMDB FOR THE MOVIE!
         SearchMovieResult searchResult = SearchMovie2.search(searchQuery, language, searchInfo.getYear(), maxItems, getSearchService(), adultScrape);
 
         // TODO: this triggers scrape for all search results, is this intended?
