@@ -46,13 +46,15 @@ public class SearchMovie2 {
         //log.debug("search {} for year {} in {}", query, year, language);
 
         Integer annee = null;
-        if (year != null) {
+        if (year != null && !year.isEmpty()) {
             try {
                 annee = Integer.parseInt(year);
             } catch (NumberFormatException nfe) {
                 log.warn("search: year is not an integer");
                 annee = null;
             }
+        } else {
+            annee = 0;
         }
         //log.debug("search: quering tmdb for {} year {} in {}", query, annee, language);
         try {

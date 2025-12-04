@@ -154,6 +154,8 @@ public class ParseUtils {
         if (matcher.find()) {
             input =  matcher.group(1);
             isolated = matcher.group(2);
+        } else {
+            isolated = "";
         }
         log.debug("twoPatternExtractor output: {} isolated: {}", input, isolated);
         return new Pair<>(input, isolated);

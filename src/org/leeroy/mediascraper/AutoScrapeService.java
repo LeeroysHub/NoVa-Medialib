@@ -358,13 +358,14 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
 
                         while (cursor.moveToNext() && (isForeground || isForceAfterNetworkScan) && !Thread.currentThread().isInterrupted()
                                 && PreferenceManager.getDefaultSharedPreferences(AutoScrapeService.this).getBoolean(AutoScrapeService.KEY_ENABLE_AUTO_SCRAP, true)) {
-                            if (sTotalNumberOfFilesRemainingToProcess > 0)
-                                nm.notify(NOTIFICATION_ID, nb.setContentText(getString(R.string.remaining_videos_to_process) + " " + sTotalNumberOfFilesRemainingToProcess).build());
                             Uri fileUri = Uri.parse(cursor.getString(cursor.getColumnIndex(VideoStore.MediaColumns.DATA)));
                             long movieID = cursor.getLong(cursor.getColumnIndex(VideoStore.Video.VideoColumns.SCRAPER_MOVIE_ID));
                             long episodeID = cursor.getLong(cursor.getColumnIndex(VideoStore.Video.VideoColumns.SCRAPER_EPISODE_ID));
                             final int scraperType = cursor.getInt(cursor.getColumnIndex(VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_TYPE));
+                            String title = cursor.getString(cursor.getColumnIndex(VideoStore.MediaColumns.TITLE));
                             BaseTags baseTags = null;
+                            if (sTotalNumberOfFilesRemainingToProcess > 0)
+                                nm.notify(NOTIFICATION_ID, nb.setContentText(getString(R.string.remaining_videos_to_process) + " " + sTotalNumberOfFilesRemainingToProcess  + "\nCurrent: " + title).build());
                             if (!fileUri.toString().startsWith("upnp://")) {
                                 log.trace("startExporting: {} fileUri {}", movieID, fileUri);
                                 if (scraperType == BaseTags.TV_SHOW) {
@@ -462,9 +463,6 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
     }
 
     protected void startScraping(final boolean rescrapAlreadySearched, final boolean onlyNotFound) {
-        log.debug("startScraping: {}", String.valueOf(mThread == null || !mThread.isAlive()));
-        nb.setContentTitle(getString(R.string.scraping_in_progress));
-
         if(mThread==null || !mThread.isAlive()) {
             mThread = new Thread() {
 
@@ -474,10 +472,16 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                 int totalNumberOfFilesScraped = 0;
 
                 public void run() {
+                    //log.debug("startScraping: {}", String.valueOf(mThread == null || !mThread.isAlive()));
+                    nb.setContentTitle(getString(R.string.scraping_in_progress));
+                    
                     //Global Scrape in Progress, so the browser can skip thumbs in scrape and not waste space in storage
                     LoaderUtils.setScrapeInProgress(true);
-                    
                     sIsScraping = true;
+                    
+                    //log.debug("startScraping: {}", String.valueOf(mThread == null || !mThread.isAlive()));
+                    nb.setContentTitle(getString(R.string.scraping_in_progress));            
+                    
                     boolean shouldRescrapAll = rescrapAlreadySearched;
                     log.debug("startScraping: startThread {}", (mThread==null || !mThread.isAlive()) );
                     if (log.isDebugEnabled()) {
@@ -505,6 +509,14 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                         int numberOfRows = cursor.getCount(); // total number of files to be processed
                         sTotalNumberOfFilesRemainingToProcess = numberOfRows;
                         cursor.close();
+
+                        //Why go through the rest of this if there are no rows remaining?
+                        if (numberOfRows <= 0) {
+                            LoaderUtils.setScrapeInProgress(false);
+                            sIsScraping = false;
+                            nm.cancel(NOTIFICATION_ID);
+                            return;
+                        }
 
                         NfoWriter.ExportContext exportContext = null;
                         if (NfoWriter.isNfoAutoExportEnabled(AutoScrapeService.this))
@@ -542,15 +554,15 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
 
                                 String title = cursor.getString(cursor.getColumnIndex(VideoStore.MediaColumns.TITLE));
                                 Uri fileUri = Uri.parse(cursor.getString(cursor.getColumnIndex(VideoStore.MediaColumns.DATA)));
-                                Uri scrapUri = title != null && !title.isEmpty() ? Uri.parse("/" + title + ".mp4") : fileUri;
+                                Uri scrapUri = title == null || title.isEmpty() || title.equalsIgnoreCase("null") ? fileUri : Uri.parse("/" + title + ".mp4") ;
                                 long ID = cursor.getLong(cursor.getColumnIndex(BaseColumns._ID));
 
                                 // for now there is no error and file is not scraped
-                                notScraped = true;
+                                notScraped = !title.startsWith("VTS_");
                                 noScrapeError = true;
                                 //log.trace("startScraping processing scrapUri {}, with ID {}, number of remaining files to be processed: {}", scrapUri, ID, sTotalNumberOfFilesRemainingToProcess);
                                 if (sTotalNumberOfFilesRemainingToProcess > 0)
-                                    nm.notify(NOTIFICATION_ID, nb.setContentText(getString(R.string.remaining_videos_to_process) + " " + sTotalNumberOfFilesRemainingToProcess).build());
+                                    nm.notify(NOTIFICATION_ID, nb.setContentText(getString(R.string.remaining_videos_to_process) + " " + sTotalNumberOfFilesRemainingToProcess  + "\n" + getString(R.string.current_video_title) + title).build());
 
                                 if (NfoParser.isNetworkNfoParseEnabled(AutoScrapeService.this) && !fileUri.toString().toLowerCase().startsWith("upnp")) {
 
@@ -600,35 +612,34 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                                     //log.trace("startScraping: NFO NOT found");
                                     ScrapeDetailResult result = null;
                                     boolean searchOnline = true;
-                                    if (shouldRescrapAll) {
-                                        //log.trace("startScraping: rescraping all");
-                                        long videoID = cursor.getLong(cursor.getColumnIndex(VideoStore.Video.VideoColumns.SCRAPER_VIDEO_ONLINE_ID));
-                                        final int scraperType = cursor.getInt(cursor.getColumnIndex(VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_TYPE));
+                                    //log.trace("startScraping: rescraping all");
+                                    long videoID = cursor.getLong(cursor.getColumnIndex(VideoStore.Video.VideoColumns.SCRAPER_VIDEO_ONLINE_ID));
+                                    final int scraperType = cursor.getInt(cursor.getColumnIndex(VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_TYPE));
 
-                                        if (scraperType == BaseTags.TV_SHOW) {
-                                            // get the whole season
-                                            long season = cursor.getLong(cursor.getColumnIndex(VideoStore.Video.VideoColumns.SCRAPER_E_SEASON));
-                                            Bundle b = new Bundle();
-                                            b.putInt(Scraper.ITEM_REQUEST_SEASON, (int) season);
+                                    if (scraperType == BaseTags.TV_SHOW) {
+                                        // get the whole season
+                                        long season = cursor.getLong(cursor.getColumnIndex(VideoStore.Video.VideoColumns.SCRAPER_E_SEASON));
+                                        Bundle b = new Bundle();
+                                        b.putInt(Scraper.ITEM_REQUEST_SEASON, (int) season);
 
-                                            //log.trace("startScraping: rescraping episode for tvId {}, season {}", videoID, season);
-                                            SearchResult searchResult = new SearchResult(SearchResult.tvshow, title, (int) videoID);
-                                            searchResult.setFile(fileUri);
-                                            searchResult.setScraper(new ShowScraper4(AutoScrapeService.this));
-                                            result = ShowScraper4.getDetails(new SearchResult(SearchResult.tvshow, title, (int) videoID), b);
-                                        } else if (scraperType == BaseTags.MOVIE) {
-                                            //log.trace("startScraping: rescraping movie {}", videoID);
-                                            SearchResult searchResult = new SearchResult(SearchResult.movie, title, (int) videoID);
-                                            searchResult.setFile(fileUri);
-                                            searchResult.setScraper(new MovieScraper3(AutoScrapeService.this));
-                                            result = MovieScraper3.getDetails(searchResult, null);
-                                        } 
+                                        //log.trace("startScraping: rescraping episode for tvId {}, season {}", videoID, season);
+                                        SearchResult searchResult = new SearchResult(SearchResult.tvshow, title, (int) videoID);
+                                        searchResult.setFile(fileUri);
+                                        searchResult.setScraper(new ShowScraper4(AutoScrapeService.this));
+                                        result = ShowScraper4.getDetails(new SearchResult(SearchResult.tvshow, title, (int) videoID), b);
+                                    } else if (scraperType == BaseTags.MOVIE) {
+                                        //log.trace("startScraping: rescraping movie {}", videoID);
+                                        SearchResult searchResult = new SearchResult(SearchResult.movie, title, (int) videoID);
+                                        searchResult.setFile(fileUri);
+                                        searchResult.setScraper(new MovieScraper3(AutoScrapeService.this));
+                                        result = MovieScraper3.getDetails(searchResult, null);
                                     } else {
                                         //log.trace("startScraping: searching online " + title);
                                         SearchInfo searchInfo = SearchPreprocessor.instance().parseFileBased(fileUri, scrapUri);
+                                        //searchInfo.setForceReParse(true);
                                         Scraper scraper = new Scraper(AutoScrapeService.this);
                                         result = scraper.getAutoDetails(searchInfo);                //SEARCH FOR MOVIE!
-                                        //log.trace("startScraping: " + ((result.tag != null) ? result.tag.getTitle() : null) + " " + ((result.tag != null) ? result.tag.getOnlineId() : null));
+                                        //log.trace("startScraping: {} {}", ((result.tag != null) ? result.tag.getTitle() : null), ((result.tag != null) ? result.tag.getOnlineId() : null));
                                     }
 
                                     //Don't get movies with the word (NULL), this means (NULL) movie wont scrape automatically by who cares?
@@ -685,7 +696,8 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                                     }
                                 }
 
-                                if (notScraped && noScrapeError) { //in case of network error, don't go there, and don't save in case we are rescraping already scraped videos
+                                //OK, this has to be an OR, because my VTS override actually tests the logic!
+                                if (notScraped || !noScrapeError) { //in case of network error, don't go there, and don't save in case we are rescraping already scraped videos
                                     // Failed => set the scraper fields to -1 so that we will be able
                                     // to skip this file when launching the automated process again
                                     //log.trace("startScraping: file {} not scraped without error -> mark it as not to be scraped again", fileUri);

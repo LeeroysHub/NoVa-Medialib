@@ -130,13 +130,13 @@ public final class ShowUtils {
                     name = cleanUpName(name);
                     nameCountry = getCountryOfOrigin(name);
                     String year = nameYear.second;
-                    if (year == null || year.isEmpty()) { // if year empty perhaps this is Eric.2024-s01e01, find year in the end of the string
-                        nameYear = yearExtractorEndString(nameCountry.first);
+                    /* if (year == null || year.isEmpty()) { // if year empty perhaps this is Eric.2024-s01e01, find year in the end of the string
+                        nameYear = yearExtractorEndString(nameCountry.second);
                         if (nameYear.first != null && ! nameYear.first.isEmpty()) { // do it only if the remaining name is not empty
                             name = nameYear.first;
                             year = nameYear.second;
                         }
-                    }
+                    } */
                     log.debug("getMatch: patternsShowFirst {} season {} episode {} year {} country {}", name, matcher.group(2), matcher.group(3), year, nameCountry.second);
                     buffer.put(SHOW, name);
                     String season = matcher.group(2);

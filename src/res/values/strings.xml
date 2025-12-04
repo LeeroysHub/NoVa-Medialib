@@ -159,5 +159,6 @@
 
     <string name="scraping_in_progress">Scanning Media Library</string>
     <string name="remaining_videos_to_process">Files left to scan: </string>
+    <string name="current_video_title">Current: </string>
     <string name="video_store_import">Scanning Device Storage</string>
 </resources>
