@@ -1050,8 +1050,29 @@ public class Trakt {
         editor.remove(KEY_TRAKT_REFRESH_TOKEN);
         // Mark as locked so user knows why it was disabled
         editor.putBoolean(KEY_TRAKT_ACCOUNT_LOCKED, true);
+        clearTraktSyncState(editor);
         editor.apply();
         log.info("disableTraktOnAccountLock: Trakt disabled - user must re-authenticate to enable");
+    }
+
+    /** Clear local sync timestamps and flags when user disconnects Trakt. */
+    public static void clearTraktSyncState(Editor editor) {
+        editor.remove(KEY_TRAKT_SYNC_FLAG);
+        editor.remove(KEY_TRAKT_LAST_TIME_SHOW_WATCHED);
+        editor.remove(KEY_TRAKT_LAST_TIME_MOVIE_WATCHED);
+        editor.remove(KEY_TRAKT_SYNC_RESUME);
+        editor.remove(TraktService.PREFERENCE_TRAKT_LAST_TIME_SYNC_TO_DB_WATCHED);
+        editor.remove(TraktService.PREFERENCE_TRAKT_LAST_TIME_SYNC_TO_DB_PROGRESS);
+        editor.remove(TraktService.PREFERENCE_TRAKT_LAST_TIME_SYNC_WATCHED);
+        editor.remove(TraktService.PREFERENCE_TRAKT_LAST_TIME_SYNC_PROGRESS);
+        editor.remove(TraktService.PREFERENCE_TRAKT_LAST_ACTIVITY);
+        editor.remove(TraktService.PREFERENCE_TRAKT_LAST_ACTIVITY_MOVIE_WATCHED);
+        editor.remove(TraktService.PREFERENCE_TRAKT_LAST_ACTIVITY_MOVIE_PAUSED);
+        editor.remove(TraktService.PREFERENCE_TRAKT_LAST_ACTIVITY_EPISODE);
+        editor.remove(TraktService.PREFERENCE_TRAKT_LAST_ACTIVITY_EPISODE_WATCHED);
+        editor.remove(TraktService.PREFERENCE_TRAKT_LAST_ACTIVITY_EPISODE_PAUSED);
+        editor.remove(TraktService.PREFERENCE_TRAKT_LAST_ACTIVITY_LIST);
+        editor.remove(TraktService.PREFERENCE_TRAKT_LAST_ACTIVITY_TIME_CHECKED_UTC);
     }
 
     public static void setFlagSyncPreference(SharedPreferences preferences, int flag) {
@@ -1095,9 +1116,7 @@ public class Trakt {
             editor.remove(Trakt.KEY_TRAKT_LIVE_SCROBBLING);
             editor.remove(Trakt.KEY_TRAKT_SYNC_COLLECTION);
         }
-        editor.remove(Trakt.KEY_TRAKT_SYNC_FLAG);
-        editor.remove(Trakt.KEY_TRAKT_LAST_TIME_MOVIE_WATCHED);
-        editor.remove(Trakt.KEY_TRAKT_LAST_TIME_SHOW_WATCHED);
+        clearTraktSyncState(editor);
         editor.apply();
     }
 
