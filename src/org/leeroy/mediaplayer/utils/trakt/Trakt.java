@@ -775,6 +775,39 @@ public class Trakt {
         return getPlaybackStatus(0);
     }
 
+    /**
+     * Fetch full playback history (resume points) by paging until exhaustion.
+     * Not used by default sync; provided for manual recovery scenarios.
+     */
+    public Result getPlaybackStatusFullHistory() {
+        log.debug("getPlaybackStatusFullHistory: fetching full playback history (single wide request)");
+        List<PlaybackResponse> list = exec(mTraktV2.sync().getPlayback(1000)); // Trakt hard cap
+        if (list == null || list.isEmpty()) {
+            log.debug("getPlaybackStatusFullHistory: no playback history");
+            return handleRet(null, new Exception(), null, ObjectType.NULL);
+        }
+        log.debug("getPlaybackStatusFullHistory: playback history size is {}", list.size());
+        return handleRet(null, null, list, ObjectType.MOVIES);
+    }
+
+    /**
+     * Fetch full watched history by paging until exhaustion.
+     * Not used by default sync; provided for manual recovery scenarios.
+     */
+    public Result getWatchedStatusFullHistory() {
+        log.debug("getWatchedStatusFullHistory: fetching full watched history (single wide requests)");
+        List<HistoryEntry> all = new ArrayList<>();
+        List<HistoryEntry> shows = exec(mTraktV2.sync().getWatchedHistory(1000));
+        if (shows != null) all.addAll(shows);
+        // If needed, add movies separately; API returns combined history so above is usually enough
+        if (all.isEmpty()) {
+            log.debug("getWatchedStatusFullHistory: no watched history");
+            return handleRet(null, new Exception(), null, ObjectType.NULL);
+        }
+        log.debug("getWatchedStatusFullHistory: watched history size is {}", all.size());
+        return handleRet(null, null, all, ObjectType.MOVIES);
+    }
+
     public Result getWatchedStatus() {
         return getWatchedStatus(0);
     }
