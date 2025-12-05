@@ -998,6 +998,36 @@ public class Trakt {
         return preferences.getBoolean(KEY_TRAKT_SYNC_RESUME, false);
     }
 
+    /** Last successful DB -> Trakt watched sync UTC seconds */
+    public static long getLastTimeWatchedSync(SharedPreferences preferences) {
+        return preferences.getLong(TraktService.PREFERENCE_TRAKT_LAST_TIME_SYNC_WATCHED, 0);
+    }
+
+    public static void setLastTimeWatchedSync(SharedPreferences preferences, long utcSeconds) {
+        Editor editor = preferences.edit();
+        editor.putLong(TraktService.PREFERENCE_TRAKT_LAST_TIME_SYNC_WATCHED, utcSeconds);
+        editor.apply();
+    }
+
+    // Track the highest watched timestamp pushed in current run (reset at call sites)
+    private static final ThreadLocal<Long> lastPushedWatchedTime = new ThreadLocal<>();
+
+    public static void resetLastPushedWatchedTime() {
+        lastPushedWatchedTime.set(0L);
+    }
+
+    public static void updateLastPushedWatchedTime(long utcSeconds) {
+        Long current = lastPushedWatchedTime.get();
+        if (current == null || utcSeconds > current) {
+            lastPushedWatchedTime.set(utcSeconds);
+        }
+    }
+
+    public static long getLastPushedWatchedTime() {
+        Long v = lastPushedWatchedTime.get();
+        return v == null ? 0 : v;
+    }
+
     public static boolean isAccountLocked(SharedPreferences preferences) {
         return preferences.getBoolean(KEY_TRAKT_ACCOUNT_LOCKED, false);
     }
