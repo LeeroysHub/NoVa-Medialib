@@ -279,6 +279,15 @@ public class Trakt {
         public String refresh_token;
     }
 
+    // Device code response for device authentication flow
+    public static class deviceCode {
+        public String device_code;
+        public String user_code;
+        public String verification_url;
+        public int expires_in;
+        public int interval;
+    }
+
     public static accessToken getAccessToken(String code){
         try {
             final retrofit2.Response<AccessToken> response = getTraktV2().exchangeCodeForAccessToken(code);
@@ -289,6 +298,55 @@ public class Trakt {
             return mAccessToken;
         } catch (IOException | NullPointerException e) {
             log.error("getAccessToken: caught IoException ", e);
+        }
+        return null;
+    }
+
+    /**
+     * Generate a device code for TV/device authentication flow.
+     * Display the user_code and verification_url to the user, then poll with the device_code.
+     * @return deviceCode object with codes and verification URL, or null on error
+     */
+    public static deviceCode generateDeviceCode() {
+        try {
+            final retrofit2.Response<com.uwetrottmann.trakt5.entities.DeviceCode> response = getTraktV2().generateDeviceCode();
+            if (response.isSuccessful() && response.body() != null) {
+                final deviceCode code = new deviceCode();
+                code.device_code = response.body().device_code;
+                code.user_code = response.body().user_code;
+                code.verification_url = response.body().verification_url;
+                code.expires_in = response.body().expires_in != null ? response.body().expires_in : 600;
+                code.interval = response.body().interval != null ? response.body().interval : 5;
+                log.debug("generateDeviceCode: user_code={}, verification_url={}", code.user_code, code.verification_url);
+                return code;
+            }
+        } catch (IOException | NullPointerException e) {
+            log.error("generateDeviceCode: caught exception", e);
+        }
+        return null;
+    }
+
+    /**
+     * Exchange device code for access token.
+     * Poll this method every 'interval' seconds until user authorizes or code expires.
+     * @param deviceCode the device_code from generateDeviceCode()
+     * @return accessToken if user authorized, null if still pending or error
+     */
+    public static accessToken exchangeDeviceCodeForAccessToken(String deviceCode) {
+        try {
+            final retrofit2.Response<AccessToken> response = getTraktV2().exchangeDeviceCodeForAccessToken(deviceCode);
+            if (response.isSuccessful() && response.body() != null) {
+                final accessToken mAccessToken = new accessToken();
+                mAccessToken.access_token = response.body().access_token;
+                mAccessToken.refresh_token = response.body().refresh_token;
+                log.debug("exchangeDeviceCodeForAccessToken: access_token obtained");
+                return mAccessToken;
+            } else {
+                // 400 = pending, 404 = not found, 410 = expired, 429 = polling too fast
+                log.debug("exchangeDeviceCodeForAccessToken: status={}", response.code());
+            }
+        } catch (IOException | NullPointerException e) {
+            log.debug("exchangeDeviceCodeForAccessToken: still pending or error", e);
         }
         return null;
     }
