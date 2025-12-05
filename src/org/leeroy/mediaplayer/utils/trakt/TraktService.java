@@ -142,6 +142,7 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
     public static final String PREFERENCE_TRAKT_LAST_TIME_SYNC_PROGRESS = "trakt_last_time_sync_progress";
     public static final String PREFERENCE_TRAKT_LAST_TIME_SYNC_LIST = "trakt_last_time_sync_list";
     public static final String PREFERENCE_TRAKT_LAST_TIME_SYNC_TO_DB_LIST = "trakt_last_time_sync_to_db_list";
+    public static final String PREFERENCE_TRAKT_FIRST_SYNC_DONE = "trakt_first_sync_done";
 
     private static volatile boolean isForeground = true;
 
@@ -1566,13 +1567,10 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
 
         log.debug("sync: last sync time is movieTime={}, showTime={}", movieTime, showTime);
 
-        final boolean isFirstSync = showTime == 0 && movieTime == 0;
+        final boolean isFirstSync = showTime == 0 && movieTime == 0 && !Trakt.isFirstSyncDone(mPreferences);
         if (isFirstSync) {
             log.debug("sync: first time syncing: full sync");
             flag |= FLAG_SYNC_FULL;
-            // Avoid spamming trakt with legacy watched history on first login
-            flag &= ~FLAG_SYNC_TO_TRAKT_WATCHED;
-            seedLocalWatchedAsSynced();
         }
 
         if ((flag & FLAG_SYNC_LAST_ACTIVITY_VETO) == 0 && (flag & FLAG_SYNC_TO_DB_WATCHED) == 0) {
@@ -1676,7 +1674,11 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
         }
 
 
-        return handleSyncStatus(Trakt.Status.SUCCESS, flag, null);
+        Trakt.Result finalResult = handleSyncStatus(Trakt.Status.SUCCESS, flag, null);
+        if (finalResult.status == Trakt.Status.SUCCESS && isFirstSync) {
+            Trakt.setFirstSyncDone(mPreferences, true);
+        }
+        return finalResult;
     }
 
     private void syncLists() {

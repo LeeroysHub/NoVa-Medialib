@@ -1038,6 +1038,16 @@ public class Trakt {
         editor.apply();
     }
 
+    public static boolean isFirstSyncDone(SharedPreferences preferences) {
+        return preferences.getBoolean(TraktService.PREFERENCE_TRAKT_FIRST_SYNC_DONE, false);
+    }
+
+    public static void setFirstSyncDone(SharedPreferences preferences, boolean done) {
+        Editor editor = preferences.edit();
+        editor.putBoolean(TraktService.PREFERENCE_TRAKT_FIRST_SYNC_DONE, done);
+        editor.apply();
+    }
+
     /**
      * Disables Trakt by clearing all authentication tokens and marking account as locked.
      * User must re-authenticate to enable Trakt again.
@@ -1116,7 +1126,9 @@ public class Trakt {
             editor.remove(Trakt.KEY_TRAKT_LIVE_SCROBBLING);
             editor.remove(Trakt.KEY_TRAKT_SYNC_COLLECTION);
         }
-        clearTraktSyncState(editor);
+        if (userChanged) {
+            clearTraktSyncState(editor);
+        }
         editor.apply();
     }
 
