@@ -533,6 +533,10 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
                 EpisodeIds ids = new EpisodeIds();
                 ids.tmdb = ep.tmdb ;
                 se.id(ids);
+                if (mark && library.equals(Trakt.LIBRARY_WATCHED) && ep.last_played != null) {
+                    // Preserve actual watch date instead of "now" when backfilling
+                    se.watchedAt(OffsetDateTime.parse(ep.last_played));
+                }
                 eps.add(se);
             }
             SyncItems si = new SyncItems();
@@ -1285,6 +1289,10 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
                         MovieIds ids = new MovieIds();
                         ids.tmdb =  Integer.valueOf(m.tmdb_id);
                         se.id(ids);
+                        if (toMark && library.equals(Trakt.LIBRARY_WATCHED) && m.last_played != null && lastTimePlayedIdx >= 0) {
+                            // Preserve original watch date instead of "today"
+                            se.watchedAt(OffsetDateTime.parse(m.last_played));
+                        }
                         eps.add(se);
                     }
                     SyncItems si = new SyncItems();
