@@ -721,7 +721,12 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
         log.debug("syncPlaybackStatus complete");
 
         // save sync time
-        PreferenceManager.getDefaultSharedPreferences(TraktService.this).edit().putLong(PREFERENCE_TRAKT_LAST_TIME_SYNC_TO_DB_PROGRESS, System.currentTimeMillis() / 1000L).apply();
+        long maxPaused = getMaxPausedAtSeconds(videos);
+        if (maxPaused <= 0) maxPaused = System.currentTimeMillis() / 1000L;
+        PreferenceManager.getDefaultSharedPreferences(TraktService.this)
+                .edit()
+                .putLong(PREFERENCE_TRAKT_LAST_TIME_SYNC_TO_DB_PROGRESS, maxPaused)
+                .apply();
 
         return Trakt.Status.SUCCESS;
     }
@@ -770,9 +775,29 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
         if (downloadStatus == Trakt.Status.ERROR_NETWORK || downloadStatus == Trakt.Status.ERROR_ACCOUNT_LOCKED) {
             return downloadStatus;
         }
-        
+
+        // save sync time based on newest paused_at we processed
+        long maxPaused = getMaxPausedAtSeconds(traktProgress);
+        if (maxPaused <= 0) maxPaused = System.currentTimeMillis() / 1000L;
+        PreferenceManager.getDefaultSharedPreferences(TraktService.this)
+                .edit()
+                .putLong(PREFERENCE_TRAKT_LAST_TIME_SYNC_TO_DB_PROGRESS, maxPaused)
+                .apply();
+
         log.debug("syncPlaybackStatusHybrid complete - preserved original logic with new architecture");
         return Trakt.Status.SUCCESS;
+    }
+
+    private long getMaxPausedAtSeconds(java.util.List<PlaybackResponse> videos) {
+        long max = 0;
+        if (videos != null) {
+            for (PlaybackResponse v : videos) {
+                if (v != null && v.paused_at != null) {
+                    max = Math.max(max, v.paused_at.toEpochSecond());
+                }
+            }
+        }
+        return max;
     }
 
     // Upload resume points from DB to Trakt with original conflict checking logic
@@ -1096,7 +1121,12 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
         log.debug("syncResumePointsToDb complete (pre-fetched)");
         
         // save sync time
-        PreferenceManager.getDefaultSharedPreferences(TraktService.this).edit().putLong(PREFERENCE_TRAKT_LAST_TIME_SYNC_TO_DB_PROGRESS, System.currentTimeMillis() / 1000L).apply();
+        long maxPaused = getMaxPausedAtSeconds(traktVideos);
+        if (maxPaused <= 0) maxPaused = System.currentTimeMillis() / 1000L;
+        PreferenceManager.getDefaultSharedPreferences(TraktService.this)
+                .edit()
+                .putLong(PREFERENCE_TRAKT_LAST_TIME_SYNC_TO_DB_PROGRESS, maxPaused)
+                .apply();
         
         return Trakt.Status.SUCCESS;
     }
