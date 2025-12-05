@@ -110,6 +110,11 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
     private static final String INTENT_ACTION_WIPE = "leeroy.mediaplayer.utils.trakt.action.WIPE";
     private static final String INTENT_ACTION_WIPE_COLLECTION = "leeroy.mediaplayer.utils.trakt.action.WIPE_COLLECTION";
     private static final String INTENT_ACTION_SYNC = "leeroy.mediaplayer.utils.trakt.action.SYNC";
+    private static final String INTENT_ACTION_FORCE_PUSH = "leeroy.mediaplayer.utils.trakt.action.FORCE_PUSH";
+    private static final String INTENT_ACTION_FORCE_PULL = "leeroy.mediaplayer.utils.trakt.action.FORCE_PULL";
+
+    private boolean mForcePush = false;
+    private boolean mForcePull = false;
 
     public static final int FLAG_SYNC_AUTO =                0x001;
     public static final int FLAG_SYNC_LAST_ACTIVITY_VETO =  0x002;
@@ -192,7 +197,7 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
                 }
 
                 if (mTrakt != null) {
-                    if (action.equals(INTENT_ACTION_WATCHING)) {
+                if (action.equals(INTENT_ACTION_WATCHING)) {
                         final float progress = intent.getFloatExtra("progress", -1);
                         log.debug("postWatching progress={}", progress);
                         if (videoInfo == null && videoID >= 0)
@@ -297,6 +302,20 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
                         // store last successful trakt sync time
                         if (result.status == Status.SUCCESS) mPreferences.edit().putLong("trakt_last_sync", System.currentTimeMillis() / 1000L).apply();
                     }
+                }
+                else if (action.equals(INTENT_ACTION_FORCE_PUSH)) {
+                    log.debug("INTENT_ACTION_FORCE_PUSH received");
+                    mForcePush = true;
+                    mForcePull = false;
+                    sync(FLAG_SYNC_NOW);
+                    mForcePush = false;
+                }
+                else if (action.equals(INTENT_ACTION_FORCE_PULL)) {
+                    log.debug("INTENT_ACTION_FORCE_PULL received");
+                    mForcePull = true;
+                    mForcePush = false;
+                    sync(FLAG_SYNC_NOW);
+                    mForcePull = false;
                 }
                 // action that can be run with a null mTrakt
                 if (action.equals(INTENT_ACTION_WIPE)) {
@@ -1562,6 +1581,15 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
         if (flag == 0 || flag == FLAG_SYNC_AUTO)
             flag = Trakt.getFlagSyncPreference(mPreferences);
 
+        if (mForcePush) {
+            log.debug("sync: force push requested");
+            flag |= FLAG_SYNC_TO_TRAKT_WATCHED | FLAG_SYNC_MOVIES | FLAG_SYNC_SHOWS | FLAG_SYNC_TO_TRAKT_COLLECTION;
+        }
+        if (mForcePull) {
+            log.debug("sync: force pull requested");
+            flag |= FLAG_SYNC_TO_DB_WATCHED | FLAG_SYNC_MOVIES | FLAG_SYNC_SHOWS | FLAG_SYNC_TO_DB_COLLECTION | FLAG_SYNC_PROGRESS;
+        }
+
         long movieTime = Trakt.getLastTimeMovieWatched(mPreferences);
         long showTime = Trakt.getLastTimeShowWatched(mPreferences);
 
@@ -2099,6 +2127,18 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
             log.debug("sync: send INTENT_ACTION_SYNC");
             Intent intent = prepareIntent(INTENT_ACTION_SYNC, null, -1, null);
             intent.putExtra("flag_sync", flag);
+            if (isForeground) mContext.startService(intent);
+        }
+
+        public void forcePush() {
+            log.debug("forcePush: send INTENT_ACTION_FORCE_PUSH");
+            Intent intent = prepareIntent(INTENT_ACTION_FORCE_PUSH, null, -1, null);
+            if (isForeground) mContext.startService(intent);
+        }
+
+        public void forcePull() {
+            log.debug("forcePull: send INTENT_ACTION_FORCE_PULL");
+            Intent intent = prepareIntent(INTENT_ACTION_FORCE_PULL, null, -1, null);
             if (isForeground) mContext.startService(intent);
         }
     }
