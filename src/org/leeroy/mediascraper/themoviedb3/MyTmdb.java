@@ -30,17 +30,17 @@ public class MyTmdb extends Tmdb {
 
     private static final Logger log = LoggerFactory.getLogger(MyTmdb.class);
     private final static boolean CACHE = true;
-    private final Cache mCache;
+    private static Cache mCache;
 
     public MyTmdb(String apiKey, Cache cache) {
         super(apiKey);
-        this.mCache = cache;
+        mCache = cache;
     }
 
     @Override
     protected void setOkHttpClientDefaults(OkHttpClient.Builder builder) {
         super.setOkHttpClientDefaults(builder);
-        if (CACHE && mCache != null) {
+        if (CACHE) {
             builder.cache(mCache).addNetworkInterceptor(new ScraperCache.CacheInterceptor());
             if (log.isTraceEnabled()) {
                 builder.addInterceptor(new ScraperCache.isCacheResponding());

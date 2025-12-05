@@ -70,19 +70,13 @@ public class AllCollectionScrapeService extends IntentService implements Default
     // Add caching for OkHttpClient so that queries for episodes from a same tvshow will get a boost in resolution
     static Cache cache;
 
-    private static volatile MyTmdb tmdb = null;
-    private static volatile CollectionsService collectionService = null;
+    static MyTmdb tmdb = null;
+    static CollectionsService collectionService = null;
 
     static String apiKey = null;
 
-    public static synchronized void reauth() {
+    public static void reauth() {
         tmdb = new MyTmdb(apiKey, cache);
-        collectionService = tmdb.collectionService();
-    }
-
-    public static synchronized CollectionsService getCollectionService() {
-        if (collectionService == null) reauth();
-        return collectionService;
     }
 
     /**
@@ -261,7 +255,9 @@ public class AllCollectionScrapeService extends IntentService implements Default
     private void handleCursor(Cursor cursor) {
 
         log.debug("bind: {}", DatabaseUtils.dumpCursorToString(cursor));
-        
+
+        if (tmdb == null) reauth();
+        if (collectionService == null) collectionService = tmdb.collectionService();
         // get configured language
         String language = Scraper.getLanguage(getApplicationContext());
 
@@ -271,7 +267,7 @@ public class AllCollectionScrapeService extends IntentService implements Default
                 long collectionId = cursor.getLong(0);
                 log.debug("handleCursor: scraping {}", collectionId);
                 // scrape collectionId
-                CollectionResult collectionResult = MovieCollection.getInfo(collectionId, language, getCollectionService());
+                CollectionResult collectionResult = MovieCollection.getInfo(collectionId, language, collectionService);
 
                 if (collectionResult.status == ScrapeStatus.OKAY && collectionResult.collectionInfo != null) {
                     CollectionInfo collectionInfo = collectionResult.collectionInfo;
