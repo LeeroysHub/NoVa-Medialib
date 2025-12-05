@@ -44,6 +44,7 @@ import org.leeroy.mediaplayer.utils.videodb.VideoDbInfo;
 import org.leeroy.medialib.R;
 import org.leeroy.environment.NetworkState;
 import org.leeroy.mediaprovider.video.VideoStore;
+import org.leeroy.mediascraper.BaseTags;
 import org.leeroy.mediascraper.ScrapeStatus;
 import com.uwetrottmann.trakt5.entities.BaseEpisode;
 import com.uwetrottmann.trakt5.entities.BaseMovie;
@@ -1287,13 +1288,13 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
                 MOVIE_ONLINE_ID_PROJECTION,
                 getVideoToMarkSelection(library, org.leeroy.mediascraper.BaseTags.MOVIE, toMark)
                         + " AND " + VideoStore.Video.VideoColumns.LEEROYFLIX_LAST_TIME_PLAYED + " > ?",
-                null,
-                new String[]{String.valueOf(Trakt.getLastTimeWatchedSync(mPreferences) + 1)});
-        if (c != null) {
-            if (c.getCount() > 0) {
-                final int mOnlineIdIdx = c.getColumnIndex(VideoStore.Video.VideoColumns.SCRAPER_M_ONLINE_ID);
-                final int lastPlayedIdx = c.getColumnIndex(VideoStore.Video.VideoColumns.LEEROYFLIX_LAST_TIME_PLAYED);
-                final int idIdx = c.getColumnIndex(BaseColumns._ID);
+                new String[]{String.valueOf(Trakt.getLastTimeWatchedSync(mPreferences) + 1)},
+                null);
+                if (c != null) {
+                    if (c.getCount() > 0) {
+                        final int mOnlineIdIdx = c.getColumnIndex(VideoStore.Video.VideoColumns.SCRAPER_M_ONLINE_ID);
+                        final int lastPlayedIdx = c.getColumnIndex(VideoStore.Video.VideoColumns.LEEROYFLIX_LAST_TIME_PLAYED);
+                        final int idIdx = c.getColumnIndex(BaseColumns._ID);
 
                 TraktAPI.MovieListParam param = new TraktAPI.MovieListParam();
                 ArrayList<TraktAPI.Movie> movieList = new ArrayList<TraktAPI.Movie>();
@@ -1322,7 +1323,7 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
                         MovieIds ids = new MovieIds();
                         ids.tmdb =  Integer.valueOf(m.tmdb_id);
                         se.id(ids);
-                        if (toMark && library.equals(Trakt.LIBRARY_WATCHED) && m.last_played != null && lastTimePlayedIdx >= 0) {
+                        if (toMark && library.equals(Trakt.LIBRARY_WATCHED) && m.last_played != null) {
                             // Preserve original watch date instead of "today"
                             se.watchedAt(OffsetDateTime.parse(m.last_played));
                         }
@@ -1358,9 +1359,8 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
                 SHOW_ONLINE_ID_PROJECTION,
                 getVideoToMarkSelection(library, org.leeroy.mediascraper.BaseTags.TV_SHOW, toMark)
                         + " AND " + VideoStore.Video.VideoColumns.LEEROYFLIX_LAST_TIME_PLAYED + " > ?",
-                null,
-                VideoStore.Video.VideoColumns.SCRAPER_S_ONLINE_ID,
-                new String[]{String.valueOf(Trakt.getLastTimeWatchedSync(mPreferences) + 1)});
+                new String[]{String.valueOf(Trakt.getLastTimeWatchedSync(mPreferences) + 1)},
+                VideoStore.Video.VideoColumns.SCRAPER_S_ONLINE_ID);
         if (c != null) {
             if (c.getCount() > 0) {
                 final int sOnlineIdIdx = c.getColumnIndex(VideoStore.Video.VideoColumns.SCRAPER_S_ONLINE_ID);
