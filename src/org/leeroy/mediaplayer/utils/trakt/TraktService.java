@@ -1521,9 +1521,13 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
 
         log.debug("sync: last sync time is movieTime={}, showTime={}", movieTime, showTime);
 
-        if (showTime == 0 && movieTime == 0) {
+        final boolean isFirstSync = showTime == 0 && movieTime == 0;
+        if (isFirstSync) {
             log.debug("sync: first time syncing: full sync");
             flag |= FLAG_SYNC_FULL;
+            // Avoid spamming trakt with legacy watched history on first login
+            flag &= ~FLAG_SYNC_TO_TRAKT_WATCHED;
+            seedLocalWatchedAsSynced();
         }
 
         if ((flag & FLAG_SYNC_LAST_ACTIVITY_VETO) == 0 && (flag & FLAG_SYNC_TO_DB_WATCHED) == 0) {
