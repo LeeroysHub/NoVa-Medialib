@@ -83,7 +83,7 @@ public class Trakt {
     private static String API_SECRET;
     public static final int SCROBBLE_THRESHOLD = 90;
     // playback history size to synchronize: 50 is enough (it is anyway capped at 1k and incurs a huge processing delay)
-    public static final int PLAYBACK_HISTORY_SIZE = 100;
+    public static final int PLAYBACK_HISTORY_SIZE = 200;
 
     private static final String XML_PREFIX = ".trakt_";
     private static final String XML_SUFFIX = "_db.xml";
