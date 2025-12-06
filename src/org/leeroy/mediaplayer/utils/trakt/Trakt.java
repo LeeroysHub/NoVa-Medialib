@@ -87,8 +87,7 @@ public class Trakt {
 
     private static final String XML_PREFIX = ".trakt_";
     private static final String XML_SUFFIX = "_db.xml";
-    private static final int MAX_TRIAL = 7;
-    private static final int AUTH_MAX_TRIAL = 1; // auth/device endpoints: single attempt
+    private static final int MAX_TRIAL = 3;
     public static final String ACTION_LIBRARY = "library";
     public static final String ACTION_UNLIBRARY = "unlibrary";
     public static final String ACTION_SEEN = "seen";
@@ -115,7 +114,7 @@ public class Trakt {
 
     public static final int WATCHING_DELAY_MS = 600000; // 10 min
     // Back off a bit more between retries on non-auth endpoints to avoid hammering Trakt
-    private static final long WAIT_BEFORE_NEXT_TRIAL = 5000;
+    private static final long WAIT_BEFORE_NEXT_TRIAL = 2000;
 
     // Custom redirect URI registered in Trakt client (also keep http://localhost registered for legacy)
     private static final String REDIRECT_URI = "nova.trakt://auth";
