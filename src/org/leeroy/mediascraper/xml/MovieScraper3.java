@@ -146,12 +146,13 @@ public class MovieScraper3 extends BaseScraper2 {
             }
         }
         //If we didn't get a year out, fallback to the searchInfo year
+        Integer numYear = null;
         if (year == null) {
             year = searchInfo.getYear();
         }
 
         //SEARCH TMDB FOR THE MOVIE!
-        SearchMovieResult searchResult = SearchMovie2.search(searchQuery, language, searchInfo.getYear(), maxItems, searchService, adultScrape);
+        SearchMovieResult searchResult = SearchMovie2.search(searchQuery, language, year, maxItems, searchService, adultScrape);
         
         // TODO: this triggers scrape for all search results, is this intended?
         if (searchResult.status == ScrapeStatus.OKAY) {

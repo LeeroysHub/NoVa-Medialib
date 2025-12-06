@@ -44,7 +44,7 @@ public class ShowIdEpisodes {
     // when multiple episodes share the same season poster
     private static final Map<String, ScraperImage> sSeasonPosterImageCache = new HashMap<>();
 
-    public static Map<String, EpisodeTags> getEpisodes(int showId, List<TvEpisode> tvEpisodes, Map<Integer, TvSeason> tvSeasons, ShowTags showTags, String language,
+    public static Map<String, EpisodeTags> getEpisodes(String showKey, int showId, List<TvEpisode> tvEpisodes, Map<Integer, TvSeason> tvSeasons, ShowTags showTags, String language,
                                                        final boolean adultScrape, MyTmdb tmdb, Context context) {
 
         Map<String, EpisodeTags> episodes = new HashMap<>();
@@ -118,7 +118,7 @@ public class ShowIdEpisodes {
                 episodeTags.setPlot(tvEpisode.overview);
                 episodeTags.setRating(Math.round(tvEpisode.vote_average.floatValue() * 10)/10.0f); // round up first decimal
                 episodeTags.setTitle(tvEpisode.name);
-                episodeTags.setImdbId(showTags.getImdbId());
+                if (tvEpisode.external_ids != null) episodeTags.setImdbId(tvEpisode.external_ids.imdb_id);
                 log.trace("getEpisodes: showId={} episode has onlineId={}", showId, tvEpisode.id);
                 episodeTags.setOnlineId(tvEpisode.id);
                 episodeTags.setAired(tvEpisode.air_date);
@@ -142,7 +142,7 @@ public class ShowIdEpisodes {
                         && !language.equals("en")) { // missing overview in native language
                     if (globalEpisodes.get(tvEpisode.id) == null) { // missing: get whole serie
                         log.debug("getEpisodes: description in {} missing for tvEpisode.name s{}e{} fallback in en for the whole season", language, tvEpisode.season_number, tvEpisode.episode_number);
-                        ShowIdSeasonSearchResult globalSeasonIdSearchResult = ShowIdSeasonSearch.getSeasonShowResponse(showId, tvEpisode.season_number, "en", adultScrape, tmdb);
+                        ShowIdSeasonSearchResult globalSeasonIdSearchResult = ShowIdSeasonSearch.getSeasonShowResponse(showKey, showId, tvEpisode.season_number, "en", adultScrape, tmdb);
                         // stack all episodes in en to find later the overview and name
                         if (globalSeasonIdSearchResult.status == ScrapeStatus.OKAY) {
                             if (globalSeasonIdSearchResult.tvSeason != null && globalSeasonIdSearchResult.tvSeason.episodes != null) {

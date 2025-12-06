@@ -48,7 +48,7 @@ public class ShowIdEpisodeSearch {
 
         log.debug("getEpisodeShowResponse: quering tmdb for showId {} season {} episode {} in {}", showId, season, episode, language);
 
-        String showKey = showId + "|" + language;
+        String showKey = showId + "|" + season + "|" + episode;
         ShowIdEpisodeSearchResult myResult = sShowCache.get(showKey);
         if (log.isTraceEnabled()) debugLruCache(sShowCache);
 
@@ -73,7 +73,7 @@ public class ShowIdEpisodeSearch {
                         }
                         log.debug("getEpisodeShowResponse: showId {} not found", showId);
                         // record valid answer
-                        sShowCache.put(showKey, myResult);
+                        sShowCache.put(showId + "|" + season + "|" + episode, myResult);
                         break;
                     default:
                         if (seriesResponse.isSuccessful()) {
@@ -83,12 +83,12 @@ public class ShowIdEpisodeSearch {
                             } else {
                                 if (!language.equals("en")) {
                                     log.debug("getEpisodeShowResponse: retrying search for showId {} in en", showId);
-                                    return getEpisodeShowResponse(showId, season, episode,"en", adultScrape, tmdb);
+                                    return getEpisodeShowResponse( showId, season, episode,"en", adultScrape, tmdb);
                                 }
                                 myResult.status = ScrapeStatus.NOT_FOUND;
                             }
                             // record valid answer
-                            sShowCache.put(showKey, myResult);
+                            sShowCache.put(showId + "|" + season + "|" + episode, myResult);
                         } else { // an error at this point is PARSER related
                             log.debug("getEpisodeShowResponse: error {}", seriesResponse.code());
                             myResult.status = ScrapeStatus.ERROR_PARSER;

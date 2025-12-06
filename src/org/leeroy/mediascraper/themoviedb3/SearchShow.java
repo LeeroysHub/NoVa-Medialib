@@ -15,7 +15,7 @@
 package org.leeroy.mediascraper.themoviedb3;
 
 import android.util.LruCache;
-import android.util.Pair;
+//import android.util.Pair;
 
 import org.leeroy.mediascraper.ScrapeStatus;
 import org.leeroy.mediascraper.preprocess.TvShowSearchInfo;
@@ -48,7 +48,7 @@ public class SearchShow {
         boolean serviceError = false;
         String showKey = null;
         String name;
-        log.debug("search: quering tmdb for {} year {} in {}, resultLimit={}", searchInfo.getShowName(), searchInfo.getFirstAiredYear(), language, resultLimit);
+        //log.debug("search: quering tmdb for {} year {} in {}, resultLimit={}", searchInfo.getShowName(), searchInfo.getFirstAiredYear(), language, resultLimit);
         try {
             Integer year = null;
             if (searchInfo.getFirstAiredYear() != null) {
@@ -59,9 +59,8 @@ public class SearchShow {
                 }
             }
 
-
             String searchQueryString = searchInfo.getShowName();
-            showKey = searchQueryString + ((year != null) ? "|" + year : "") + "|" + language;
+            showKey = searchQueryString.toLowerCase() + "|" + language;
             //log.debug("SearchShowResult: cache showKey {}", showKey);
             response = showCache.get(showKey);
             //if (log.isTraceEnabled()) debugLruCache(showCache);
@@ -81,23 +80,12 @@ public class SearchShow {
                     isResponseEmpty = true;
                 else {
                     if (response.body().total_results == 0) notFoundIssue = true;
-                    //log.debug("search: response body has {} results", response.body().total_results);
-                    if (notFoundIssue && searchInfo.getFirstAiredYear() == null) {
-                        // reprocess name with year_extractor without parenthesis since we need to match The.Flash.2014.sXXeYY but not first to cope with Paris.Police.1900
-                        name = searchInfo.getShowName();
-                        Pair<String, String> nameYear = yearExtractor(name);
-                        //log.debug("search: not found trying to extract year name={}, year={}", nameYear.first, nameYear.second);
-                        if (nameYear.second != null) { // avoid infinite loop
-                            // remember that it is a reboot show with date year to add to name to discriminate
-                            myResult.year = nameYear.second;
-                            return search(new TvShowSearchInfo(searchInfo.getFile(), nameYear.first, searchInfo.getSeason(), searchInfo.getEpisode(), nameYear.second, searchInfo.getCountryOfOrigin()),
-                                    language, resultLimit, adultScrape, showScraper, tmdb);
-                        }
+
+                    //We have a show, put it in cache before returning.
+                    if (isResponseOk) {
+                        //log.debug("search: inserting in showCache {} and response ", showKey);
+                        showCache.put(showKey, response);
                     }
-                }
-                if (isResponseOk || isResponseEmpty) {
-                    //log.debug("search: inserting in showCache {} and response ", showKey);
-                    showCache.put(showKey, response);
                 }
             } else {
                 //log.debug("search: boost using cached searched show for {}", searchInfo.getShowName());

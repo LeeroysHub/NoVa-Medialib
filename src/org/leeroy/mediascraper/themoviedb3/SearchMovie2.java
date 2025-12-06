@@ -108,19 +108,6 @@ public class SearchMovie2 {
             myResult.status = ScrapeStatus.ERROR_PARSER;
             myResult.reason = e;
         }
-        if (notFound) {
-            if (year == null) { // perhaps year is in title without (year)
-                // reprocess name with year_extractor without parenthesis since we need to match The.Flash.2014.sXXeYY but not first to cope with Paris.Police.1900
-                Pair<String, String> nameYear = yearExtractor(query);
-                //log.debug("search: not found trying to extract year name={}, year={}", nameYear.first, nameYear.second);
-                if (nameYear.second != null) // avoid infinite loop
-                    return search(nameYear.first, language, nameYear.second, resultLimit, searchService, adultScrape);
-                else myResult.status = ScrapeStatus.NOT_FOUND;
-            } else {
-                //log.debug("search: retrying search for '{}' without year.", query);
-                return search(query, language, null, resultLimit, searchService, adultScrape);
-            }
-        }
         return myResult;
     }
 }

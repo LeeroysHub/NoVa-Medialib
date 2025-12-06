@@ -40,7 +40,7 @@ public class MovieSearchInfo extends SearchInfo {
     }
 
     public String getYear() {
-        return (mYear == null) ? "" : mYear;
+        return mYear;
     }
 
     @Override

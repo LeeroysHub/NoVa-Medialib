@@ -478,24 +478,21 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                     //Global Scrape in Progress, so the browser can skip thumbs in scrape and not waste space in storage
                     LoaderUtils.setScrapeInProgress(true);
                     sIsScraping = true;
-                    
-                    //log.debug("startScraping: {}", String.valueOf(mThread == null || !mThread.isAlive()));
-                    nb.setContentTitle(getString(R.string.scraping_in_progress));            
-                    
                     boolean shouldRescrapAll = rescrapAlreadySearched;
-                    log.debug("startScraping: startThread {}", (mThread==null || !mThread.isAlive()) );
-                    if (log.isDebugEnabled()) {
-                        if (shouldRescrapAll && scrapeOnlyMovies)
-                            log.debug("startScraping: go for all movies");
-                        else if (shouldRescrapAll && onlyNotFound)
-                            log.debug("startScraping: go for scraped not found");
-                        else if (shouldRescrapAll)
-                            log.debug("startScraping: go for scrape all");
-                        else
-                            log.debug("startScraping: go for not scraped");
-                        log.debug("startScraping: isLocalNetworkConnected={}, isNetworkConnected={}", NetworkState.isLocalNetworkConnected(AutoScrapeService.this), NetworkState.isNetworkConnected(AutoScrapeService.this));
-                        log.debug("startScraping: is AutoScrapeService enabled? {}", isEnable(AutoScrapeService.this));
-                    }
+                    
+                    //log.debug("startScraping: startThread {}", (mThread==null || !mThread.isAlive()) );
+                    //if (log.isDebugEnabled()) {
+                    //    if (shouldRescrapAll && scrapeOnlyMovies)
+                    //        log.debug("startScraping: go for all movies");
+                    //    else if (shouldRescrapAll && onlyNotFound)
+                    //        log.debug("startScraping: go for scraped not found");
+                    //    else if (shouldRescrapAll)
+                    //        log.debug("startScraping: go for scrape all");
+                    //    else
+                    //        log.debug("startScraping: go for not scraped");
+                    //    log.debug("startScraping: isLocalNetworkConnected={}, isNetworkConnected={}", NetworkState.isLocalNetworkConnected(AutoScrapeService.this), NetworkState.isNetworkConnected(AutoScrapeService.this));
+                    //    log.debug("startScraping: is AutoScrapeService enabled? {}", isEnable(AutoScrapeService.this));
+                    //}
 
                     do {
                         mNetworkOrScrapErrors = 0;
@@ -554,17 +551,23 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
 
                                 String title = cursor.getString(cursor.getColumnIndex(VideoStore.MediaColumns.TITLE));
                                 Uri fileUri = Uri.parse(cursor.getString(cursor.getColumnIndex(VideoStore.MediaColumns.DATA)));
+
+                                //My Titles being full of periods!?
+                                if (fileUri.toString().toLowerCase().startsWith("upnp")) {
+                                    title = title.replace(".", " ");
+                                }
+
                                 Uri scrapUri = title == null || title.isEmpty() || title.equalsIgnoreCase("null") ? fileUri : Uri.parse("/" + title + ".mp4") ;
                                 long ID = cursor.getLong(cursor.getColumnIndex(BaseColumns._ID));
 
                                 // for now there is no error and file is not scraped
-                                notScraped = !title.startsWith("VTS_");
-                                noScrapeError = true;
+                                notScraped = true;
+                                noScrapeError = !title.startsWith("VTS_");
                                 //log.trace("startScraping processing scrapUri {}, with ID {}, number of remaining files to be processed: {}", scrapUri, ID, sTotalNumberOfFilesRemainingToProcess);
                                 if (sTotalNumberOfFilesRemainingToProcess > 0)
                                     nm.notify(NOTIFICATION_ID, nb.setContentText(getString(R.string.remaining_videos_to_process) + " " + sTotalNumberOfFilesRemainingToProcess  + "\n" + getString(R.string.current_video_title) + title).build());
 
-                                if (NfoParser.isNetworkNfoParseEnabled(AutoScrapeService.this) && !fileUri.toString().toLowerCase().startsWith("upnp")) {
+                                if (noScrapeError && NfoParser.isNetworkNfoParseEnabled(AutoScrapeService.this) && !fileUri.toString().toLowerCase().startsWith("upnp")) {
 
                                     BaseTags tags = NfoParser.getTagForFile(fileUri, AutoScrapeService.this);
                                     if (tags != null) {
@@ -621,6 +624,9 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                                         long season = cursor.getLong(cursor.getColumnIndex(VideoStore.Video.VideoColumns.SCRAPER_E_SEASON));
                                         Bundle b = new Bundle();
                                         b.putInt(Scraper.ITEM_REQUEST_SEASON, (int) season);
+                                        b.putInt(Scraper.ITEM_REQUEST_BASIC_VIDEO, 1);
+                                        b.putInt(Scraper.ITEM_REQUEST_SEASON, (int) season);
+                                        b.putInt(Scraper.ITEM_REQUEST_ALL_EPISODES, (int) season);
 
                                         //log.trace("startScraping: rescraping episode for tvId {}, season {}", videoID, season);
                                         SearchResult searchResult = new SearchResult(SearchResult.tvshow, title, (int) videoID);
@@ -643,7 +649,12 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                                     }
 
                                     //Don't get movies with the word (NULL), this means (NULL) movie wont scrape automatically by who cares?
-                                    if (result != null && result.tag != null && ID != -1 && result.tag.getTitle() != null && !result.tag.getTitle().equals("(NULL)")) {
+                                    if (result != null && result.tag != null && ID != -1 && !result.tag.getTitle().equals("(NULL)")) {
+                                        //IF the title is null, but we scraped OK, use Guessed Title.
+                                        if (result.tag.getTitle().isEmpty()) {
+                                            result.tag.setTitle(title);
+                                        }
+
                                         result.tag.setVideoId(ID);
                                         //ugly but necessary to avoid poster delete when replacing tag
                                         if (result.tag.getDefaultPoster() != null) {

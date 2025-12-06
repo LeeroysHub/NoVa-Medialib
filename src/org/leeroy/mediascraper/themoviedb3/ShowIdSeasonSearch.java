@@ -40,7 +40,7 @@ public class ShowIdSeasonSearch {
     // Key format: showId|season|language
     private final static LruCache<String, ShowIdSeasonSearchResult> sShowCache = new LruCache<>(50);
 
-    public static ShowIdSeasonSearchResult getSeasonShowResponse(int showId, int season, String language, final boolean adultScrape, MyTmdb tmdb) {
+    public static ShowIdSeasonSearchResult getSeasonShowResponse(String key, int showId, int season, String language, final boolean adultScrape, MyTmdb tmdb) {
         // specify image language include_image_language=en,null
         final Map<String, String> options  = new HashMap<String, String>() {{
             put("include_image_language", "en,null");
@@ -49,8 +49,8 @@ public class ShowIdSeasonSearch {
 
         log.debug("getSeasonShowResponse: quering tmdb for showId {} season {} in {}", showId, season, language);
 
-        String showKey = showId + "|" + "s" + season + "|" + language;
-        ShowIdSeasonSearchResult myResult = sShowCache.get(showKey);
+        //String showKey = showId + "|" + "s" + season + "|" + language;
+        ShowIdSeasonSearchResult myResult = sShowCache.get(key);
         if (log.isTraceEnabled()) debugLruCache(sShowCache);
 
         if (myResult == null) {
@@ -71,11 +71,14 @@ public class ShowIdSeasonSearch {
                         // fallback to english if no result
                         if (!language.equals("en")) {
                             log.debug("getSeasonShowResponse: retrying search for showId {} in en", showId);
-                            return getSeasonShowResponse(showId, season,"en", adultScrape, tmdb);
+                            return getSeasonShowResponse(key, showId, season,"en", adultScrape, tmdb);
                         }
                         log.debug("getSeasonShowResponse: showId {} not found", showId);
-                        // record valid answer
-                        sShowCache.put(showKey, myResult);
+
+                        // record valid answer (WHY ITS 404 ERROR)?
+                        // AH, caching the NOT FOUND to save scrape ahain and getting same answer
+                        //Needs to be well tested here.
+                        sShowCache.put(key, myResult);
                         break;
                     default:
                         if (seriesResponse.isSuccessful()) {
@@ -85,12 +88,12 @@ public class ShowIdSeasonSearch {
                             } else {
                                 if (!language.equals("en")) {
                                     log.debug("getSeasonShowResponse: retrying search for showId {} in en", showId);
-                                    return getSeasonShowResponse(showId, season,"en", adultScrape, tmdb);
+                                    return getSeasonShowResponse(key,showId, season,"en", adultScrape, tmdb);
                                 }
                                 myResult.status = ScrapeStatus.NOT_FOUND;
                             }
                             // record valid answer
-                            sShowCache.put(showKey, myResult);
+                            sShowCache.put(key, myResult);
                         } else { // an error at this point is PARSER related
                             log.debug("getSeasonShowResponse: error {}", seriesResponse.code());
                             myResult.status = ScrapeStatus.ERROR_PARSER;

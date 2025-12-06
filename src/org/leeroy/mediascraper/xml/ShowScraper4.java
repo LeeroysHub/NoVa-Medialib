@@ -135,8 +135,8 @@ public class ShowScraper4 extends BaseScraper2 {
         TvShowSearchInfo searchInfo = (TvShowSearchInfo) info;
         // get configured language
         String language = Scraper.getLanguage(mContext);
-        log.debug("getMatches2: tvshow search:{} s:{} e:{}, maxItems={}, language={}",
-                searchInfo.getShowName(), searchInfo.getSeason(), searchInfo.getEpisode(), maxItems, language);
+        //log.debug("getMatches2: tvshow search:{} s:{} e:{}, maxItems={}, language={}",
+        //        searchInfo.getShowName(), searchInfo.getSeason(), searchInfo.getEpisode(), maxItems, language);
         if (tmdb == null) reauth();
         SearchShowResult searchResult = SearchShow.search(searchInfo, language, maxItems, adultScrape,this, tmdb);
         if (searchResult.result.size() > 0) log.debug("getMatches2: match found {} id {}", searchResult.result.get(0).getTitle(), searchResult.result.get(0).getId());
@@ -146,10 +146,9 @@ public class ShowScraper4 extends BaseScraper2 {
     @Override
     protected ScrapeDetailResult getDetailsInternal(SearchResult result, Bundle options) {
         // result is the global tvShow
-
         boolean doRebuildShowTag = false;
         // never reuse old show info since there could be new episodes/seasons
-        final boolean useOldShow = false;
+        //final boolean useOldShow = false;
         // ITEM_REQUEST_BASIC_SHOW = true means show (without episodes) is to be scraped manually (ManualShowScrappingSearchFragment)
         //  --> no need to get full season or else we have already all info in getMatch2
         // ITEM_REQUEST_BASIC_VIDEO = true means single episode is to be scraped manually (ManualVideoScrappingSearchFragment/VideoInfoScraperSearchFragment)
@@ -163,19 +162,21 @@ public class ShowScraper4 extends BaseScraper2 {
         if (options != null) {
             season = options.getInt(Scraper.ITEM_REQUEST_SEASON, -1);
             episode = options.getInt(Scraper.ITEM_REQUEST_EPISODE, -1);
-        } else
-            log.debug("getDetailsInternal: options is null");
+        } //else
+          //log.debug("getDetailsInternal: options is null");
 
-        if (episode != -1) log.error("getDetailsInternal: episode should NEVER be -1 since cannot get on single episode season poster!!!");
+        //if (episode != -1) log.error("getDetailsInternal: episode should NEVER be -1 since cannot get on single episode season poster!!!");
+        //WE CAN GET ON EPISODE NOW, OR DO SEASON SCRAPE.
 
         String resultLanguage = result.getLanguage();
         if (TextUtils.isEmpty(resultLanguage))
             resultLanguage = "en";
         int showId = result.getId();
-        String key = (getAllEpisodes ? "all" : (season != -1 ? "s" + season : "") + (episode != -1 ? "e" + episode : ""));
-        String showKey = showId + "|" + key + "|" + resultLanguage;
+        String key = (getAllEpisodes ? result.getOriginalTitle().toLowerCase()  + "|" + (season != -1 ? season : "") : (season != -1 ? season : "") + "|" + (episode != -1 ? episode : ""));
+        String showKey = result.getOriginalTitle().toLowerCase() + "|" + resultLanguage;
 
         // Parse season and episode numbers once to avoid repeated Integer.parseInt() calls
+        // Post refactor, this info may be the exact same as above, just took a longer path to get it!
         int requestedSeason = Integer.parseInt(result.getExtra().getString(ShowUtils.SEASON, "0"));
         int requestedEpisode = Integer.parseInt(result.getExtra().getString(ShowUtils.EPNUM, "0"));
 
@@ -186,12 +187,12 @@ public class ShowScraper4 extends BaseScraper2 {
         ShowTags showTags = null;
         ShowIdImagesResult searchImages = null;
 
-        log.debug("getDetailsInternal: probing cache for showKey {}", showKey);
-        allEpisodes = sEpisodeCache.get(showKey);
+        //log.debug("getDetailsInternal: probing cache for showKey {}", showKey);
+        allEpisodes = sEpisodeCache.get(key);
         if (log.isTraceEnabled()) debugLruCache(sEpisodeCache);
 
         if (allEpisodes == null) {
-            log.debug("getDetailsInternal: allEpisodes is null, need to get show");
+            //log.debug("getDetailsInternal: allEpisodes is null, need to get show");
 
             // if we get allEpisodes it means we also have global show info and there is no need to redo it
             if (tmdb == null) reauth();
@@ -204,28 +205,30 @@ public class ShowScraper4 extends BaseScraper2 {
             // start with global show information before retrieving all episodes
             // check if show metadata is already in database to avoid redundant API calls
             // however, for getAllEpisodes we still need fresh data in case new episodes/seasons were added
-            Boolean isShowKnown = useOldShow && !getAllEpisodes && isShowAlreadyKnown(showId, mContext);
-            log.debug("getDetailsInternal: show known {}", isShowKnown);
 
-            if (! isShowKnown || getAllEpisodes) {
+            //CHECK HERE, SHOW MAY HAVE TO BE KNOWN IT IS NOW IN CACHE AS WELL
+            Boolean isShowKnown = isShowAlreadyKnown(showId, mContext);
+            //log.debug("getDetailsInternal: show known {}", isShowKnown);
+
+            if (!isShowKnown || getAllEpisodes) {
                 String lang = resultLanguage;
                 // for getAllEpisodes we need to get the number of seasons thus get it
-                log.debug("getDetailsInternal: show {} not known or getAllEpisodes {}", showId, getAllEpisodes);
+                //log.debug("getDetailsInternal: show {} not known or getAllEpisodes {}", showId, getAllEpisodes);
 
                 // Check metadata cache first
-                String metadataCacheKey = showId + "|" + resultLanguage;
-                ShowMetadata cachedMetadata = sShowMetadataCache.get(metadataCacheKey);
+                //String metadataCacheKey = result.getTitle().toLowerCase() + "|" + resultLanguage;
+                ShowMetadata cachedMetadata = sShowMetadataCache.get(showKey);
                 ShowIdTvSearchResult showIdTvSearchResult = null;
 
                 if (cachedMetadata == null) {
-                    log.debug("getDetailsInternal: show metadata cache miss, fetching from API");
+                    //log.debug("getDetailsInternal: show metadata cache miss, fetching from API");
                     // query first tmdb
                     showIdTvSearchResult = ShowIdTvSearch.getTvShowResponse(showId, resultLanguage, adultScrape, tmdb);
                     // parse result to get global show basic info
                     if (showIdTvSearchResult.status != ScrapeStatus.OKAY)
                         return new ScrapeDetailResult(new ShowTags(), true, null, showIdTvSearchResult.status, showIdTvSearchResult.reason);
                     else showTags = ShowIdParser.getResult(showIdTvSearchResult.tvShow, result.getYear(), mContext);
-                    log.debug("getDetailsInternal: downloaded showTags {} {}", showTags.getOnlineId(), showTags.getTitle());
+                    //log.debug("getDetailsInternal: downloaded showTags {} {}", showTags.getOnlineId(), showTags.getTitle());
 
                     // if there is no title or description research in en
                     if (showTags.getPlot() == null || showTags.getTitle() == null || showTags.getPlot().length() == 0 || showTags.getTitle().length() == 0) {
@@ -240,52 +243,56 @@ public class ShowScraper4 extends BaseScraper2 {
                     if (number_of_seasons < season) log.warn("getDetailsInternal: season ({}) > number_of_seasons ({})", season, number_of_seasons);
                     // no need to do this if show known
                     if (!isShowKnown) {
-                        log.debug("getDetailsInternal: get all images for show {}", showId);
+                        //log.debug("getDetailsInternal: get all images for show {}", showId);
 
                         // get show posters and backdrops
                         searchImages = ShowIdImagesParser.getResult(showTags.getTitle(), showIdTvSearchResult.tvShow, lang, mContext);
                         if (!searchImages.backdrops.isEmpty())
                             showTags.setBackdrops(searchImages.backdrops);
-                        else log.debug("getDetailsInternal: backdrops empty!");
+                        //else log.debug("getDetailsInternal: backdrops empty!");
                         // needs to be done after setBackdrops not to be erased
                         if (result.getBackdropPath() != null)  showTags.addDefaultBackdropTMDB(mContext, result.getBackdropPath());
                         if (!searchImages.posters.isEmpty())
                             showTags.setPosters(searchImages.posters);
-                        else log.debug("getDetailsInternal: posters empty!");
+                        //else log.debug("getDetailsInternal: posters empty!");
                         // needs to be done after setPosters not to be erased
                         if (result.getPosterPath() != null) showTags.addDefaultPosterTMDB(mContext, result.getPosterPath());
 
                         // only downloads main backdrop/poster and not the entire collection (x8 in size)
                         showTags.downloadPoster(mContext);
                         showTags.downloadBackdrop(mContext);
-                        //showTags.downloadPosters(mContext);
+                        showTags.downloadPosters(mContext);
+
+                        //THIS IS CRASHING HERE AND HANGING ME.
                         //showTags.downloadBackdrops(mContext);
                     } else {
                         doRebuildShowTag = true;
                     }
 
                     // Cache the show metadata (including number_of_seasons) for future scrapes
-                    sShowMetadataCache.put(metadataCacheKey, new ShowMetadata(showTags, number_of_seasons));
-                    log.debug("getDetailsInternal: cached show metadata for show {} with {} seasons", showId, number_of_seasons);
+                    sShowMetadataCache.put(showKey, new ShowMetadata(showTags, number_of_seasons));
+                    //log.debug("getDetailsInternal: cached show metadata for show {} with {} seasons", showId, number_of_seasons);
                 } else {
-                    log.debug("getDetailsInternal: show metadata cache hit for show {}", showId);
+                    //log.debug("getDetailsInternal: show metadata cache hit for show {}", showId);
                     // Extract cached data
                     showTags = cachedMetadata.showTags;
                     number_of_seasons = cachedMetadata.numberOfSeasons;
-                    log.debug("getDetailsInternal: using cached number_of_seasons={}", number_of_seasons);
+                    //log.debug("getDetailsInternal: using cached number_of_seasons={}", number_of_seasons);
                 }
             } else {
                 doRebuildShowTag = true;
             }
 
-            if (doRebuildShowTag == true) {
-                log.debug("getDetailsInternal: show {} is known: rebuild from tag", showId);
+            //The show is known in the database, so we rebuild tags instead of TMDB scrape.
+            if (doRebuildShowTag) {
+                //log.debug("getDetailsInternal: show {} is known: rebuild from tag", showId);
                 // showTags exits we get it from db
                 showTags = buildShowTagsOnlineId(mContext, showId);
-                if (showTags == null)
+                /* if (showTags == null)
                     log.warn("getDetailsInternal: show {} tag is null but known!", showId);
                 else log.debug("getDetailsInternal: show {} {} in {} already known: {}, plot: {}",
                         showId, key, resultLanguage, showTags.getTitle(), showTags.getPlot());
+                 */
             }
 
             // retreive now the desired episodes
@@ -293,19 +300,23 @@ public class ShowScraper4 extends BaseScraper2 {
             Map<Integer, TvSeason> tvSeasons = new HashMap<Integer, TvSeason>();
 
             if (getAllEpisodes) {
+                //I WILL GET EACH EASON AS NEEDED, I ONLY HAVE SOM SEASONS OF SOME THINGS
+
                 // get all episodes: loop over seasons and concatenate
-                for (int s = 1; s <= number_of_seasons; s++) {
-                    log.debug("getDetailsInternal: get episodes for show " + showId + " s" + s);
-                    ShowIdSeasonSearchResult showIdSeason = ShowIdSeasonSearch.getSeasonShowResponse(showId, s, resultLanguage, adultScrape, tmdb);
+                //for (int s = 1; s <= number_of_seasons; s++) {
+                //    log.debug("getDetailsInternal: get episodes for show " + showId + " s" + s);
+                    ShowIdSeasonSearchResult showIdSeason = ShowIdSeasonSearch.getSeasonShowResponse(key, showId, requestedSeason, resultLanguage, adultScrape, tmdb);
                     if (showIdSeason.status == ScrapeStatus.OKAY) {
                         tvEpisodes.addAll(showIdSeason.tvSeason.episodes);
                         if (! tvSeasons.containsKey(showIdSeason.tvSeason.season_number))
                             tvSeasons.put(showIdSeason.tvSeason.season_number, showIdSeason.tvSeason);
                     } else {
-                        log.warn("getDetailsInternal: scrapeStatus for s" + s + " is NOK!");
+                        log.warn("getDetailsInternal: scrapeStatus for s" + requestedSeason + " is NOK!");
                         return new ScrapeDetailResult(new EpisodeTags(), true, null, showIdSeason.status, showIdSeason.reason);
                     }
-                }
+                //}
+
+                //I need logic to check if the shows are there each time, and get the appropriate one. If I select the episode from cache here, it will be the same as singles scraping below.
             } else {
                 if (episode != -1) {
                     // get a single episode: should never get there since it means that we cannot infer poster/backdrop from single episode (need season)
@@ -333,7 +344,7 @@ public class ShowScraper4 extends BaseScraper2 {
                         return new ScrapeDetailResult(episodeTag, true, null, ScrapeStatus.ERROR_PARSER, null);
                     }
                     log.debug("getDetailsInternal: get full season for show {} s{}", showId, season);
-                    ShowIdSeasonSearchResult showIdSeason = ShowIdSeasonSearch.getSeasonShowResponse(showId, season, resultLanguage, adultScrape, tmdb);
+                    ShowIdSeasonSearchResult showIdSeason = ShowIdSeasonSearch.getSeasonShowResponse(key, showId, season, resultLanguage, adultScrape, tmdb);
                     if (showIdSeason.status == ScrapeStatus.OKAY) {
                         tvEpisodes.addAll(showIdSeason.tvSeason.episodes);
                         tvSeasons.putIfAbsent(showIdSeason.tvSeason.season_number, showIdSeason.tvSeason);
@@ -351,17 +362,19 @@ public class ShowScraper4 extends BaseScraper2 {
             }
 
             // get now all episodes in tvEpisodes
-            Map<String, EpisodeTags> searchEpisodes = ShowIdEpisodes.getEpisodes(showId, tvEpisodes, tvSeasons, showTags, resultLanguage, adultScrape, tmdb, mContext);
+            Map<String, EpisodeTags> searchEpisodes = ShowIdEpisodes.getEpisodes(key, showId, tvEpisodes, tvSeasons, showTags, resultLanguage, adultScrape, tmdb, mContext);
             if (!searchEpisodes.isEmpty()) {
                 allEpisodes = searchEpisodes;
                 // put that result in cache.
-                log.debug("getDetailsInternal: sEpisodeCache put allEpisodes with key {}", showKey);
-                sEpisodeCache.put(showKey, allEpisodes);
-            }
+                log.debug("getDetailsInternal: sEpisodeCache put allEpisodes with key {}", key);
+                sEpisodeCache.put(key, allEpisodes);
 
-            // if we have episodes and posters map them to each other
-            if (!allEpisodes.isEmpty()) {
-                String showPosterKey = showId + "|" + resultLanguage;
+                /* }
+
+                // if we have episodes and posters map them to each other
+                if (!allEpisodes.isEmpty()) { */
+
+                String showPosterKey = result.getTitle().toLowerCase() + "|" + resultLanguage;
                 SparseArray<ScraperImage> seasonPosters = sSeasonPosterCache.get(showPosterKey);
                 if (seasonPosters == null) {
                     List<ScraperImage> postersFromDb = showTags.getAllPostersInDb(mContext);

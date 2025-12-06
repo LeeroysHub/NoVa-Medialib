@@ -97,13 +97,17 @@ public abstract class BaseScraper2 {
         ScrapeSearchResult searchResult = getMatches2(info, 1);
         if (searchResult.isOkay()) {
             if (info.isTvShow()) {
-                log.debug("search: tv show");
+                //log.debug("search: tv show");
                 // here info is a TvSearchInfo
                 Bundle bundle = new Bundle();
                 TvShowSearchInfo tvSearchInfo = (TvShowSearchInfo) info;
+
+                //These options get the episode without cachine, add ALL for the cache
+                bundle.putInt(Scraper.ITEM_REQUEST_BASIC_VIDEO, 1);
                 bundle.putInt(Scraper.ITEM_REQUEST_SEASON, tvSearchInfo.getSeason());
+                bundle.putInt(Scraper.ITEM_REQUEST_EPISODE, tvSearchInfo.getEpisode());                
                 // keeping whole season boosts the perf since there is only one request for tmdb
-                //bundle.putInt(Scraper.ITEM_REQUEST_EPISODE, tvSearchInfo.getEpisode());
+                bundle.putInt(Scraper.ITEM_REQUEST_ALL_EPISODES, tvSearchInfo.getSeason());
                 result = getDetails(searchResult.results.get(0), bundle);
             } else {
                 log.debug("search: not tv show");
