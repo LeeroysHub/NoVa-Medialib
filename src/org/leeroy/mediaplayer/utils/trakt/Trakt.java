@@ -88,6 +88,7 @@ public class Trakt {
     private static final String XML_PREFIX = ".trakt_";
     private static final String XML_SUFFIX = "_db.xml";
     private static final int MAX_TRIAL = 7;
+    private static final int AUTH_MAX_TRIAL = 1; // auth/device endpoints: single attempt
     public static final String ACTION_LIBRARY = "library";
     public static final String ACTION_UNLIBRARY = "unlibrary";
     public static final String ACTION_SEEN = "seen";
@@ -113,9 +114,11 @@ public class Trakt {
     public static final int TRAKT_DB_UNMARK = 2;
 
     public static final int WATCHING_DELAY_MS = 600000; // 10 min
-    private static final long WAIT_BEFORE_NEXT_TRIAL = 2000;
+    // Back off a bit more between retries on non-auth endpoints to avoid hammering Trakt
+    private static final long WAIT_BEFORE_NEXT_TRIAL = 5000;
 
-    private static final String REDIRECT_URI = "http://localhost";
+    // Custom redirect URI registered in Trakt client (also keep http://localhost registered for legacy)
+    private static final String REDIRECT_URI = "nova.trakt://auth";
 
     private final Context mContext;
 
@@ -266,8 +269,16 @@ public class Trakt {
     }
     public static OAuthClientRequest getAuthorizationRequest(SharedPreferences pref) throws OAuthSystemException{
         String sampleState = new BigInteger(130, new SecureRandom()).toString(32);
-        String url = getTraktV2().buildAuthorizationUrl(sampleState);
-        log.debug("getAuthorizationRequest: url is {}", url);
+        return getAuthorizationRequestWithState(sampleState);
+    }
+
+    public static OAuthClientRequest getAuthorizationRequestWithState(SharedPreferences pref, String state) throws OAuthSystemException {
+        return getAuthorizationRequestWithState(state);
+    }
+
+    public static OAuthClientRequest getAuthorizationRequestWithState(String state) throws OAuthSystemException {
+        String url = getTraktV2().buildAuthorizationUrl(state);
+        log.debug("getAuthorizationRequestWithState: url is {}", url);
         return OAuthClientRequest
                 .authorizationLocation(url)
                 .buildQueryMessage();
@@ -288,8 +299,9 @@ public class Trakt {
         public int interval;
     }
 
-    public static accessToken getAccessToken(String code){
+    public static accessToken getAccessToken(String code) throws AccountLockedError {
         try {
+            // Single-shot auth call (Trakt SDK returns a synchronous Response)
             final retrofit2.Response<AccessToken> response = getTraktV2().exchangeCodeForAccessToken(code);
             final accessToken mAccessToken = new accessToken();
             mAccessToken.access_token = response.body().access_token;
@@ -307,8 +319,9 @@ public class Trakt {
      * Display the user_code and verification_url to the user, then poll with the device_code.
      * @return deviceCode object with codes and verification URL, or null on error
      */
-    public static deviceCode generateDeviceCode() {
+    public static deviceCode generateDeviceCode() throws AccountLockedError {
         try {
+            // Single-shot auth call (Trakt SDK returns a synchronous Response)
             final retrofit2.Response<com.uwetrottmann.trakt5.entities.DeviceCode> response = getTraktV2().generateDeviceCode();
             if (response.isSuccessful() && response.body() != null) {
                 final deviceCode code = new deviceCode();
@@ -332,8 +345,9 @@ public class Trakt {
      * @param deviceCode the device_code from generateDeviceCode()
      * @return accessToken if user authorized, null if still pending or error
      */
-    public static accessToken exchangeDeviceCodeForAccessToken(String deviceCode) {
+    public static accessToken exchangeDeviceCodeForAccessToken(String deviceCode) throws AccountLockedError {
         try {
+            // Single-shot auth call (Trakt SDK returns a synchronous Response)
             final retrofit2.Response<AccessToken> response = getTraktV2().exchangeDeviceCodeForAccessToken(deviceCode);
             if (response.isSuccessful() && response.body() != null) {
                 final accessToken mAccessToken = new accessToken();
@@ -828,23 +842,23 @@ public class Trakt {
             retrofit2.Response<T> res = call.execute();
             if (!res.isSuccessful()) {
                 log.error("exec request error code is {}", res.code(), new Throwable());
-                // TODO check this new retry case with 409
-                // 409	Conflict - resource already created is happening often but no retry...
-                if (res.code() == 401 || res.code() == 409 ) {
-                    if (remaining > 0) {
-                        refreshAccessToken();
-                        return exec(call, 0);
+                    // TODO check this new retry case with 409
+                    // 409	Conflict - resource already created is happening often but no retry...
+                    if (res.code() == 401 || res.code() == 409 ) {
+                        if (remaining > 0) {
+                            refreshAccessToken();
+                            return exec(call, 0);
+                        } else {
+                            throw new AuthentificationError();
+                        }
+                    } else if (res.code() == 404) {
+                        log.error("exec request error: resource not found (404)");
+                        return null; // Handle 404 error specifically
+                    } else if (res.code() == 423) {
+                        log.error("exec request error: account locked (423) - no retry");
+                        return null; // Trakt account is locked
                     } else {
-                        throw new AuthentificationError();
-                    }
-                } else if (res.code() == 404) {
-                    log.error("exec request error: resource not found (404)");
-                    return null; // Handle 404 error specifically
-                } else if (res.code() == 423) {
-                    log.error("exec request error: account locked (423) - no retry");
-                    throw new AccountLockedError(); // Trakt account is locked
-                } else {
-                    throw new Exception(res.errorBody().toString());
+                        throw new Exception(res.errorBody().toString());
                 }
             }
             return res.body();

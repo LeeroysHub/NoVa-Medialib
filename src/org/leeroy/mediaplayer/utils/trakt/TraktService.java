@@ -1581,13 +1581,17 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
         if (flag == 0 || flag == FLAG_SYNC_AUTO)
             flag = Trakt.getFlagSyncPreference(mPreferences);
 
+        // Disable collection sync (to avoid hitting Trakt library limits)
+        flag &= ~FLAG_SYNC_TO_DB_COLLECTION;
+        flag &= ~FLAG_SYNC_TO_TRAKT_COLLECTION;
+
         if (mForcePush) {
             log.debug("sync: force push requested");
-            flag |= FLAG_SYNC_TO_TRAKT_WATCHED | FLAG_SYNC_MOVIES | FLAG_SYNC_SHOWS | FLAG_SYNC_TO_TRAKT_COLLECTION;
+            flag |= FLAG_SYNC_TO_TRAKT_WATCHED | FLAG_SYNC_MOVIES | FLAG_SYNC_SHOWS;
         }
         if (mForcePull) {
             log.debug("sync: force pull requested");
-            flag |= FLAG_SYNC_TO_DB_WATCHED | FLAG_SYNC_MOVIES | FLAG_SYNC_SHOWS | FLAG_SYNC_TO_DB_COLLECTION | FLAG_SYNC_PROGRESS;
+            flag |= FLAG_SYNC_TO_DB_WATCHED | FLAG_SYNC_MOVIES | FLAG_SYNC_SHOWS | FLAG_SYNC_PROGRESS;
         }
 
         long movieTime = Trakt.getLastTimeMovieWatched(mPreferences);
