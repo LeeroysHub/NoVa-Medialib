@@ -518,11 +518,20 @@ public class Trakt {
         if (videoInfo.isShow) {
             ShowWatchingParam showParam = (ShowWatchingParam) param;
             showParam.progress = (int) progress;
+
+            if (showParam.episode_tmdb_id == null || showParam.episode_tmdb_id.isEmpty()) {
+                log.warn("postWatching: missing episode_tmdb_id for show, skipping scrobble to avoid 404");
+                return handleRet(null, new Exception(), null, ObjectType.NULL);
+            }
+
             SyncEpisode se = new SyncEpisode();
             EpisodeIds ids = new EpisodeIds();
-            if(showParam.episode_tmdb_id!=null) {
+            try {
                 log.debug("postWatching: showid={}", showParam.episode_tmdb_id);
                 ids.tmdb = Integer.valueOf(showParam.episode_tmdb_id);
+            } catch (NumberFormatException nfe) {
+                log.warn("postWatching: invalid episode_tmdb_id {}, skipping scrobble", showParam.episode_tmdb_id);
+                return handleRet(null, new Exception(), null, ObjectType.NULL);
             }
             se.id(ids);
             ScrobbleProgress ep = new ScrobbleProgress(se, progress, "", "");
@@ -548,9 +557,18 @@ public class Trakt {
             MovieWatchingParam movieParam = (MovieWatchingParam) param;
             movieParam.progress = (int) progress;
 
+            if (movieParam.tmdb_id == null || movieParam.tmdb_id.isEmpty()) {
+                log.warn("postWatching: missing movie tmdb_id, skipping scrobble to avoid 404");
+                return handleRet(null, new Exception(), null, ObjectType.NULL);
+            }
+
             MovieIds mi = new MovieIds();
-            if(movieParam.tmdb_id!=null)
+            try {
                 mi.tmdb=Integer.valueOf(movieParam.tmdb_id);
+            } catch (NumberFormatException nfe) {
+                log.warn("postWatching: invalid movie tmdb_id {}, skipping scrobble", movieParam.tmdb_id);
+                return handleRet(null, new Exception(), null, ObjectType.NULL);
+            }
             SyncMovie sm= new SyncMovie();
             sm.id(mi);
             ScrobbleProgress mp = new ScrobbleProgress(sm, progress, "", "");
