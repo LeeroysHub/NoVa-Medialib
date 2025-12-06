@@ -1575,7 +1575,9 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
         if ((flag & FLAG_SYNC_NOW) != 0)
             removeListener();
          */
-        if (mNetworkStateListenerAdded || mWaitBeforeSync || !mNetworkState.isConnected())
+        // When the network listener is registered we still want to allow sync.
+        // Only block when explicitly waiting or offline.
+        if (mWaitBeforeSync || !mNetworkState.isConnected())
             return handleSyncStatus(Trakt.Status.ERROR_NETWORK, flag, null);
 
         if (flag == 0 || flag == FLAG_SYNC_AUTO)
