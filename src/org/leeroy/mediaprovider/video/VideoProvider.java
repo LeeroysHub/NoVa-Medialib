@@ -907,13 +907,13 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
      * @return
      */
     private boolean waitForThumbnailReady(Uri origUri) {
-        log.debug("waitForThumbnailReady");
+        //log.debug("waitForThumbnailReady");
 
         String origId = FileUtils.getName(origUri);
         String[] whereArgs = new String[] { origId };
         Cursor c = query(origUri, new String[] { BaseColumns._ID, MediaColumns.DATA,
                 VideoColumns.MINI_THUMB_MAGIC, VideoColumns.LEEROYFLIX_THUMB_TRY}, LIGHT_INDEX_STORAGE_QUERY, whereArgs , null);
-        log.debug("is cursor null ? {}", String.valueOf(c==null));
+        //log.debug("is cursor null ? {}", String.valueOf(c==null));
         if (c == null) return false;
 
         boolean result = false;
@@ -922,7 +922,7 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
 
             long id = c.getLong(0);
             String path = c.getString(1);
-            log.debug("trying to create thumb for {}", path);
+            //log.debug("trying to create thumb for {}", path);
 
             long magic = c.getLong(2);
             int nbTry = c.getInt(3);
@@ -1229,7 +1229,7 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
          * @throws IOException
          */
         void execute() throws IOException {
-            log.debug("ThumbRequest, creating.");
+            //log.debug("ThumbRequest, creating.");
             // If we can't retrieve the thumbnail, first check if there is one
             // embedded in the EXIF data. If not, or it's not big enough,
             // decompress the full size image.
@@ -1255,7 +1255,7 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
                     OutputStream thumbOut = mCr.openOutputStream(uri);
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 85, thumbOut);
                     thumbOut.close();
-                    log.debug("ThumbRequest written bitmap");
+                    //log.debug("ThumbRequest written bitmap");
 
                     ContentValues values = new ContentValues();
                     long magic = sRandom.nextLong();
@@ -1277,7 +1277,7 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
                 return null;
             } else {
                 Bitmap res = createVideoThumbnail_(ctx, filePath, kind);
-                log.debug("createVideoThumbnail: {}", res);
+                //log.debug("createVideoThumbnail: {}", res);
                 return res;
             }
         }
