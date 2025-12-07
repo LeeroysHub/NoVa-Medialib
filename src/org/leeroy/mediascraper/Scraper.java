@@ -103,9 +103,13 @@ public class Scraper {
         }
 
         info = SearchPreprocessor.instance().reParseInfo(info);
-        if (info.isTvShow())
+        if (info.isTvShow() && !isMovieURI(info))
             return mShowScraper.search(info);
         return mMovieScraper.search(info);
+    }
+
+    private boolean isMovieURI(SearchInfo info) {
+        return info.getFile().toString().contains("/Movies/");
     }
 
     public static String getLanguage(Context context) {
