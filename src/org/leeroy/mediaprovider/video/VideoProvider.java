@@ -52,6 +52,7 @@ import android.text.TextUtils;
 import org.leeroy.environment.LeeroyFlixUtils;
 import org.leeroy.filecorelibrary.FileEditor;
 import org.leeroy.filecorelibrary.FileUtils;
+import org.leeroy.mediaprovider.video.LoaderUtils;
 import org.leeroy.mediaplayer.filecoreextension.upnp2.FileEditorFactoryWithUpnp;
 import org.leeroy.mediaplayer.filecoreextension.upnp2.UpnpServiceManager;
 import org.leeroy.medialib.IMediaMetadataRetriever;
@@ -1237,15 +1238,15 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
             if (mPath != null) {
                 if (mIsVideo) {
                     // LEEROYFLIX: this uses libavos
-                    log.debug("is video");
+                    //log.debug("is video");
 
                     bitmap = createVideoThumbnail(mContext, mPath,
                             Video.Thumbnails.MINI_KIND);
-                    log.debug("test 2 for bitmap  {}", String.valueOf(bitmap==null));
+                    //log.debug("test 2 for bitmap  {}", String.valueOf(bitmap==null));
 
                 }
                 if (bitmap == null) {
-                    log.warn("Can't create mini thumbnail for {}", mPath);
+                    //log.warn("Can't create mini thumbnail for {}", mPath);
                     return;
                 }
 
