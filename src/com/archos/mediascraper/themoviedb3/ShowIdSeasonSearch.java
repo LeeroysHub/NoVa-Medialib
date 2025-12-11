@@ -40,7 +40,7 @@ public class ShowIdSeasonSearch {
     // Key format: showId|season|language
     private final static LruCache<String, ShowIdSeasonSearchResult> sShowCache = new LruCache<>(50);
 
-    public static ShowIdSeasonSearchResult getSeasonShowResponse(int showId, int season, String language, final boolean adultScrape, MyTmdb tmdb) {
+    public static ShowIdSeasonSearchResult getSeasonShowResponse(String seasonKey, int showId, int season, String language, final boolean adultScrape, MyTmdb tmdb) {
         // Build image language filter: current language + "en" + "null" (language-neutral)
         // Avoid duplicates if current language is already "en"
         final String imageLanguages = language.equals("en") ? "en,null" : language + ",en,null";
@@ -49,10 +49,10 @@ public class ShowIdSeasonSearch {
             put("include_adult", String.valueOf(adultScrape));
         }};
 
-        if (log.isDebugEnabled()) log.debug("getSeasonShowResponse: quering tmdb for showId {} season {} in {} with image languages: {}", showId, season, language, imageLanguages);
+        if (log.isDebugEnabled()) log.debug("getSeasonShowResponse: quering tmdb for showId {} season {} in {}", showId, season, language);
 
-        String showKey = showId + "|" + "s" + season + "|" + language;
-        ShowIdSeasonSearchResult myResult = sShowCache.get(showKey);
+        //String showKey = showId + "|" + "s" + season + "|" + language;
+        ShowIdSeasonSearchResult myResult = sShowCache.get(seasonKey);
         if (log.isTraceEnabled()) debugLruCache(sShowCache);
 
         if (myResult == null) {
@@ -64,7 +64,7 @@ public class ShowIdSeasonSearch {
                 Response<TvSeason> seriesResponse = tmdb.tvSeasonsService().season(showId, season, language, new AppendToResponse(AppendToResponseItem.EXTERNAL_IDS, AppendToResponseItem.IMAGES, AppendToResponseItem.CREDITS, AppendToResponseItem.CONTENT_RATINGS), options).execute();
                 switch (seriesResponse.code()) {
                     case 401: // auth issue
-                        if (log.isDebugEnabled()) log.debug("search: auth error");
+                        log.debug("search: auth error");
                         myResult.status = ScrapeStatus.AUTH_ERROR;
                         ShowScraper4.reauth();
                         return myResult;
@@ -73,11 +73,12 @@ public class ShowIdSeasonSearch {
                         // fallback to english if no result
                         if (!language.equals("en")) {
                             if (log.isDebugEnabled()) log.debug("getSeasonShowResponse: retrying search for showId {} in en", showId);
-                            return getSeasonShowResponse(showId, season,"en", adultScrape, tmdb);
+                            return getSeasonShowResponse( seasonKey, showId, season,"en", adultScrape, tmdb);
                         }
                         if (log.isDebugEnabled()) log.debug("getSeasonShowResponse: showId {} not found", showId);
-                        // record valid answer
-                        sShowCache.put(showKey, myResult);
+                        // record INVALID answer
+                        // Caching the NOT FOUND to save scrape again and getting same answer
+                        sShowCache.put(seasonKey, myResult);
                         break;
                     default:
                         if (seriesResponse.isSuccessful()) {
@@ -87,12 +88,12 @@ public class ShowIdSeasonSearch {
                             } else {
                                 if (!language.equals("en")) {
                                     if (log.isDebugEnabled()) log.debug("getSeasonShowResponse: retrying search for showId {} in en", showId);
-                                    return getSeasonShowResponse(showId, season,"en", adultScrape, tmdb);
+                                    return getSeasonShowResponse(seasonKey, showId, season,"en", adultScrape, tmdb);
                                 }
                                 myResult.status = ScrapeStatus.NOT_FOUND;
                             }
                             // record valid answer
-                            sShowCache.put(showKey, myResult);
+                            sShowCache.put(seasonKey, myResult);
                         } else { // an error at this point is PARSER related
                             if (log.isDebugEnabled()) log.debug("getSeasonShowResponse: error {}", seriesResponse.code());
                             myResult.status = ScrapeStatus.ERROR_PARSER;

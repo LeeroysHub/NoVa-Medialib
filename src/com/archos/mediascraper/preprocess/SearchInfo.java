@@ -75,7 +75,7 @@ public abstract class SearchInfo {
         return mSearchSuggestion;
     }
 
-    final void setForceReParse(boolean state) {
+    public final void setForceReParse(boolean state) {
         mForceReParse = state;
     }
 

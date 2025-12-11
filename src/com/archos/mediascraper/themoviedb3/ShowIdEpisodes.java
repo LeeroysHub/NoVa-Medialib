@@ -44,7 +44,7 @@ public class ShowIdEpisodes {
     // when multiple episodes share the same season poster
     private static final Map<String, ScraperImage> sSeasonPosterImageCache = new HashMap<>();
 
-    public static Map<String, EpisodeTags> getEpisodes(int showId, List<TvEpisode> tvEpisodes, Map<Integer, TvSeason> tvSeasons, ShowTags showTags, String language,
+    public static Map<String, EpisodeTags> getEpisodes(String seasonKey, int showId, List<TvEpisode> tvEpisodes, Map<Integer, TvSeason> tvSeasons, ShowTags showTags, String language,
                                                        final boolean adultScrape, MyTmdb tmdb, Context context) {
 
         Map<String, EpisodeTags> episodes = new HashMap<>();
@@ -54,33 +54,33 @@ public class ShowIdEpisodes {
 
         if (tvEpisodes != null) {
             for (TvEpisode tvEpisode : tvEpisodes) {
-                if (log.isDebugEnabled()) log.debug("getEpisodes: filling showid {} s{}e{}", showId, tvEpisode.season_number, tvEpisode.episode_number);
+                //log.debug("getEpisodes: filling showid {} s{}e{}", showId, tvEpisode.season_number, tvEpisode.episode_number);
                 EpisodeTags episodeTags = new EpisodeTags();
                 // note: tvEpisode.credits is null thus use tvEpisode.guest_stars and tvEpisode.crew instead
                 if (tvEpisode.guest_stars != null) {
                     for (CastMember guestStar : tvEpisode.guest_stars)
                         episodeTags.addActorIfAbsent(guestStar.name, guestStar.character);
-                } else {
-                    log.warn("getEpisodes: guest_star is null for showId {}", showId);
-                }
+                } //else {
+                //    log.warn("getEpisodes: guest_star is null for showId {}", showId);
+                //}
                 if (tvEpisode.crew != null) {
                     for (CrewMember crew : tvEpisode.crew) {
                         assert crew.job != null;
                         if (crew.job.equals(DIRECTOR))
                             episodeTags.addDirectorIfAbsent(crew.name);
                     }
-                } else {
-                    if (log.isDebugEnabled()) log.debug("getEpisodes: crew is null for showId {}", showId);
-                }
+                } //else {
+                 //   log.debug("getEpisodes: crew is null for showId {}", showId);
+                //}
                 if (tvEpisode.crew != null) {
                     for (CrewMember crew : tvEpisode.crew) {
                         assert crew.job != null;
                         if (crew.job.equals(WRITER))
                             episodeTags.addWriterIfAbsent(crew.name);
                     }
-                } else {
-                    if (log.isDebugEnabled()) log.debug("getEpisodes: crew is null for showId {}", showId);
-                }
+                } //else {
+                  //  log.debug("getEpisodes: crew is null for showId {}", showId);
+                //}
 
                 // set episode poster according to corresponding season poster
                 if (log.isDebugEnabled()) log.debug("getEpisodes: tvEpisode.season_number={}, tvSeasons.size={}", tvEpisode.season_number, tvSeasons.size());
@@ -142,7 +142,7 @@ public class ShowIdEpisodes {
                         && !language.equals("en")) { // missing overview in native language
                     if (globalEpisodes.get(tvEpisode.id) == null) { // missing: get whole serie
                         if (log.isDebugEnabled()) log.debug("getEpisodes: description in {} missing for tvEpisode.name s{}e{} fallback in en for the whole season", language, tvEpisode.season_number, tvEpisode.episode_number);
-                        ShowIdSeasonSearchResult globalSeasonIdSearchResult = ShowIdSeasonSearch.getSeasonShowResponse(showId, tvEpisode.season_number, "en", adultScrape, tmdb);
+                        ShowIdSeasonSearchResult globalSeasonIdSearchResult = ShowIdSeasonSearch.getSeasonShowResponse(seasonKey, showId, tvEpisode.season_number, "en", adultScrape, tmdb);
                         // stack all episodes in en to find later the overview and name
                         if (globalSeasonIdSearchResult.status == ScrapeStatus.OKAY) {
                             if (globalSeasonIdSearchResult.tvSeason != null && globalSeasonIdSearchResult.tvSeason.episodes != null) {
@@ -162,7 +162,7 @@ public class ShowIdEpisodes {
                             episodeTags.setTitle(globalEpisode.name);
                     }
                 }
-                episodes.put(tvEpisode.season_number + "|" + tvEpisode.episode_number, episodeTags);
+                episodes.put(showId + "|"  + + tvEpisode.season_number + "|" + tvEpisode.episode_number + "|" + language, episodeTags);
             }
         }
         return episodes;

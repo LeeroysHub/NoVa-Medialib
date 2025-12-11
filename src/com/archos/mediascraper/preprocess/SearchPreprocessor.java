@@ -96,29 +96,41 @@ public class SearchPreprocessor {
     public SearchInfo reParseInfo(SearchInfo info) {
         if (info.needsReParse()) {
             Uri file = info.getFile();
-            String userInput = info.getUserInput();
-            if (userInput == null) {
-                userInput = info.getSearchSuggestion();
+
+            //We need to make sure there are no NULL problems here especially for UPNP.
+            String[] candidates = {
+                    info.getUserInput(),
+                    info.getSearchSuggestion()
+            };
+
+            //Check Search Suggestion, Name and fallback to filename.
+            String searchQuery = file.toString();
+            for (String candidate : candidates) {
+                if (!(candidate == null || candidate.isBlank() || candidate.equalsIgnoreCase("null"))) {
+                    searchQuery = candidate;
+                    break; // first valid match wins, fallback to file name.
+                }
             }
+
             for (InputMatcher matcher : PARSERS) {
-                if (matcher.matchesUserInput(userInput)) {
-                    SearchInfo result = matcher.getUserInputMatch(userInput, file);
+                if (matcher.matchesUserInput(searchQuery)) {
+                    SearchInfo result = matcher.getUserInputMatch(searchQuery, file);
                     if (result == null) {
                         // Matcher claimed to match but returned null - log error and try next matcher
                         log.error("reParseInfo: Matcher {} returned null for user input: {}",
-                                matcher.getMatcherName(), userInput);
+                                matcher.getMatcherName(), searchQuery);
                         continue; // Try next matcher instead of crashing
                     }
-                    if (log.isDebugEnabled()) log.debug("re-parse result from {}", matcher.getMatcherName());
-                    return reParseInfo(result);
+                    //log.debug("re-parse result from {}", matcher.getMatcherName());
+                    return result;
                 }
             }
             // default to something - should not happen
-            log.error("re-parse error, no matcher");
-            return new MovieSearchInfo(file, userInput, null);
+            //log.error("re-parse error, no matcher");
+            return new MovieSearchInfo(file, searchQuery, null);
         }
         // if not modified return original input
-        if (log.isDebugEnabled()) log.debug("re-parse no-op");
+        //log.debug("re-parse no-op");
         return info;
     }
 }

@@ -64,7 +64,7 @@ public class SearchShowParser {
         for (BaseTvShow series : resultsTvShow) {
             if (log.isDebugEnabled()) log.debug("airdate {} airtime {}", series.name, ((series.first_air_date != null) ? series.first_air_date.toString() : null));
             if (series.id != SERIES_NOT_PERMITTED_ID) {
-                if (countryOfOrigin != null && ! series.origin_country.contains(countryOfOrigin)) {
+                if (countryOfOrigin != null && !countryOfOrigin.isEmpty() && !series.origin_country.contains(countryOfOrigin)) {
                     if (log.isDebugEnabled()) log.debug("getSearchShowParserResult: skip {} because does not contain countryOfOrigin {}", series.original_name, countryOfOrigin);
                     continue;
                 } else {

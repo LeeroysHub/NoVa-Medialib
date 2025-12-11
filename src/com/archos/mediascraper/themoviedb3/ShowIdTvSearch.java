@@ -41,7 +41,7 @@ public class ShowIdTvSearch {
     private final static LruCache<String, ShowIdTvSearchResult> sShowCache = new LruCache<>(100);
 
 
-    public static ShowIdTvSearchResult getTvShowResponse(int showId, String language, final boolean adultScrape, MyTmdb tmdb) {
+    public static ShowIdTvSearchResult getTvShowResponse(String showKey, int showId, String language, final boolean adultScrape, MyTmdb tmdb) {
         // Build image language filter: current language + "en" + "null" (language-neutral)
         // Avoid duplicates if current language is already "en"
         final String imageLanguages = language.equals("en") ? "en,null" : language + ",en,null";
@@ -50,7 +50,8 @@ public class ShowIdTvSearch {
             put("include_image_language", imageLanguages);
             put("include_adult", String.valueOf(adultScrape));
         }};
-        String showKey = showId + "|" + language;
+
+        //String showKey = showId + "|" + language;
         ShowIdTvSearchResult myResult = sShowCache.get(showKey);
         if (log.isTraceEnabled()) debugLruCache(sShowCache);
 
@@ -71,7 +72,7 @@ public class ShowIdTvSearch {
                         // fallback to english if no result
                         if (!language.equals("en")) {
                             if (log.isDebugEnabled()) log.debug("getTvShowResponse: retrying search for showId {} in en", showId);
-                            return getTvShowResponse(showId, "en", adultScrape, tmdb);
+                            return getTvShowResponse(showKey, showId, "en", adultScrape, tmdb);
                         }
                         if (log.isDebugEnabled()) log.debug("getTvShowResponse: showId {} not found", showId);
                         // record valid answer
@@ -85,7 +86,7 @@ public class ShowIdTvSearch {
                             } else {
                                 if (!language.equals("en")) {
                                     if (log.isDebugEnabled()) log.debug("getTvShowResponse: retrying search for showId {} in en", showId);
-                                    return getTvShowResponse(showId, "en", adultScrape, tmdb);
+                                    return getTvShowResponse(showKey, showId, "en", adultScrape, tmdb);
                                 }
                                 myResult.status = ScrapeStatus.NOT_FOUND;
                             }

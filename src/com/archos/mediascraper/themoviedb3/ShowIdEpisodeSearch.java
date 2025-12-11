@@ -39,7 +39,7 @@ public class ShowIdEpisodeSearch {
     // In theory this is to buffer two consecutive requests in ShowScraper (or 4 if there is english)
     private final static LruCache<String, ShowIdEpisodeSearchResult> sShowCache = new LruCache<>(10);
 
-    public static ShowIdEpisodeSearchResult getEpisodeShowResponse(int showId, int season, int episode, String language, final boolean adultScrape, MyTmdb tmdb) {
+    public static ShowIdEpisodeSearchResult getEpisodeShowResponse(String episodeKey, int showId, int season, int episode, String language, final boolean adultScrape, MyTmdb tmdb) {
         // Build image language filter: current language + "en" + "null" (language-neutral)
         // Avoid duplicates if current language is already "en"
         final String imageLanguages = language.equals("en") ? "en,null" : language + ",en,null";
@@ -48,10 +48,10 @@ public class ShowIdEpisodeSearch {
             put("include_adult", String.valueOf(adultScrape));
         }};
 
-        if (log.isDebugEnabled()) log.debug("getEpisodeShowResponse: quering tmdb for showId {} season {} episode {} in {} with image languages: {}", showId, season, episode, language, imageLanguages);
+        if (log.isDebugEnabled()) log.debug("getEpisodeShowResponse: quering tmdb for showId {} season {} episode {} in {}", showId, season, episode, language);
 
-        String showKey = showId + "|" + language;
-        ShowIdEpisodeSearchResult myResult = sShowCache.get(showKey);
+        //String showKey = showId + "|" + season + "|" + episode;
+        ShowIdEpisodeSearchResult myResult = sShowCache.get(episodeKey);
         if (log.isTraceEnabled()) debugLruCache(sShowCache);
 
         if (myResult == null) {
@@ -71,11 +71,11 @@ public class ShowIdEpisodeSearch {
                         // fallback to english if no result
                         if (!language.equals("en")) {
                             if (log.isDebugEnabled()) log.debug("getEpisodeShowResponse: retrying search for showId {} in en", showId);
-                            return getEpisodeShowResponse(showId, season, episode,"en", adultScrape, tmdb);
+                            return getEpisodeShowResponse(episodeKey, showId, season, episode,"en", adultScrape, tmdb);
                         }
                         if (log.isDebugEnabled()) log.debug("getEpisodeShowResponse: showId {} not found", showId);
                         // record valid answer
-                        sShowCache.put(showKey, myResult);
+                        sShowCache.put(episodeKey, myResult);
                         break;
                     default:
                         if (seriesResponse.isSuccessful()) {
@@ -85,12 +85,12 @@ public class ShowIdEpisodeSearch {
                             } else {
                                 if (!language.equals("en")) {
                                     if (log.isDebugEnabled()) log.debug("getEpisodeShowResponse: retrying search for showId {} in en", showId);
-                                    return getEpisodeShowResponse(showId, season, episode,"en", adultScrape, tmdb);
+                                    return getEpisodeShowResponse(episodeKey, showId, season, episode,"en", adultScrape, tmdb);
                                 }
                                 myResult.status = ScrapeStatus.NOT_FOUND;
                             }
                             // record valid answer
-                            sShowCache.put(showKey, myResult);
+                            sShowCache.put(episodeKey, myResult);
                         } else { // an error at this point is PARSER related
                             if (log.isDebugEnabled()) log.debug("getEpisodeShowResponse: error {}", seriesResponse.code());
                             myResult.status = ScrapeStatus.ERROR_PARSER;

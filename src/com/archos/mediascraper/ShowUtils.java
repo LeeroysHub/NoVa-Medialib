@@ -66,18 +66,20 @@ public final class ShowUtils {
 
     // Separators: Punctuation or Whitespace
     // remove the "(" and ")" in punctuation to avoid matching end parenthesis of date in "show (1987) s01e01 title.mkv"
-    private static final String SEP_OPTIONAL = "[[\\p{Punct}&&[^()]]\\s]*+";
-    private static final String SEP_MANDATORY = "[[\\p{Punct}&&[^()]]\\s]++";
+    private static final String SEP_OPTIONAL = "[[.\\p{Punct}&&[^()]]\\s]*+";
+    private static final String SEP_MANDATORY = "[[.\\p{Punct}&&[^()]]\\s]++";
 
     // Name patterns where the show is present first. Examples below.
     private static final Pattern[] patternsShowFirst = {
             // almost anything that has S 00 E 00 in it and recognize shows with year as season number
             // take 20xx or 19xx or xx as season number
-            Pattern.compile("(.+?)" + SEP_MANDATORY + "(?:s|seas|season)" + SEP_OPTIONAL + "(20\\d{2}|19\\d{2}|\\d{1,2})" + SEP_OPTIONAL + "(?:e|ep|episode)" + SEP_OPTIONAL + "(1?\\d{1,3})(?!\\d).*", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("(.+?)" + SEP_OPTIONAL + "(?:s|seas|season)" + SEP_OPTIONAL + "(\\d{1,3})" + SEP_OPTIONAL + "(?:e|ep|episode)" + SEP_OPTIONAL + "(\\d{1,3})" + SEP_OPTIONAL +"(.*)?"   , Pattern.CASE_INSENSITIVE),
+            //[13x07]
+            Pattern.compile("(.+?)" + SEP_OPTIONAL + "(?:\\[)" + SEP_OPTIONAL + "(\\d{1,3})" + SEP_OPTIONAL + "(?:x)" + SEP_OPTIONAL + "(\\d{1,3})" + SEP_OPTIONAL+"(.*)?"  , Pattern.CASE_INSENSITIVE),
             // almost anything that has 00 x 00, note mandatory separator to fixe detection of movies 5.1x264 as Season 1 episode 264
-            Pattern.compile("(.+?)" + SEP_MANDATORY + "(20\\d{2}|19\\d{2}|\\d{1,2})" + SEP_OPTIONAL + "x" + SEP_MANDATORY + "(1?\\d{1,3})(?!\\d).*", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("(.+?)" + SEP_OPTIONAL + "(\\d{1,3})" + SEP_OPTIONAL + "x" + SEP_MANDATORY + "(\\d{1,3})" + SEP_OPTIONAL+"(.*)?" , Pattern.CASE_INSENSITIVE),
             // special case to avoid x264 or x265
-            Pattern.compile("(.+?)" + SEP_MANDATORY + "(20\\d{2}|19\\d{2}|\\d{1,2})" + SEP_OPTIONAL + "x" + SEP_OPTIONAL + "(?!(?:264|265|720))(1?\\d{1,3})(?!\\d).*", Pattern.CASE_INSENSITIVE),
+            Pattern.compile("(.+?)" + SEP_OPTIONAL + "(\\d{1,3})" + SEP_OPTIONAL + "x" + SEP_OPTIONAL + "(?!(?:264|265|720))(1?\\d{1,3})" + SEP_OPTIONAL+"(.*)?"  , Pattern.CASE_INSENSITIVE),
             // Disable following pattern since it makes L.627 or OSS 117 movies identified as TV serie
             // foo.103 and similar
             // Note: can detect movies that contain 3 digit numbers like "127 hours" or shows that have such numbers in their name like "zoey 101"
@@ -130,13 +132,13 @@ public final class ShowUtils {
                     name = cleanUpName(name);
                     nameCountry = getCountryOfOrigin(name);
                     String year = nameYear.second;
-                    if (year == null || year.isEmpty()) { // if year empty perhaps this is Eric.2024-s01e01, find year in the end of the string
-                        nameYear = yearExtractorEndString(nameCountry.first);
+                    /* if (year == null || year.isEmpty()) { // if year empty perhaps this is Eric.2024-s01e01, find year in the end of the string
+                        nameYear = yearExtractorEndString(nameCountry.second);
                         if (nameYear.first != null && ! nameYear.first.isEmpty()) { // do it only if the remaining name is not empty
                             name = nameYear.first;
                             year = nameYear.second;
                         }
-                    }
+                    } */
                     if (log.isDebugEnabled()) log.debug("getMatch: patternsShowFirst {} season {} episode {} year {} country {}", name, matcher.group(2), matcher.group(3), year, nameCountry.second);
                     buffer.put(SHOW, name);
                     String season = matcher.group(2);
@@ -204,12 +206,12 @@ public final class ShowUtils {
         }
         if (ENABLE_PATTERNS_EPISODE_FIRST)
             for(Pattern regexp: patternsEpisodeFirst) {
-            Matcher m = regexp.matcher(filename);
-            try {
-                if(m.matches())
-                    return true;
-            } catch (IllegalArgumentException ignored) {}
-        }
+                Matcher m = regexp.matcher(filename);
+                try {
+                    if(m.matches())
+                        return true;
+                } catch (IllegalArgumentException ignored) {}
+            }
         return false;
     }
 
