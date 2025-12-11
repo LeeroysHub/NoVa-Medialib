@@ -120,7 +120,7 @@ public abstract class BaseTags implements Parcelable {
     public long getVideoId() { return mVideoId; }
     public String getPlot() { return mPlot; }
     public float getRating() { return mRating; }
-    public String getTitle() { return mTitle; }
+    public String getTitle() {return (mTitle != null) ? mTitle : ""; }
     public String getStorageName() { return mTitle; }
     public List<ScraperImage> getPosters() { return mPosters; }
     public ScraperImage getDefaultPoster() { return getFirst(mPosters); }
