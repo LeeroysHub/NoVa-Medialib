@@ -161,5 +161,6 @@
     <string name="scraping_in_progress">Scanning Media Library</string>
     <string name="remaining_videos_to_process">Files remaining: </string>
     <string name="current_video_title">Current: </string>
+    <string name="noresult_video_title">Not Scraped: </string>
     <string name="video_store_import">Scanning Device</string>
 </resources>

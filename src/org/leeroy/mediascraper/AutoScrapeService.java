@@ -544,7 +544,7 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                                 String title = cursor.getString(cursor.getColumnIndex(VideoStore.MediaColumns.TITLE));
                                 Uri fileUri = Uri.parse(cursor.getString(cursor.getColumnIndex(VideoStore.MediaColumns.DATA)));
 
-                                //My Titles being full of periods!?
+                                //This get the info to reparse for UPNP, and grab the correct details.
                                 boolean reparseInfo = fileUri.toString().toLowerCase().startsWith("upnp");
 
                                 Uri scrapUri = title == null || title.isEmpty() || title.equalsIgnoreCase("null") ? fileUri : Uri.parse("/" + title + ".mp4") ;
@@ -554,9 +554,6 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                                 notScraped = true;
                                 noScrapeError = !title.startsWith("VTS_");
                                 //log.trace("startScraping processing scrapUri {}, with ID {}, number of remaining files to be processed: {}", scrapUri, ID, sTotalNumberOfFilesRemainingToProcess);
-                                if (sTotalNumberOfFilesRemainingToProcess > 0)
-                                    nm.notify(NOTIFICATION_ID, nb.setContentText(getString(R.string.remaining_videos_to_process) + " " + sTotalNumberOfFilesRemainingToProcess  + "\n" + getString(R.string.current_video_title) + title).build());
-
                                 if (noScrapeError && NfoParser.isNetworkNfoParseEnabled(AutoScrapeService.this) && !fileUri.toString().toLowerCase().startsWith("upnp")) {
 
                                     BaseTags tags = NfoParser.getTagForFile(fileUri, AutoScrapeService.this);
@@ -643,8 +640,12 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                                         //IF the title is null, but we scraped OK, use Guessed Title.
                                         if (result.tag.getTitle().isEmpty()) {
                                             result.tag.setTitle(title);
+                                        } else {
+                                            if (result.isMovie)
+                                                title = result.tag.getTitle();
+                                            else
+                                                title = ((EpisodeTags) result.tag).getShowTags().getTitle() + " - " + result.tag.getTitle();
                                         }
-
                                         result.tag.setVideoId(ID);
                                         //ugly but necessary to avoid poster delete when replacing tag
                                         if (result.tag.getDefaultPoster() != null) {
@@ -699,6 +700,10 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
 
                                 //OK, this has to be an OR, because my VTS override actually tests the logic!
                                 if (notScraped || !noScrapeError) { //in case of network error, don't go there, and don't save in case we are rescraping already scraped videos
+                                    //Show the error on the notification
+                                    //Using the file name stripped as the title here, the search suggestion used to scrape.
+                                    nm.notify(NOTIFICATION_ID, nb.setContentText(getString(R.string.remaining_videos_to_process) + " " + sTotalNumberOfFilesRemainingToProcess  + "\n" + getString(R.string.noresult_video_title) + " " + title).build());
+
                                     // Failed => set the scraper fields to -1 so that we will be able
                                     // to skip this file when launching the automated process again
                                     //log.trace("startScraping: file {} not scraped without error -> mark it as not to be scraped again", fileUri);
@@ -706,9 +711,10 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                                     cv.put(VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_ID, String.valueOf(-1));
                                     cv.put(VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_TYPE, String.valueOf(-1));
                                     getContentResolver().update(VideoStore.Video.Media.EXTERNAL_CONTENT_URI, cv, BaseColumns._ID + "=?", new String[]{Long.toString(ID)});
-                                } else if (!noScrapeError) { // condition is scrapedOrError
-                                    //log.trace("startScraping: file {} scraped but with error -> increase mNetworkOrScrapErrors", fileUri);
                                     mNetworkOrScrapErrors++;
+                                } else {
+                                    //Show the user a pretty notification, with the Scraped Title.
+                                    nm.notify(NOTIFICATION_ID, nb.setContentText(getString(R.string.remaining_videos_to_process) + " " + sTotalNumberOfFilesRemainingToProcess  + "\n" + getString(R.string.current_video_title) + " " + title).build());
                                 }
                                 sNumberOfFilesRemainingToProcess--;
                                 sTotalNumberOfFilesRemainingToProcess--;
