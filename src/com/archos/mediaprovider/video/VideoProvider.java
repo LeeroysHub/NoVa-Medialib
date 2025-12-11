@@ -692,27 +692,6 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
                         return 0;
                     }
                     count = db.update(table, values, where, whereArgs);
-                    // if this is a request from MediaScanner, DATA should contains file path
-                    // we only process update request from media scanner, otherwise the requests
-                    // could be duplicate.
-                    //if (count > 0 ) {
-                        //Cursor c = db.query(table,
-                        //        READY_FLAG_PROJECTION, where,
-                        //        whereArgs, null, null, null);
-                        //if (c != null) {
-                         //   try {
-                         //       while (c.moveToNext()) {
-                         //           long magic = c.getLong(2);
-                         //           if (magic == 0) {
- //                                       requestMediaThumbnail(c.getString(1),c.getLong(0), uri,
-  //                                              MediaThumbRequest.PRIORITY_NORMAL);
-                         //           }
-                          //      }
-                          //  } finally {
-                         //       c.close();
-                         //   }
-                      //  }
-                    //}
                 }
                 break;
                 default:
@@ -744,12 +723,6 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
             }
         }
     }
-
-    private static final String[] READY_FLAG_PROJECTION = new String[] {
-        BaseColumns._ID,
-        MediaColumns.DATA,
-        VideoColumns.MINI_THUMB_MAGIC
-    };
 
     private static void valuesRemove(ContentValues cv, String what) {
         if (cv.containsKey(what)) {
@@ -999,6 +972,11 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
         synchronized (mMediaThumbQueue) {
             MediaThumbRequest req = null;
             try {
+                // Avoid duplicate enqueue when the UI binds the same item repeatedly.
+                if (hasPendingThumbRequest(path, id)) {
+                    if (log.isDebugEnabled()) log.debug("requestMediaThumbnail: already pending for {} ({})", path, id);
+                    return null;
+                }
                 req = new MediaThumbRequest(
                         getContext(), path,id, uri, priority);
                 mMediaThumbQueue.add(req);
@@ -1010,6 +988,22 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
             }
             return req;
         }
+    }
+
+    private boolean hasPendingThumbRequest(String path, long id) {
+        if (mCurrentThumbRequest != null && sameThumbRequest(mCurrentThumbRequest, path, id)) {
+            return true;
+        }
+        for (MediaThumbRequest pending : mMediaThumbQueue) {
+            if (sameThumbRequest(pending, path, id)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean sameThumbRequest(MediaThumbRequest request, String path, long id) {
+        return request != null && request.mOrigId == id && TextUtils.equals(request.mPath, path);
     }
 
     private static final UriMatcher URI_MATCHER =
