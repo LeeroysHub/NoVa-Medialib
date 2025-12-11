@@ -107,7 +107,7 @@ public class UriUtils {
         File file = new File(pathname);
         try {
             String canonicalPath = file.getCanonicalPath();
-            if (log.isDebugEnabled()) log.debug("isValidPath: input={} -> canonicalPath={}", pathname, canonicalPath);
+            //if (log.isDebugEnabled()) log.debug("isValidPath: input={} -> canonicalPath={}", pathname, canonicalPath);
             return canonicalPath.equals(pathname);
         } catch (IOException e) {
             return false;
@@ -123,7 +123,7 @@ public class UriUtils {
                 String path = uri.getPath();
                 int port = uri.getPort();
                 String host = uri.getHost();
-                if (log.isDebugEnabled()) log.debug("isValidStringUri: input={} -> scheme={} host={} port={} path={} ", uriString, scheme, host, port, path);
+                //if (log.isDebugEnabled()) log.debug("isValidStringUri: input={} -> scheme={} host={} port={} path={} ", uriString, scheme, host, port, path);
                 return isValidPath(path) && isValidHost(host) && isValidPort(port);
             }
             log.warn("isValidStringUri: input={} -> scheme={} not supported", uriString, scheme);

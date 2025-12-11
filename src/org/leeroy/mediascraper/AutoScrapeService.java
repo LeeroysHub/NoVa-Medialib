@@ -129,7 +129,7 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
     }
 
     public static void startService(Context context) {
-        if (log.isDebugEnabled()) log.debug("startService in foreground");
+        //if (log.isDebugEnabled()) log.debug("startService in foreground");
         mContext = context.getApplicationContext();
         Intent intent = new Intent(context, AutoScrapeService.class);
         mContext = context;
@@ -137,7 +137,7 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
     }
 
     public static void startServiceAfterNetworkScan(Context context) {
-        if (log.isDebugEnabled()) log.debug("startServiceAfterNetworkScan - forced start after network scan");
+        //if (log.isDebugEnabled()) log.debug("startServiceAfterNetworkScan - forced start after network scan");
         mContext = context.getApplicationContext();
         Intent intent = new Intent(context, AutoScrapeService.class);
         intent.putExtra("FORCE_AFTER_NETWORK_SCAN", true);
@@ -157,7 +157,7 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
     public static void incrementNetworkScanCount() {
         synchronized (networkScanLock) {
             networkScanCount++;
-            if (log.isDebugEnabled()) log.debug("incrementNetworkScanCount: count is now {}", networkScanCount);
+            //if (log.isDebugEnabled()) log.debug("incrementNetworkScanCount: count is now {}", networkScanCount);
         }
     }
 
@@ -165,13 +165,13 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
         synchronized (networkScanLock) {
             if (networkScanCount > 0) {
                 networkScanCount--;
-                if (log.isDebugEnabled()) log.debug("decrementNetworkScanCount: count is now {}", networkScanCount);
+                //if (log.isDebugEnabled()) log.debug("decrementNetworkScanCount: count is now {}", networkScanCount);
                 if (networkScanCount == 0) {
-                    if (log.isDebugEnabled()) log.debug("decrementNetworkScanCount: all network scans complete, resetting force flag");
+                    //if (log.isDebugEnabled()) log.debug("decrementNetworkScanCount: all network scans complete, resetting force flag");
                     isForceAfterNetworkScan = false;
                 }
             } else {
-                if (log.isDebugEnabled()) log.debug("decrementNetworkScanCount: count is already 0, this might be a standalone scan");
+                //if (log.isDebugEnabled()) log.debug("decrementNetworkScanCount: count is already 0, this might be a standalone scan");
             }
         }
     }
@@ -183,7 +183,7 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
     }
 
     public void cleanup() {
-        if (log.isDebugEnabled()) log.debug("cleanup");
+        //if (log.isDebugEnabled()) log.debug("cleanup");
         if (mThread != null && mThread.isAlive()) {
             saveDirtyState(true);
         }
@@ -206,7 +206,7 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
 
     // Used by system. Don't call
     public AutoScrapeService() {
-        if (log.isDebugEnabled()) log.debug("AutoScrapeService() {}", this);
+        //if (log.isDebugEnabled()) log.debug("AutoScrapeService() {}", this);
     }
 
     @Override
@@ -230,7 +230,7 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setTicker(null).setOnlyAlertOnce(true).setOngoing(true).setAutoCancel(true);
 
-        if (log.isDebugEnabled()) log.debug("onCreate: register lifecycle observer");
+        //if (log.isDebugEnabled()) log.debug("onCreate: register lifecycle observer");
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
         mBinder = new AutoScraperBinder();
     }
@@ -239,7 +239,7 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
     public int onStartCommand(Intent intent, int flags, int startId) {
         try {
             super.onStartCommand(intent, flags, startId);
-            if (log.isDebugEnabled()) log.debug("onStartCommand");
+            //if (log.isDebugEnabled()) log.debug("onStartCommand");
 
             // Ensure notification manager and builder are initialized (race condition protection)
             if (nm == null) {
@@ -271,11 +271,11 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
             isForeground = true;
             isForceAfterNetworkScan = intent != null && intent.getBooleanExtra("FORCE_AFTER_NETWORK_SCAN", false);
             if (isForceAfterNetworkScan) {
-                if (log.isDebugEnabled()) log.debug("onStartCommand: Force start after network scan - ensuring isForeground = true");
+                //if (log.isDebugEnabled()) log.debug("onStartCommand: Force start after network scan - ensuring isForeground = true");
                 isForeground = true;
             }
             if (isDirtyState()) {
-                if (log.isDebugEnabled()) log.debug("onStartCommand: Rescanning everything due to dirty state");
+                //if (log.isDebugEnabled()) log.debug("onStartCommand: Rescanning everything due to dirty state");
                 // Reset the dirty flag in SharedPreferences
                 saveDirtyState(false);
                 startScraping(false, false);
@@ -289,18 +289,18 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
             try {
                 if(intent!=null) {
                     if(intent.getAction()!=null&&intent.getAction().equals(EXPORT_EVERYTHING)) {
-                        if (log.isDebugEnabled()) log.debug("onStartCommand: EXPORT_EVERYTHING");
+                        //if (log.isDebugEnabled()) log.debug("onStartCommand: EXPORT_EVERYTHING");
                         startExporting();
                     } else if (intent.getAction()!=null&&intent.getAction().equals(RESCAN_MOVIES)) {
                         scrapeOnlyMovies = true;
-                        if (log.isDebugEnabled()) log.debug("onStartCommand: RESCAN_MOVIES, scrapeOnlyMovies={}", scrapeOnlyMovies);
+                        //if (log.isDebugEnabled()) log.debug("onStartCommand: RESCAN_MOVIES, scrapeOnlyMovies={}", scrapeOnlyMovies);
                         startScraping(true, intent.getBooleanExtra(RESCAN_ONLY_DESC_NOT_FOUND, false));
                     } else {
-                        if (log.isDebugEnabled()) log.debug("onStartCommand: RESCAN_EVERYTHING");
+                        //if (log.isDebugEnabled()) log.debug("onStartCommand: RESCAN_EVERYTHING");
                         startScraping(intent.getBooleanExtra(RESCAN_EVERYTHING, false), intent.getBooleanExtra(RESCAN_ONLY_DESC_NOT_FOUND, false));
                     }
                 } else {
-                    if (log.isDebugEnabled()) log.debug("onStartCommand: rescan incremental");
+                    //if (log.isDebugEnabled()) log.debug("onStartCommand: rescan incremental");
                     startScraping(false, false);
                 }
             } catch (Exception e) {
@@ -324,7 +324,7 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
     }
 
     protected void startExporting() {
-        if (log.isDebugEnabled()) log.debug("startExporting {}", String.valueOf(mExportingThread == null || !mExportingThread.isAlive()));
+        //if (log.isDebugEnabled()) log.debug("startExporting {}", String.valueOf(mExportingThread == null || !mExportingThread.isAlive()));
         nb.setContentTitle(getString(R.string.nfo_export_in_progress)).setWhen(System.currentTimeMillis());
         if (mExportingThread == null || !mExportingThread.isAlive()) {
             mExportingThread = new Thread() {
@@ -334,7 +334,7 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                     final int numberOfRows = cursor.getCount();
                     sTotalNumberOfFilesRemainingToProcess = numberOfRows;
                     cursor.close();
-                    if (log.isDebugEnabled()) log.debug("starting thread {}", numberOfRows);
+                    //if (log.isDebugEnabled()) log.debug("starting thread {}", numberOfRows);
 
                     NfoWriter.ExportContext exportContext = new NfoWriter.ExportContext();
 
@@ -344,9 +344,9 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                     do {
                         if (index + window > numberOfRows)
                             window = numberOfRows - index;
-                        if (log.isDebugEnabled()) log.debug("startExporting: new batch fetching cursor from index{} over window {} entries, {}<={}", index, window, (index + window), numberOfRows);
+                        //if (log.isDebugEnabled()) log.debug("startExporting: new batch fetching cursor from index{} over window {} entries, {}<={}", index, window, (index + window), numberOfRows);
                         cursor = getFileListCursor(PARAM_SCRAPED, BaseColumns._ID, index, window);
-                        if (log.isDebugEnabled()) log.debug("startExporting: new batch cursor has size {}", cursor.getCount());
+                        //if (log.isDebugEnabled()) log.debug("startExporting: new batch cursor has size {}", cursor.getCount());
 
                         sNumberOfFilesRemainingToProcess = window;
 
@@ -361,20 +361,20 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                             if (sTotalNumberOfFilesRemainingToProcess > 0)
                                 nm.notify(NOTIFICATION_ID, nb.setContentText(getString(R.string.remaining_videos_to_process) + " " + sTotalNumberOfFilesRemainingToProcess  + "\nCurrent: " + title).build());
                             if (!fileUri.toString().startsWith("upnp://")) {
-                                if (log.isTraceEnabled()) log.trace("startExporting: {} fileUri {}", movieID, fileUri);
+                                //if (log.isTraceEnabled()) log.trace("startExporting: {} fileUri {}", movieID, fileUri);
                                 if (scraperType == BaseTags.TV_SHOW) {
                                     baseTags = TagsFactory.buildEpisodeTags(AutoScrapeService.this, episodeID);
                                 } else if (scraperType == BaseTags.MOVIE) {
                                     baseTags = TagsFactory.buildMovieTags(AutoScrapeService.this, movieID);
                                 }
                             } else {
-                                if (log.isTraceEnabled()) log.trace("startExporting: Skipping UPnP file: {}", fileUri);
+                                //if (log.isTraceEnabled()) log.trace("startExporting: Skipping UPnP file: {}", fileUri);
                             }
                             sNumberOfFilesRemainingToProcess--;
                             sTotalNumberOfFilesRemainingToProcess--;
                             if (baseTags == null)
                                 continue;
-                            if (log.isTraceEnabled()) log.trace("startExporting: Base tag created, exporting {}", fileUri);
+                            //if (log.isTraceEnabled()) log.trace("startExporting: Base tag created, exporting {}", fileUri);
                             if (exportContext != null && fileUri != null)
                                 try {
                                     NfoWriter.export(fileUri, baseTags, exportContext);
@@ -394,7 +394,7 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
     }
     @Override
     public void onDestroy() {
-        if (log.isDebugEnabled()) log.debug("onDestroy() {}", this);
+        //if (log.isDebugEnabled()) log.debug("onDestroy() {}", this);
         cleanup();
         super.onDestroy();
     }
@@ -404,7 +404,7 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
      * @param context
      */
     public static void registerObserver(Context context) {
-        if (log.isDebugEnabled()) log.debug("registerObserver");
+        //if (log.isDebugEnabled()) log.debug("registerObserver");
         // Extract application context immediately and don't reference the original context parameter
         // This prevents the ContentObserver from capturing the Activity context
         Context appContext = context.getApplicationContext();
@@ -419,7 +419,7 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                 if (PreferenceManager.getDefaultSharedPreferences(appContext).getBoolean(KEY_ENABLE_AUTO_SCRAP, true) && (isForeground || isForceAfterNetworkScan)) {
                     // Check if a scraping operation is already in progress
                     if (LoaderUtils.getScrapeInProgress()) {
-                        if (log.isTraceEnabled()) log.trace("registerObserver.onChange: already scraping, not launching service!");
+                        //if (log.isTraceEnabled()) log.trace("registerObserver.onChange: already scraping, not launching service!");
                         return;
                     }
 
@@ -430,10 +430,10 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                     if (cursor != null) {
                         final int cursorGetCount = cursor.getCount();
                         if (cursorGetCount > 0) {
-                            if (log.isDebugEnabled()) log.debug("registerObserver: onChange getting {} videos not yet scraped, launching service.", cursorGetCount);
+                            //if (log.isDebugEnabled()) log.debug("registerObserver: onChange getting {} videos not yet scraped, launching service.", cursorGetCount);
                             AutoScrapeService.startService(appContext);
                         } else {
-                            if (log.isDebugEnabled()) log.debug("registerObserver: onChange getting {} videos not yet scraped -> not launching service!", cursorGetCount);
+                            //if (log.isDebugEnabled()) log.debug("registerObserver: onChange getting {} videos not yet scraped -> not launching service!", cursorGetCount);
                         }
                         cursor.close();
                     }
@@ -517,7 +517,7 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                         do {
                             if (window > numberOfRowsRemaining)
                                 window = numberOfRowsRemaining;
-                            if (log.isDebugEnabled()) log.debug("startScraping: new batch fetching cursor from index 0, window {} entries <={}", window, numberOfRowsRemaining);
+                            //if (log.isDebugEnabled()) log.debug("startScraping: new batch fetching cursor from index 0, window {} entries <={}", window, numberOfRowsRemaining);
                             cursor = getFileListCursor(shouldRescrapAll && onlyNotFound ? PARAM_SCRAPED_NOT_FOUND :
                                             scrapeOnlyMovies ? PARAM_MOVIES :
                                                 shouldRescrapAll ? PARAM_ALL :
@@ -819,17 +819,17 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
     @Override
     public void onStop(LifecycleOwner owner) {
         // App in background
-        if (log.isDebugEnabled()) log.debug("onStop: LifecycleOwner app in background, stopSelf");
+        //if (log.isDebugEnabled()) log.debug("onStop: LifecycleOwner app in background, stopSelf");
         cleanup();
         stopSelf();
     }
 
     @Override
     public void onStart(LifecycleOwner owner) {
-        if (log.isDebugEnabled()) log.debug("onStart: LifecycleOwner app in foreground");
+        //if (log.isDebugEnabled()) log.debug("onStart: LifecycleOwner app in foreground");
         isForeground = true;
         if (isDirtyState()) {
-            if (log.isDebugEnabled()) log.debug("onStart: Rescanning everything due to dirty state");
+            //if (log.isDebugEnabled()) log.debug("onStart: Rescanning everything due to dirty state");
             // Reset the dirty flag in SharedPreferences
             saveDirtyState(false);
             startScraping(false, false);

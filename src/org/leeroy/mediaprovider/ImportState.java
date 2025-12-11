@@ -44,7 +44,7 @@ public enum ImportState {
         try {
             if (mAndroidScanning) {
                 // ignore
-                if (log.isDebugEnabled()) log.debug("Android scanning: not setting {}", state.name());
+                //if (log.isDebugEnabled()) log.debug("Android scanning: not setting {}", state.name());
             } else {
                 setStateLocked(state);
             }
@@ -92,7 +92,7 @@ public enum ImportState {
 
     private void setStateLocked(State state) {
         if (log.isDebugEnabled() && mState != state) {
-            if (log.isDebugEnabled()) log.debug("State {} -> {}", mState.name(), state.name());
+            //if (log.isDebugEnabled()) log.debug("State {} -> {}", mState.name(), state.name());
         }
         mState = state;
     }
@@ -105,7 +105,7 @@ public enum ImportState {
     public State getState() {
         mLock.lock();
         try {
-            if (log.isDebugEnabled()) log.debug("getState={}", mState.name());
+            //if (log.isDebugEnabled()) log.debug("getState={}", mState.name());
             return mState;
         } finally {
             mLock.unlock();
@@ -119,7 +119,7 @@ public enum ImportState {
     public boolean isInitialImport() {
         mLock.lock();
         try {
-            if (log.isDebugEnabled()) log.debug("isInitialImport={}", (mState == State.INITIAL_IMPORT));
+            //if (log.isDebugEnabled()) log.debug("isInitialImport={}", (mState == State.INITIAL_IMPORT));
             return mState == State.INITIAL_IMPORT;
         } finally {
             mLock.unlock();
@@ -129,7 +129,7 @@ public enum ImportState {
     public boolean isRegularImport() {
         mLock.lock();
         try {
-            if (log.isDebugEnabled()) log.debug("isInitialImport={}", (mState == State.REGULAR_IMPORT));
+            //if (log.isDebugEnabled()) log.debug("isInitialImport={}", (mState == State.REGULAR_IMPORT));
             return mState == State.REGULAR_IMPORT;
         } finally {
             mLock.unlock();
@@ -142,7 +142,7 @@ public enum ImportState {
     public int getNumberOfFilesRemainingToImport() {
         mLock.lock();
         try {
-            if (log.isDebugEnabled()) log.debug("mNumberOfFilesRemainingToImport={}", mNumberOfFilesRemainingToImport);
+            //if (log.isDebugEnabled()) log.debug("mNumberOfFilesRemainingToImport={}", mNumberOfFilesRemainingToImport);
             return mNumberOfFilesRemainingToImport;
         } finally {
             mLock.unlock();

@@ -38,13 +38,13 @@ public class ShowId {
         ShowIdResult myResult = new ShowIdResult();
         ShowTags parserResult = null;
 
-        if (log.isDebugEnabled()) log.debug("getBaseInfo: quering tmdb for showId {} in {}", showId, language);
+        //if (log.isDebugEnabled()) log.debug("getBaseInfo: quering tmdb for showId {} in {}", showId, language);
         try {
             // use appendToResponse to get imdbId
             Response<TvShow> seriesResponse = tmdb.tvService().tv(showId, language, new AppendToResponse(AppendToResponseItem.EXTERNAL_IDS)).execute();
             switch (seriesResponse.code()) {
                 case 401: // auth issue
-                    if (log.isDebugEnabled()) log.debug("search: auth error");
+                    //if (log.isDebugEnabled()) log.debug("search: auth error");
                     myResult.status = ScrapeStatus.AUTH_ERROR;
                     ShowScraper4.reauth();
                     return myResult;
@@ -52,10 +52,10 @@ public class ShowId {
                     myResult.status = ScrapeStatus.NOT_FOUND;
                     // fallback to english if no result
                     if (!language.equals("en")) {
-                        if (log.isDebugEnabled()) log.debug("getBaseInfo: retrying search for showId {} in en", showId);
+                        //if (log.isDebugEnabled()) log.debug("getBaseInfo: retrying search for showId {} in en", showId);
                         return getBaseInfo(showId, "en", tmdb, context);
                     }
-                    if (log.isDebugEnabled()) log.debug("getBaseInfo: movieId {} not found", showId);
+                    //if (log.isDebugEnabled()) log.debug("getBaseInfo: movieId {} not found", showId);
                     break;
                 default:
                     if (seriesResponse.isSuccessful()) {
@@ -66,13 +66,13 @@ public class ShowId {
                             myResult.status = ScrapeStatus.OKAY;
                         } else {
                             if (!language.equals("en")) {
-                                if (log.isDebugEnabled()) log.debug("getBaseInfo: retrying search for showId {} in en", showId);
+                                //if (log.isDebugEnabled()) log.debug("getBaseInfo: retrying search for showId {} in en", showId);
                                 return getBaseInfo(showId, "en", tmdb, context);
                             }
                             myResult.status = ScrapeStatus.NOT_FOUND;
                         }
                     } else { // an error at this point is PARSER related
-                        if (log.isDebugEnabled()) log.debug("getBaseInfo: error {}", seriesResponse.code());
+                        //if (log.isDebugEnabled()) log.debug("getBaseInfo: error {}", seriesResponse.code());
                         myResult.status = ScrapeStatus.ERROR_PARSER;
                     }
                     break;

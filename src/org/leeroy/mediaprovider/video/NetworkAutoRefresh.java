@@ -98,11 +98,11 @@ public class NetworkAutoRefresh extends BroadcastReceiver implements DefaultLife
                 SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS");
                 Date dt = new Date();
                 String S = sdf.format(dt);
-                if (log.isDebugEnabled()) log.debug("onReceive: skipping rescan : {} period = {} is scanning ? {}", S, pref.getInt(AUTO_RESCAN_PERIOD, 0), String.valueOf(org.leeroy.mediaprovider.video.NetworkScannerReceiver.isScannerWorking()));
+                //if (log.isDebugEnabled()) log.debug("onReceive: skipping rescan : {} period = {} is scanning ? {}", S, pref.getInt(AUTO_RESCAN_PERIOD, 0), String.valueOf(org.leeroy.mediaprovider.video.NetworkScannerReceiver.isScannerWorking()));
                 return;
             }
             pref.edit().putLong(AUTO_RESCAN_LAST_SCAN, System.currentTimeMillis()).commit();
-            if (log.isDebugEnabled()) log.debug("onReceive: received rescan intent");
+            //if (log.isDebugEnabled()) log.debug("onReceive: received rescan intent");
             //updating
             Cursor cursor = null;
             List<Uri> toUpdate = new ArrayList<>();
@@ -116,7 +116,7 @@ public class NetworkAutoRefresh extends BroadcastReceiver implements DefaultLife
                         int rescan = cursor.getInt(rescanKey);
                         // if this uri is to be rescan automatically, add it to the list
                         if (rescan == 1) {
-                            if (log.isDebugEnabled()) log.debug("onReceive: add to scan list {}", uri);
+                            //if (log.isDebugEnabled()) log.debug("onReceive: add to scan list {}", uri);
                             toUpdate.add(uri);
                         }
                     }
@@ -138,9 +138,9 @@ public class NetworkAutoRefresh extends BroadcastReceiver implements DefaultLife
                 boolean triggeredScan = false;
                 int scanCount = 0;
                 for (Uri uri : toUpdate) {
-                    if (log.isDebugEnabled()) log.debug("onReceive: scanning {}", uri);
+                    //if (log.isDebugEnabled()) log.debug("onReceive: scanning {}", uri);
                     if (shouldSkipScanForInactiveServer(context, uri)) {
-                        if (log.isDebugEnabled()) log.debug("onReceive: skip scan for inactive server {}", uri);
+                        //if (log.isDebugEnabled()) log.debug("onReceive: skip scan for inactive server {}", uri);
                         continue;
                     }
                     if("upnp".equals(uri.getScheme())){ //start upnp service
@@ -171,7 +171,7 @@ public class NetworkAutoRefresh extends BroadcastReceiver implements DefaultLife
                         
                 // Start AutoScrapeService after network scanning to scrape newly found videos
                 if (triggeredScan && AutoScrapeService.isEnable(context)) {
-                    if (log.isDebugEnabled()) log.debug("onReceive: starting AutoScrapeService after network scan, total folders: {}", scanCount);
+                    //if (log.isDebugEnabled()) log.debug("onReceive: starting AutoScrapeService after network scan, total folders: {}", scanCount);
                     try {
                         AutoScrapeService.startServiceAfterNetworkScan(context);
                     } catch (Exception e) {
@@ -185,7 +185,7 @@ public class NetworkAutoRefresh extends BroadcastReceiver implements DefaultLife
                 PreferenceManager.getDefaultSharedPreferences(context).edit().putInt(AUTO_RESCAN_ERROR, AUTO_RESCAN_ERROR_NO_WIFI).commit();//reset error
                 NetworkScannerServiceVideo.notifyListeners();
             }
-            if (log.isDebugEnabled()) log.debug("onReceive: received rescan intent end");
+            //if (log.isDebugEnabled()) log.debug("onReceive: received rescan intent end");
         }
     }
 
@@ -263,7 +263,7 @@ public class NetworkAutoRefresh extends BroadcastReceiver implements DefaultLife
 
     @Override
     public void onStart(@NonNull LifecycleOwner owner) {
-        if (log.isDebugEnabled()) log.debug("onStop: lifecycle foreground");
+        //if (log.isDebugEnabled()) log.debug("onStop: lifecycle foreground");
         isForeground = true;
         if (autoRescanAtStart(mApplication)) {
             forceRescan(mApplication);
@@ -273,6 +273,6 @@ public class NetworkAutoRefresh extends BroadcastReceiver implements DefaultLife
     @Override
     public void onStop(@NonNull LifecycleOwner owner) {
         isForeground = false;
-        if (log.isDebugEnabled()) log.debug("onStop: lifecycle background");
+        //if (log.isDebugEnabled()) log.debug("onStop: lifecycle background");
     }
 }

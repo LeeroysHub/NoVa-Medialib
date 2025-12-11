@@ -210,11 +210,11 @@ public class VideoDbInfo implements Parcelable {
             // ensure that audioTrack is -1 if not played before (playParams is 0 if not played before but 0 could be a valid audioTrack if played before)
             if (result.lastTimePlayed > 0) result.audioTrack = VideoStore.paramsToAudioTrack(playerParams);
             else result.audioTrack = -1;
-            if (log.isDebugEnabled()) log.debug("fromCursor: lastTimePlayed={}, playerParams={}, paramsToAudioTrack={}, audioTrack={}", result.lastTimePlayed, playerParams, VideoStore.paramsToAudioTrack(playerParams), result.audioTrack);
+            //if (log.isDebugEnabled()) log.debug("fromCursor: lastTimePlayed={}, playerParams={}, paramsToAudioTrack={}, audioTrack={}", result.lastTimePlayed, playerParams, VideoStore.paramsToAudioTrack(playerParams), result.audioTrack);
             // ensure that audioTrack is -1 if not played before (playParams is 0 if not played before but 0 could be a valid audioTrack if played before)
             if (result.lastTimePlayed > 0) result.subtitleTrack = VideoStore.paramsToSubtitleTrack(playerParams);
             else result.subtitleTrack = -1;
-            if (log.isDebugEnabled()) log.debug("fromCursor: result.lastTimePlayed={}, playerParams={}, paramsToSubtitleTrack={}, subtitleTrack={}", result.lastTimePlayed, playerParams, VideoStore.paramsToSubtitleTrack(playerParams), result.subtitleTrack);
+            //if (log.isDebugEnabled()) log.debug("fromCursor: result.lastTimePlayed={}, playerParams={}, paramsToSubtitleTrack={}, subtitleTrack={}", result.lastTimePlayed, playerParams, VideoStore.paramsToSubtitleTrack(playerParams), result.subtitleTrack);
             result.subtitleDelay = c.getInt(IDX_SUBTITLE_DELAY);
             result.subtitleRatio = c.getInt(IDX_SUBTITLE_RATIO);
             result.subtitleLanguage = c.getString(IDX_SUBTITLE_LANGUAGE);

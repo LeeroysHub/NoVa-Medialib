@@ -155,7 +155,7 @@ public class IndexHelper implements LoaderManager.LoaderCallbacks<Cursor>, Loade
 
         @Override
         protected Void doInBackground(Void... params) {
-            if (log.isDebugEnabled()) log.debug("position: {} - id: {}", mVideoInfo.resume, mVideoInfo.id);
+            //if (log.isDebugEnabled()) log.debug("position: {} - id: {}", mVideoInfo.resume, mVideoInfo.id);
             if (mVideoInfo.id != -1) {
                 // this stores the audioTrack and subtitleTrack in the same column
                 int playerParams = VideoStore.paramsFromTracks(mVideoInfo.audioTrack, mVideoInfo.subtitleTrack);
@@ -174,7 +174,7 @@ public class IndexHelper implements LoaderManager.LoaderCallbacks<Cursor>, Loade
                                 values, where, null);
             }
             XmlDb xmlDb = null;
-            if (log.isDebugEnabled()) log.debug("mExportDb: {} - isLocal: {} isSlowRemote {}", mExportDb, FileUtils.isLocal(mVideoInfo.uri), FileUtils.isSlowRemote(mVideoInfo.uri));
+            //if (log.isDebugEnabled()) log.debug("mExportDb: {} - isLocal: {} isSlowRemote {}", mExportDb, FileUtils.isLocal(mVideoInfo.uri), FileUtils.isSlowRemote(mVideoInfo.uri));
             if (mExportDb &&
                     !FileUtils.isLocal(mVideoInfo.uri)&&
                     mVideoInfo.duration>0
@@ -339,7 +339,7 @@ public class IndexHelper implements LoaderManager.LoaderCallbacks<Cursor>, Loade
         if (mAutoScrape && !mLocalVideoInfo.isScraped&& UriUtils.isIndexable(mUri))
             requestScraping();
         if (mListener != null) {
-            if (log.isDebugEnabled()) log.debug("onVideoDbInfo {} {}", mLocalVideoInfo, mRemoteVideoInfo);
+            //if (log.isDebugEnabled()) log.debug("onVideoDbInfo {} {}", mLocalVideoInfo, mRemoteVideoInfo);
             mListener.onVideoDb(mLocalVideoInfo, mRemoteVideoInfo);
         }
     }
@@ -416,7 +416,7 @@ public class IndexHelper implements LoaderManager.LoaderCallbacks<Cursor>, Loade
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        if (log.isDebugEnabled()) log.debug("onLoaderReset");
+        //if (log.isDebugEnabled()) log.debug("onLoaderReset");
     }
 
     @Override
@@ -425,7 +425,7 @@ public class IndexHelper implements LoaderManager.LoaderCallbacks<Cursor>, Loade
     }
 
     public void writeVideoInfo(VideoDbInfo videoInfo, boolean exportDb) {
-        if (log.isDebugEnabled()) log.debug("writeVideoInfo {}", exportDb);
+        //if (log.isDebugEnabled()) log.debug("writeVideoInfo {}", exportDb);
         new WriteVideoInfoTask(mContext, videoInfo, exportDb).execute();
     }
 }

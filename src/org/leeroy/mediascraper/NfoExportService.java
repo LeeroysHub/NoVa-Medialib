@@ -112,14 +112,14 @@ public class NfoExportService extends IntentService implements DefaultLifecycleO
 
     public NfoExportService() {
         super(TAG);
-        if (log.isDebugEnabled()) log.debug("NfoExportService");
+        //if (log.isDebugEnabled()) log.debug("NfoExportService");
         setIntentRedelivery(true);
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        if (log.isDebugEnabled()) log.debug("onCreate");
+        //if (log.isDebugEnabled()) log.debug("onCreate");
 
         // need to do that early to avoid ANR on Android 26+
         nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -173,7 +173,7 @@ public class NfoExportService extends IntentService implements DefaultLifecycleO
     }
 
     private void exportAll() {
-        if (log.isDebugEnabled()) log.debug("exportAll");
+        //if (log.isDebugEnabled()) log.debug("exportAll");
         nb.setContentText(getString(R.string.nfo_export_exporting_all));
         nm.notify(NOTIFICATION_ID, nb.build());
         handleCursor(getAllCursor());
@@ -182,7 +182,7 @@ public class NfoExportService extends IntentService implements DefaultLifecycleO
     }
 
     private void exportFile(Uri data) {
-        if (log.isDebugEnabled()) log.debug("exportFile: {}", data.getPath());
+        //if (log.isDebugEnabled()) log.debug("exportFile: {}", data.getPath());
         MetaFile2 file = null;
         try {
             file = MetaFile2Factory.getMetaFileForUrl(data);
@@ -264,7 +264,7 @@ public class NfoExportService extends IntentService implements DefaultLifecycleO
     @Override
     public void onStop(LifecycleOwner owner) {
         // App in background
-        if (log.isDebugEnabled()) log.debug("onStop: LifecycleOwner app in background, stopSelf");
+        //if (log.isDebugEnabled()) log.debug("onStop: LifecycleOwner app in background, stopSelf");
         cleanup();
         stopSelf();
     }
@@ -272,7 +272,7 @@ public class NfoExportService extends IntentService implements DefaultLifecycleO
     @Override
     public void onStart(LifecycleOwner owner) {
         // App in foreground
-        if (log.isDebugEnabled()) log.debug("onStart: LifecycleOwner app in foreground");
+        //if (log.isDebugEnabled()) log.debug("onStart: LifecycleOwner app in foreground");
         isForeground = true;
     }
 
@@ -286,7 +286,7 @@ public class NfoExportService extends IntentService implements DefaultLifecycleO
 
     @Override
     public void onDestroy() {
-        if (log.isDebugEnabled()) log.debug("onDestroy()");
+        //if (log.isDebugEnabled()) log.debug("onDestroy()");
         cleanup();
         super.onDestroy();
     }

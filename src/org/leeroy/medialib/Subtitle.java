@@ -65,7 +65,7 @@ public abstract class Subtitle {
     }
 
     public void setAlignment(SubtitleAlignment alignment) {
-        if (log.isDebugEnabled()) log.debug("setAlignment: {}", alignment);
+        //if (log.isDebugEnabled()) log.debug("setAlignment: {}", alignment);
         this.alignment = alignment;
     }
 
@@ -154,7 +154,7 @@ public abstract class Subtitle {
             this.frameWidth = originalWidth;
             this.frameHeight = originalHeight;
             this.bounds = new Rect(leftCorner, topCorner, leftCorner + bitmap.getWidth(), topCorner + bitmap.getHeight());
-            if (log.isDebugEnabled()) log.debug("TimedBitmapSubtitle: position={}, duration={}, framewidth={}, frameheight={}, bounds={}", position, duration, frameWidth, frameHeight, bounds);
+            //if (log.isDebugEnabled()) log.debug("TimedBitmapSubtitle: position={}, duration={}, framewidth={}, frameheight={}, bounds={}", position, duration, frameWidth, frameHeight, bounds);
         }
         public String getText() {
             return null;

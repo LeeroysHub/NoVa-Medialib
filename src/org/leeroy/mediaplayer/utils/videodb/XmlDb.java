@@ -127,35 +127,35 @@ public class XmlDb implements Callback {
                 return;
             if (localName.equals("path")) {
                 String path = getString();
-                if (log.isDebugEnabled()) log.debug("endElement: path={}", path);
+                //if (log.isDebugEnabled()) log.debug("endElement: path={}", path);
                 mCurrentEntry.setFile(getFilePath(mLocation, path));
             } else if (localName.equals("last_position")) {
                 mCurrentEntry.resume = getInt();
-                if (log.isDebugEnabled()) log.debug("endElement: last_position={}", mCurrentEntry.resume);
+                //if (log.isDebugEnabled()) log.debug("endElement: last_position={}", mCurrentEntry.resume);
             } else if (localName.equals("bookmark_position")) {
                 mCurrentEntry.bookmark = getInt();
-                if (log.isDebugEnabled()) log.debug("endElement: bookmark_position={}", mCurrentEntry.bookmark);
+                //if (log.isDebugEnabled()) log.debug("endElement: bookmark_position={}", mCurrentEntry.bookmark);
             } else if (localName.equals("audio_track")) {
                 mCurrentEntry.audioTrack = getInt();
-                if (log.isDebugEnabled()) log.debug("endElement: audio_track={}", mCurrentEntry.audioTrack);
+                //if (log.isDebugEnabled()) log.debug("endElement: audio_track={}", mCurrentEntry.audioTrack);
             } else if (localName.equals("subtitle_track")) {
                 mCurrentEntry.subtitleTrack = getInt();
-                if (log.isDebugEnabled()) log.debug("endElement: subtitle_track={}", mCurrentEntry.subtitleTrack);
+                //if (log.isDebugEnabled()) log.debug("endElement: subtitle_track={}", mCurrentEntry.subtitleTrack);
             } else if (localName.equals("subtitle_delay")) {
                 mCurrentEntry.subtitleDelay = getInt();
-                if (log.isDebugEnabled()) log.debug("endElement: subtitle_delay={}", mCurrentEntry.subtitleDelay);
+                //if (log.isDebugEnabled()) log.debug("endElement: subtitle_delay={}", mCurrentEntry.subtitleDelay);
             } else if (localName.equals("subtitle_ratio")) {
                 mCurrentEntry.subtitleRatio = getInt();
-                if (log.isDebugEnabled()) log.debug("endElement: subtitle_ratio={}", mCurrentEntry.subtitleRatio);
+                //if (log.isDebugEnabled()) log.debug("endElement: subtitle_ratio={}", mCurrentEntry.subtitleRatio);
             } else if (localName.equals("subtitle_language")) {
                 String lang = getString();
                 if (!lang.isEmpty()) {
                     mCurrentEntry.subtitleLanguage = lang;
-                    if (log.isDebugEnabled()) log.debug("endElement: subtitle_language={}", mCurrentEntry.subtitleLanguage);
+                    //if (log.isDebugEnabled()) log.debug("endElement: subtitle_language={}", mCurrentEntry.subtitleLanguage);
                 }
             } else if (localName.equals("last_time_played")) {
                 mCurrentEntry.lastTimePlayed = Long.decode(getString());
-                if (log.isDebugEnabled()) log.debug("endElement: last_time_played={}", mCurrentEntry.lastTimePlayed);
+                //if (log.isDebugEnabled()) log.debug("endElement: last_time_played={}", mCurrentEntry.lastTimePlayed);
             } else if (localName.equals("network_database")) {
                 mResult = mCurrentEntry;
                 sRemoteCache.put(mCurrentEntry.uri, mCurrentEntry);
@@ -233,9 +233,9 @@ public class XmlDb implements Callback {
 
         @Override
         protected Void doInBackground(Void... params) {
-            if (log.isDebugEnabled()) log.debug("doInBackground: {}", mVideoDbInfo.uri);
+            //if (log.isDebugEnabled()) log.debug("doInBackground: {}", mVideoDbInfo.uri);
             boolean ret = writeXml(mVideoDbInfo);
-            if (log.isDebugEnabled()) log.debug("writeXml: {}", ret);
+            //if (log.isDebugEnabled()) log.debug("writeXml: {}", ret);
             return null;
         }
 
@@ -287,7 +287,7 @@ public class XmlDb implements Callback {
             }
 
             if (fis == null) {
-                if (log.isDebugEnabled()) log.debug("parseXml: Invalid InputStream");
+                //if (log.isDebugEnabled()) log.debug("parseXml: Invalid InputStream");
                 return null;
             }
             ContentHandler handler = new ContentHandler(location);
@@ -480,7 +480,7 @@ public class XmlDb implements Callback {
             if(xmlUri==null)
                 return false;
             FileEditor fileEditor = FileEditorFactoryWithUpnp.getFileEditorForUrl(xmlUri, null);
-            if (log.isDebugEnabled()) log.debug("xmlPath: {}", xmlUri);
+            //if (log.isDebugEnabled()) log.debug("xmlPath: {}", xmlUri);
             // Delete existing file to avoid overwrite issue (end of previous content still there is the new content is shorter)
             if (fileEditor.exists()) {
                 fileEditor.delete();
@@ -594,7 +594,7 @@ public class XmlDb implements Callback {
     public boolean handleMessage(Message msg) {
         switch (msg.what) {
             case MSG_PARSE_OK:
-                if (log.isDebugEnabled()) log.debug("MSG_PARSE_OK");
+                //if (log.isDebugEnabled()) log.debug("MSG_PARSE_OK");
                 synchronized (mOnParseListeners) {
                     // some listeners want to remove themselves for list after being called. to avoid concurrent exception, to not iterate on main list
                     List<ParseListener> tmp = new ArrayList<>(mOnParseListeners);
@@ -604,7 +604,7 @@ public class XmlDb implements Callback {
                 }
                 return true;
             case MSG_PARSE_TIMEOUT: {
-                if (log.isDebugEnabled()) log.debug("MSG_PARSE_TIMEOUT");
+                //if (log.isDebugEnabled()) log.debug("MSG_PARSE_TIMEOUT");
                 Uri location = (Uri) msg.obj;
                 ParseTask task = sRemoteParseTasks.get(location.toString());
                 if (task != null) {
@@ -631,15 +631,15 @@ public class XmlDb implements Callback {
     }
 
     public void parseXmlLocation(final Uri videoFileUri) {
-        if (log.isDebugEnabled()) log.debug("parseCommon:{}", videoFileUri);
+        //if (log.isDebugEnabled()) log.debug("parseCommon:{}", videoFileUri);
         ParseTask task;
         if (sRemoteWriteTasks.get(videoFileUri.toString()) != null) {
-            if (log.isDebugEnabled()) log.debug("writing task is running: assume we are up to date");
+            //if (log.isDebugEnabled()) log.debug("writing task is running: assume we are up to date");
             notifyChanged(videoFileUri, true);
             return;
         }
         if (sRemoteParseTasks.get(videoFileUri.toString()) != null) {
-            if (log.isDebugEnabled()) log.debug("parsing task is already running:");
+            //if (log.isDebugEnabled()) log.debug("parsing task is already running:");
             return;
         }
 
@@ -648,7 +648,7 @@ public class XmlDb implements Callback {
             @Override
             public void onResult(VideoDbInfo result) {
                 mUiThreadHandler.removeMessages(MSG_PARSE_TIMEOUT);
-                if (log.isDebugEnabled()) log.debug("onResult ");
+                //if (log.isDebugEnabled()) log.debug("onResult ");
                 notifyChanged(videoFileUri, result != null);
             }
         };

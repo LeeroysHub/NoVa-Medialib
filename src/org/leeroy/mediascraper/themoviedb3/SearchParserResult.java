@@ -74,7 +74,7 @@ public class SearchParserResult {
 
     public List<SearchResult> getResults(int maxItems) {
         List<SearchResult> results = new LinkedList<>();
-        if (log.isDebugEnabled()) log.debug("getResults: resultsProbable.size()={}", resultsProbable.size());
+        //if (log.isDebugEnabled()) log.debug("getResults: resultsProbable.size()={}", resultsProbable.size());
         if (resultsProbable.size()>0)
             for (SearchResult sr : resultsProbable)
                 if (maxItems < 0 || results.size() < maxItems)
@@ -94,7 +94,7 @@ public class SearchParserResult {
             for (SearchResult sr : resultsNoPoster)
                 if (maxItems < 0 || results.size() < maxItems)
                     results.add(sr);
-        if (log.isDebugEnabled()) log.debug("getResults: results.size()={}", results.size());
+        //if (log.isDebugEnabled()) log.debug("getResults: results.size()={}", results.size());
         return results;
     }
 }

@@ -88,12 +88,12 @@ public class MediaThumbnailService extends Service {
 
     static private final ServiceConnection mServiceConnection = new ServiceConnection() {
         public void onServiceDisconnected(ComponentName name) {
-            if (log.isDebugEnabled()) log.debug("onServiceDisconnected");
+            //if (log.isDebugEnabled()) log.debug("onServiceDisconnected");
             sMediaThumbnailService = null;
         }
         
         public void onServiceConnected(ComponentName name, IBinder service) {
-            if (log.isDebugEnabled()) log.debug("onServiceConnected: {}", name);
+            //if (log.isDebugEnabled()) log.debug("onServiceConnected: {}", name);
             synchronized (sLock) {
                 sMediaThumbnailService = IMediaThumbnailService.Stub.asInterface(service);
                 sLock.notifyAll();
@@ -122,13 +122,13 @@ public class MediaThumbnailService extends Service {
             bind(ctx);
             if (sMediaThumbnailService == null) {
                 try {
-                    if (log.isDebugEnabled()) log.debug("sMediaThumbnailService == null");
+                    //if (log.isDebugEnabled()) log.debug("sMediaThumbnailService == null");
                     sLock.wait(3000);
                     if(sMediaThumbnailService == null&&sFirst) {
                         Toast.makeText(LeeroyFlixUtils.getGlobalContext(), "timeout: sMediaThumbnailService == null", Toast.LENGTH_LONG).show();
                         sFirst = false;
                     }
-                    if (log.isDebugEnabled()) log.debug("bind_sync end of wait : sMediaThumbnailService == null {}", (sMediaThumbnailService == null));
+                    //if (log.isDebugEnabled()) log.debug("bind_sync end of wait : sMediaThumbnailService == null {}", (sMediaThumbnailService == null));
 
                 } catch (InterruptedException e) {
                     if(sFirst)
@@ -144,7 +144,7 @@ public class MediaThumbnailService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        if (log.isDebugEnabled()) log.debug("onCreate");
+        //if (log.isDebugEnabled()) log.debug("onCreate");
     }
 
     @Override

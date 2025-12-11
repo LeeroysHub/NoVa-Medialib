@@ -52,12 +52,12 @@ public class MovieId2 {
             put("include_image_language", imageLanguages);
         }};
 
-        if (log.isDebugEnabled()) log.debug("getBaseInfo: quering tmdb for movieId {} in {} with image languages: {}", movieId, language, imageLanguages);
+        //if (log.isDebugEnabled()) log.debug("getBaseInfo: quering tmdb for movieId {} in {} with image languages: {}", movieId, language, imageLanguages);
         try {
             movieResponse = moviesService.summary((int) movieId, language, new AppendToResponse(AppendToResponseItem.EXTERNAL_IDS, AppendToResponseItem.IMAGES, AppendToResponseItem.CREDITS, AppendToResponseItem.RELEASE_DATES, AppendToResponseItem.VIDEOS), options).execute();
             switch (movieResponse.code()) {
                 case 401: // auth issue
-                    if (log.isDebugEnabled()) log.debug("search: auth error");
+                    //if (log.isDebugEnabled()) log.debug("search: auth error");
                     myResult.status = ScrapeStatus.AUTH_ERROR;
                     MovieScraper3.reauth();
                     return myResult;
@@ -65,10 +65,10 @@ public class MovieId2 {
                     myResult.status = ScrapeStatus.NOT_FOUND;
                     // fallback to english if no result
                     if (!language.equals("en")) {
-                        if (log.isDebugEnabled()) log.debug("getBaseInfo: retrying search for movieId {} in en", movieId);
+                        //if (log.isDebugEnabled()) log.debug("getBaseInfo: retrying search for movieId {} in en", movieId);
                         return getBaseInfo(movieId, "en", moviesService, context);
                     }
-                    if (log.isDebugEnabled()) log.debug("getBaseInfo: movieId {} not found", movieId);
+                    //if (log.isDebugEnabled()) log.debug("getBaseInfo: movieId {} not found", movieId);
                     break;
                 default:
                     if (movieResponse.isSuccessful()) {
@@ -78,13 +78,13 @@ public class MovieId2 {
                             myResult.status = ScrapeStatus.OKAY;
                         } else {
                             if (!language.equals("en")) {
-                                if (log.isDebugEnabled()) log.debug("getBaseInfo: retrying search for movieId {} in en", movieId);
+                                //if (log.isDebugEnabled()) log.debug("getBaseInfo: retrying search for movieId {} in en", movieId);
                                 return getBaseInfo(movieId, "en", moviesService, context);
                             }
                             myResult.status = ScrapeStatus.NOT_FOUND;
                         }
                     } else { // an error at this point is PARSER related
-                        if (log.isDebugEnabled()) log.debug("getBaseInfo: error {}", movieResponse.code());
+                        //if (log.isDebugEnabled()) log.debug("getBaseInfo: error {}", movieResponse.code());
                         myResult.status = ScrapeStatus.ERROR_PARSER;
                     }
                     break;

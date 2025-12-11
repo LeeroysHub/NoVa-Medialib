@@ -124,16 +124,16 @@ public class CollectionTags implements Parcelable {
         ScraperImage image = mPoster;
         if (image != null)
             image.download(context);
-        else
-            if (log.isDebugEnabled()) log.debug("downloadPoster: image is null for {}, url {}", mTitle, image.getLargeUrl());
+        //else
+            //if (log.isDebugEnabled()) log.debug("downloadPoster: image is null for {}, url {}", mTitle, image.getLargeUrl());
     }
 
     public void downloadBackdrop(Context context) {
         ScraperImage image = mBackdrop;
         if (image != null)
             image.download(context);
-        else
-            if (log.isDebugEnabled()) log.debug("downloadBackdrop: image is null for {}, url {}", mTitle, image.getLargeUrl());
+        //else
+            //if (log.isDebugEnabled()) log.debug("downloadBackdrop: image is null for {}, url {}", mTitle, image.getLargeUrl());
     }
 
     public final void downloadAllImages(Context context) {
@@ -152,7 +152,7 @@ public class CollectionTags implements Parcelable {
      */
     public final long save(Context context, boolean forceUpdate) {
 
-        if (log.isDebugEnabled()) log.debug("save: collection {}, title {}, forceUpdate {}", mId, mTitle, forceUpdate);
+        //if (log.isDebugEnabled()) log.debug("save: collection {}, title {}, forceUpdate {}", mId, mTitle, forceUpdate);
 
         ContentResolver cr = context.getContentResolver();
         ContentProviderOperation.Builder cop = null;
@@ -230,7 +230,7 @@ public class CollectionTags implements Parcelable {
                                                String nameSeed, Context context) {
         if (getId() != -1) {
             String path = getPosterPath();
-            if (log.isDebugEnabled()) log.debug("downloadCollectionImage: treating collection poster {}", path);
+            //if (log.isDebugEnabled()) log.debug("downloadCollectionImage: treating collection poster {}", path);
             String fullUrl, thumbUrl;
             ScraperImage image;
             if (path != null) {
@@ -248,7 +248,7 @@ public class CollectionTags implements Parcelable {
             }
 
             path = getBackdropPath();
-            if (log.isDebugEnabled()) log.debug("downloadCollectionImage: treating collection backdrop {}", path);
+            //if (log.isDebugEnabled()) log.debug("downloadCollectionImage: treating collection backdrop {}", path);
             if (path != null) {
                 fullUrl = ImageConfiguration.getUrl(path, backdropFullSize);
                 thumbUrl = ImageConfiguration.getUrl(path, backdropThumbSize);

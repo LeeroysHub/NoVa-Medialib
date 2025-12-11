@@ -277,7 +277,7 @@ public class Trakt {
 
     public static OAuthClientRequest getAuthorizationRequestWithState(String state) throws OAuthSystemException {
         String url = getTraktV2().buildAuthorizationUrl(state);
-        if (log.isDebugEnabled()) log.debug("getAuthorizationRequestWithState: url is {}", url);
+        //if (log.isDebugEnabled()) log.debug("getAuthorizationRequestWithState: url is {}", url);
         return OAuthClientRequest
                 .authorizationLocation(url)
                 .buildQueryMessage();
@@ -305,7 +305,7 @@ public class Trakt {
             final accessToken mAccessToken = new accessToken();
             mAccessToken.access_token = response.body().access_token;
             mAccessToken.refresh_token = response.body().refresh_token;
-            if (log.isDebugEnabled()) log.debug("getAccessToken: access_token is {}", mAccessToken.access_token);
+            //if (log.isDebugEnabled()) log.debug("getAccessToken: access_token is {}", mAccessToken.access_token);
             return mAccessToken;
         } catch (IOException | NullPointerException e) {
             log.error("getAccessToken: caught IoException ", e);
@@ -329,7 +329,7 @@ public class Trakt {
                 code.verification_url = response.body().verification_url;
                 code.expires_in = response.body().expires_in != null ? response.body().expires_in : 600;
                 code.interval = response.body().interval != null ? response.body().interval : 5;
-                if (log.isDebugEnabled()) log.debug("generateDeviceCode: user_code={}, verification_url={}", code.user_code, code.verification_url);
+                //if (log.isDebugEnabled()) log.debug("generateDeviceCode: user_code={}, verification_url={}", code.user_code, code.verification_url);
                 return code;
             }
         } catch (IOException | NullPointerException e) {
@@ -352,14 +352,14 @@ public class Trakt {
                 final accessToken mAccessToken = new accessToken();
                 mAccessToken.access_token = response.body().access_token;
                 mAccessToken.refresh_token = response.body().refresh_token;
-                if (log.isDebugEnabled()) log.debug("exchangeDeviceCodeForAccessToken: access_token obtained");
+                //if (log.isDebugEnabled()) log.debug("exchangeDeviceCodeForAccessToken: access_token obtained");
                 return mAccessToken;
             } else {
                 // 400 = pending, 404 = not found, 410 = expired, 429 = polling too fast
-                if (log.isDebugEnabled()) log.debug("exchangeDeviceCodeForAccessToken: status={}", response.code());
+                //if (log.isDebugEnabled()) log.debug("exchangeDeviceCodeForAccessToken: status={}", response.code());
             }
         } catch (IOException | NullPointerException e) {
-            if (log.isDebugEnabled()) log.debug("exchangeDeviceCodeForAccessToken: still pending or error", e);
+            //if (log.isDebugEnabled()) log.debug("exchangeDeviceCodeForAccessToken: still pending or error", e);
         }
         return null;
     }
@@ -417,7 +417,7 @@ public class Trakt {
     }
 
     public Result markAs(final String action, final SyncItems param, final boolean isShow, final int trial){
-        if (log.isDebugEnabled()) log.debug("markAs {} trial {} for {}", action, trial, (param != null) ? param.ids : null);
+        //if (log.isDebugEnabled()) log.debug("markAs {} trial {} for {}", action, trial, (param != null) ? param.ids : null);
         SyncResponse response = null;
         if (action.equals(Trakt.ACTION_SEEN)) {
             response = exec(mTraktV2.sync().addItemsToWatchedHistory(param));
@@ -512,7 +512,7 @@ public class Trakt {
     }
 
     public Result postWatching(final String action,final VideoDbInfo videoInfo, final float progress, final int trial) {
-        if (log.isDebugEnabled()) log.debug("postWatching for action={}, progress={}, trial={}", action, progress, trial);
+        //if (log.isDebugEnabled()) log.debug("postWatching for action={}, progress={}, trial={}", action, progress, trial);
         PlaybackResponse playbackResponse = null;
         AuthParam param = fillParam(videoInfo);
         if (videoInfo.isShow) {
@@ -527,7 +527,7 @@ public class Trakt {
             SyncEpisode se = new SyncEpisode();
             EpisodeIds ids = new EpisodeIds();
             try {
-                if (log.isDebugEnabled()) log.debug("postWatching: showid={}", showParam.episode_tmdb_id);
+                //if (log.isDebugEnabled()) log.debug("postWatching: showid={}", showParam.episode_tmdb_id);
                 ids.tmdb = Integer.valueOf(showParam.episode_tmdb_id);
             } catch (NumberFormatException nfe) {
                 log.warn("postWatching: invalid episode_tmdb_id {}, skipping scrobble", showParam.episode_tmdb_id);
@@ -535,18 +535,18 @@ public class Trakt {
             }
             se.id(ids);
             ScrobbleProgress ep = new ScrobbleProgress(se, progress, "", "");
-            if (log.isDebugEnabled()) log.debug("postWatching: EpisodeProgres={}, episode id {}", ep.progress, se.ids.tmdb);
+            //if (log.isDebugEnabled()) log.debug("postWatching: EpisodeProgres={}, episode id {}", ep.progress, se.ids.tmdb);
             switch (action) {
                 case "start":
-                    if (log.isDebugEnabled()) log.debug("postWatching: sending startWatching");
+                    //if (log.isDebugEnabled()) log.debug("postWatching: sending startWatching");
                     playbackResponse = exec(mTraktV2.scrobble().startWatching(ep));
                     break;
                 case "stop":
-                    if (log.isDebugEnabled()) log.debug("postWatching: sending stopWatching");
+                    //if (log.isDebugEnabled()) log.debug("postWatching: sending stopWatching");
                     playbackResponse = exec(mTraktV2.scrobble().stopWatching(ep));
                     break;
                 case "pause":
-                    if (log.isDebugEnabled()) log.debug("postWatching: sending pauseWatching");
+                    //if (log.isDebugEnabled()) log.debug("postWatching: sending pauseWatching");
                     playbackResponse = exec(mTraktV2.scrobble().pauseWatching(ep));
                     break;
                 case "default":
@@ -572,18 +572,18 @@ public class Trakt {
             SyncMovie sm= new SyncMovie();
             sm.id(mi);
             ScrobbleProgress mp = new ScrobbleProgress(sm, progress, "", "");
-            if (log.isDebugEnabled()) log.debug("postWatching: MovieProgress={}", mp);
+            //if (log.isDebugEnabled()) log.debug("postWatching: MovieProgress={}", mp);
             switch (action) {
                 case "start":
-                    if (log.isDebugEnabled()) log.debug("postWatching: sending startWatching");
+                    //if (log.isDebugEnabled()) log.debug("postWatching: sending startWatching");
                     playbackResponse = exec(mTraktV2.scrobble().startWatching(mp));
                     break;
                 case "stop":
-                    if (log.isDebugEnabled()) log.debug("postWatching: sending stopWatching");
+                    //if (log.isDebugEnabled()) log.debug("postWatching: sending stopWatching");
                     playbackResponse = exec(mTraktV2.scrobble().stopWatching(mp));
                     break;
                 case "pause":
-                    if (log.isDebugEnabled()) log.debug("postWatching: sending pauseWatching");
+                    //if (log.isDebugEnabled()) log.debug("postWatching: sending pauseWatching");
                     playbackResponse = exec(mTraktV2.scrobble().pauseWatching(mp));
                     break;
                 case "default":
@@ -601,7 +601,7 @@ public class Trakt {
 
     public static void setRefreshToken(SharedPreferences sharedPreferences, String refreshToken) {
         Editor editor = sharedPreferences.edit();
-        if (log.isDebugEnabled()) log.debug("setRefreshToken: refreshToken={}", refreshToken);
+        //if (log.isDebugEnabled()) log.debug("setRefreshToken: refreshToken={}", refreshToken);
         if (refreshToken != null) {
             editor.putString(KEY_TRAKT_REFRESH_TOKEN, refreshToken);
         } else {
@@ -615,7 +615,7 @@ public class Trakt {
     }
 
     private boolean refreshAccessToken() {
-        if (log.isDebugEnabled()) log.debug("refreshAccessToken()");
+        //if (log.isDebugEnabled()) log.debug("refreshAccessToken()");
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(mContext);
         String refreshToken = getRefreshTokenFromPreferences(pref);
         if(refreshToken==null|| refreshToken.isEmpty()){
@@ -627,7 +627,7 @@ public class Trakt {
             try {
                 retrofit2.Response<AccessToken> token = mTraktV2.refreshAccessToken(refreshToken);
                 if (!token.isSuccessful()) {
-                    if (log.isDebugEnabled()) log.debug("Failed refreshing token {}", token.toString());
+                    //if (log.isDebugEnabled()) log.debug("Failed refreshing token {}", token.toString());
                     Intent intent = new Intent(TRAKT_ISSUE_REFRESH_TOKEN);
                     intent.setPackage(LeeroyFlixUtils.getGlobalContext().getPackageName());
                     mContext.sendBroadcast(intent);
@@ -649,7 +649,7 @@ public class Trakt {
     }
 
     private Result getAllShows(String library, int trial){
-        if (log.isDebugEnabled()) log.debug("getAllShows");
+        //if (log.isDebugEnabled()) log.debug("getAllShows");
         List<BaseShow> ret = null;
         if (library.equals(Trakt.LIBRARY_WATCHED)) {
             ret = exec(mTraktV2.sync().watchedShows(Extended.EPISODES));
@@ -676,8 +676,8 @@ public class Trakt {
         long coarseLastActivityUtc = Math.max(movieTime, showTime);
 
         if (coarseLastActivityUtc > 0 && coarseLastActivityUtc <= lastSyncUtcSeconds) {
-            if (log.isDebugEnabled()) log.debug("getPlaybackStatus: coarse-grained check shows no activity since last sync (lastActivity={}, lastSync={}), skipping playback sync",
-                    coarseLastActivityUtc, lastSyncUtcSeconds);
+            //if (log.isDebugEnabled()) log.debug("getPlaybackStatus: coarse-grained check shows no activity since last sync (lastActivity={}, lastSync={}), skipping playback sync",
+                    //coarseLastActivityUtc, lastSyncUtcSeconds);
             return handleRet(null, null, new ArrayList<>(), ObjectType.MOVIES);
         }
 
@@ -687,8 +687,8 @@ public class Trakt {
         long lastActivityPausedUtc = Math.max(lastActivityMoviePausedUtc, lastActivityEpisodePausedUtc);
 
         if (lastActivityPausedUtc > 0 && lastActivityPausedUtc <= lastSyncUtcSeconds) {
-            if (log.isDebugEnabled()) log.debug("getPlaybackStatus: no resume point activity since last sync (lastActivityPaused={}, lastSync={}), skipping playback sync",
-                    lastActivityPausedUtc, lastSyncUtcSeconds);
+            //if (log.isDebugEnabled()) log.debug("getPlaybackStatus: no resume point activity since last sync (lastActivityPaused={}, lastSync={}), skipping playback sync",
+                    //lastActivityPausedUtc, lastSyncUtcSeconds);
             return handleRet(null, null, new ArrayList<>(), ObjectType.MOVIES);
         }
 
@@ -699,36 +699,36 @@ public class Trakt {
         // - Incremental sync would miss them
         long lastIndexedUtcSeconds = prefs.getLong(AutoScrapeService.PREFERENCE_LAST_TIME_VIDEO_SCRAPED_UTC, 0);
         if (lastIndexedUtcSeconds > lastSyncUtcSeconds) {
-            if (log.isDebugEnabled()) log.debug("getPlaybackStatus: new content indexed since last sync (lastIndexed={}, lastSync={}), forcing FULL sync to catch new movie activity",
-                    lastIndexedUtcSeconds, lastSyncUtcSeconds);
+            //if (log.isDebugEnabled()) log.debug("getPlaybackStatus: new content indexed since last sync (lastIndexed={}, lastSync={}), forcing FULL sync to catch new movie activity",
+                    //lastIndexedUtcSeconds, lastSyncUtcSeconds);
             List<PlaybackResponse> list = exec(mTraktV2.sync().getPlayback(PLAYBACK_HISTORY_SIZE));
             if (list == null) {
-                if (log.isDebugEnabled()) log.debug("getPlaybackStatus: no playback history");
+                //if (log.isDebugEnabled()) log.debug("getPlaybackStatus: no playback history");
                 return handleRet(null, new Exception(), null, ObjectType.NULL);
             } else {
-                if (log.isDebugEnabled()) log.debug("getPlaybackStatus: playback history size is {}", list.size());
+                //if (log.isDebugEnabled()) log.debug("getPlaybackStatus: playback history size is {}", list.size());
                 return handleRet(null, null, list, ObjectType.MOVIES);
             }
         }
 
         // Enhancement 3: Use incremental sync - no new content, safe to delta sync
         OffsetDateTime lastSync = OffsetDateTime.ofInstant(Instant.ofEpochSecond(lastSyncUtcSeconds), ZoneOffset.UTC);
-        if (log.isDebugEnabled()) log.debug("getPlaybackStatus: no new content since last sync - using incremental sync since {} UTC", lastSync);
+        //if (log.isDebugEnabled()) log.debug("getPlaybackStatus: no new content since last sync - using incremental sync since {} UTC", lastSync);
 
         List<PlaybackResponse> list;
         try {
             // Try incremental sync first (if your fork supports it)
             list = exec(mTraktV2.sync().getPlaybackSince(lastSync));
         } catch (Exception e) {
-            if (log.isDebugEnabled()) log.debug("getPlaybackStatus: incremental sync not available, falling back to full history");
+            //if (log.isDebugEnabled()) log.debug("getPlaybackStatus: incremental sync not available, falling back to full history");
             list = exec(mTraktV2.sync().getPlayback(PLAYBACK_HISTORY_SIZE));
         }
 
         if(list == null) {
-            if (log.isDebugEnabled()) log.debug("getPlaybackStatus: no playback history");
+            //if (log.isDebugEnabled()) log.debug("getPlaybackStatus: no playback history");
             return handleRet(null, new Exception(), null, ObjectType.NULL);
         } else {
-            if (log.isDebugEnabled()) log.debug("getPlaybackStatus: playback history size is {}", list.size());
+            //if (log.isDebugEnabled()) log.debug("getPlaybackStatus: playback history size is {}", list.size());
             return handleRet(null, null, list, ObjectType.MOVIES);
         }
     }
@@ -745,8 +745,8 @@ public class Trakt {
         long coarseLastActivityUtc = Math.max(movieTime, showTime);
 
         if (coarseLastActivityUtc > 0 && coarseLastActivityUtc <= lastSyncUtcSeconds) {
-            if (log.isDebugEnabled()) log.debug("getWatchedStatus: coarse-grained check shows no activity since last sync (lastActivity={}, lastSync={}), skipping watched status sync",
-                    coarseLastActivityUtc, lastSyncUtcSeconds);
+            //if (log.isDebugEnabled()) log.debug("getWatchedStatus: coarse-grained check shows no activity since last sync (lastActivity={}, lastSync={}), skipping watched status sync",
+                    //coarseLastActivityUtc, lastSyncUtcSeconds);
             return handleRet(null, null, new ArrayList<>(), ObjectType.MOVIES);
         }
 
@@ -756,8 +756,8 @@ public class Trakt {
         long lastActivityWatchedUtc = Math.max(lastActivityMovieWatchedUtc, lastActivityEpisodeWatchedUtc);
 
         if (lastActivityWatchedUtc > 0 && lastActivityWatchedUtc <= lastSyncUtcSeconds) {
-            if (log.isDebugEnabled()) log.debug("getWatchedStatus: no watched activity since last sync (lastActivityWatched={}, lastSync={}), skipping watched status sync",
-                    lastActivityWatchedUtc, lastSyncUtcSeconds);
+            //if (log.isDebugEnabled()) log.debug("getWatchedStatus: no watched activity since last sync (lastActivityWatched={}, lastSync={}), skipping watched status sync",
+                    //lastActivityWatchedUtc, lastSyncUtcSeconds);
             return handleRet(null, null, new ArrayList<>(), ObjectType.MOVIES);
         }
 
@@ -768,36 +768,36 @@ public class Trakt {
         // - Incremental sync would miss them
         long lastIndexedUtcSeconds = prefs.getLong(AutoScrapeService.PREFERENCE_LAST_TIME_VIDEO_SCRAPED_UTC, 0);
         if (lastIndexedUtcSeconds > lastSyncUtcSeconds) {
-            if (log.isDebugEnabled()) log.debug("getWatchedStatus: new content indexed since last sync (lastIndexed={}, lastSync={}), forcing FULL sync to catch new movie activity",
-                    lastIndexedUtcSeconds, lastSyncUtcSeconds);
+            //if (log.isDebugEnabled()) log.debug("getWatchedStatus: new content indexed since last sync (lastIndexed={}, lastSync={}), forcing FULL sync to catch new movie activity",
+                    //lastIndexedUtcSeconds, lastSyncUtcSeconds);
             List<HistoryEntry> list = exec(mTraktV2.sync().getWatchedHistory(PLAYBACK_HISTORY_SIZE));
             if (list == null) {
-                if (log.isDebugEnabled()) log.debug("getWatchedStatus: no watched history");
+                //if (log.isDebugEnabled()) log.debug("getWatchedStatus: no watched history");
                 return handleRet(null, new Exception(), null, ObjectType.NULL);
             } else {
-                if (log.isDebugEnabled()) log.debug("getWatchedStatus: watched history size is {}", list.size());
+                //if (log.isDebugEnabled()) log.debug("getWatchedStatus: watched history size is {}", list.size());
                 return handleRet(null, null, list, ObjectType.MOVIES);
             }
         }
 
         // Enhancement 3: Use incremental sync - no new content, safe to delta sync
         OffsetDateTime lastSync = OffsetDateTime.ofInstant(Instant.ofEpochSecond(lastSyncUtcSeconds), ZoneOffset.UTC);
-        if (log.isDebugEnabled()) log.debug("getWatchedStatus: no new content since last sync - using incremental sync since {} UTC", lastSync);
+        //if (log.isDebugEnabled()) log.debug("getWatchedStatus: no new content since last sync - using incremental sync since {} UTC", lastSync);
 
         List<HistoryEntry> list;
         try {
             // Try incremental sync first (if your fork supports it)
             list = exec(mTraktV2.sync().getWatchedHistorySince(lastSync));
         } catch (Exception e) {
-            if (log.isDebugEnabled()) log.debug("getWatchedStatus: incremental sync not available, falling back to full history");
+            //if (log.isDebugEnabled()) log.debug("getWatchedStatus: incremental sync not available, falling back to full history");
             list = exec(mTraktV2.sync().getWatchedHistory(PLAYBACK_HISTORY_SIZE));
         }
 
         if(list == null) {
-            if (log.isDebugEnabled()) log.debug("getWatchedStatus: no watched history");
+            //if (log.isDebugEnabled()) log.debug("getWatchedStatus: no watched history");
             return handleRet(null, new Exception(), null, ObjectType.NULL);
         } else {
-            if (log.isDebugEnabled()) log.debug("getWatchedStatus: watched history size is {}", list.size());
+            //if (log.isDebugEnabled()) log.debug("getWatchedStatus: watched history size is {}", list.size());
             return handleRet(null, null, list, ObjectType.MOVIES);
         }
     }
@@ -811,13 +811,13 @@ public class Trakt {
      * Not used by default sync; provided for manual recovery scenarios.
      */
     public Result getPlaybackStatusFullHistory() {
-        if (log.isDebugEnabled()) log.debug("getPlaybackStatusFullHistory: fetching full playback history (single wide request)");
+        //if (log.isDebugEnabled()) log.debug("getPlaybackStatusFullHistory: fetching full playback history (single wide request)");
         List<PlaybackResponse> list = exec(mTraktV2.sync().getPlayback(1000)); // Trakt hard cap
         if (list == null || list.isEmpty()) {
-            if (log.isDebugEnabled()) log.debug("getPlaybackStatusFullHistory: no playback history");
+            //if (log.isDebugEnabled()) log.debug("getPlaybackStatusFullHistory: no playback history");
             return handleRet(null, new Exception(), null, ObjectType.NULL);
         }
-        if (log.isDebugEnabled()) log.debug("getPlaybackStatusFullHistory: playback history size is {}", list.size());
+        //if (log.isDebugEnabled()) log.debug("getPlaybackStatusFullHistory: playback history size is {}", list.size());
         return handleRet(null, null, list, ObjectType.MOVIES);
     }
 
@@ -826,16 +826,16 @@ public class Trakt {
      * Not used by default sync; provided for manual recovery scenarios.
      */
     public Result getWatchedStatusFullHistory() {
-        if (log.isDebugEnabled()) log.debug("getWatchedStatusFullHistory: fetching full watched history (single wide requests)");
+        //if (log.isDebugEnabled()) log.debug("getWatchedStatusFullHistory: fetching full watched history (single wide requests)");
         List<HistoryEntry> all = new ArrayList<>();
         List<HistoryEntry> shows = exec(mTraktV2.sync().getWatchedHistory(1000));
         if (shows != null) all.addAll(shows);
         // If needed, add movies separately; API returns combined history so above is usually enough
         if (all.isEmpty()) {
-            if (log.isDebugEnabled()) log.debug("getWatchedStatusFullHistory: no watched history");
+            //if (log.isDebugEnabled()) log.debug("getWatchedStatusFullHistory: no watched history");
             return handleRet(null, new Exception(), null, ObjectType.NULL);
         }
-        if (log.isDebugEnabled()) log.debug("getWatchedStatusFullHistory: watched history size is {}", all.size());
+        //if (log.isDebugEnabled()) log.debug("getWatchedStatusFullHistory: watched history size is {}", all.size());
         return handleRet(null, null, all, ObjectType.MOVIES);
     }
 
@@ -854,7 +854,7 @@ public class Trakt {
         return exec(call, MAX_TRIAL);
     }
     public <T> T exec(retrofit2.Call<T> call, int remaining) {
-        if (log.isDebugEnabled()) log.debug("exec: call, remaining trials={}", remaining);
+        //if (log.isDebugEnabled()) log.debug("exec: call, remaining trials={}", remaining);
         try {
             retrofit2.Response<T> res = call.execute();
             if (!res.isSuccessful()) {
@@ -889,7 +889,7 @@ public class Trakt {
     }
 
     public Result getAllMovies(final String library, int trial) {
-        if (log.isDebugEnabled()) log.debug("getAllMovies");
+        //if (log.isDebugEnabled()) log.debug("getAllMovies");
         List<BaseMovie> arg0 = null;
         if (library.equals(Trakt.LIBRARY_WATCHED))
             arg0 = exec(mTraktV2.sync().watchedMovies(Extended.FULL));
@@ -901,7 +901,7 @@ public class Trakt {
     }
 
     public Result getLastActivity(int trial) {
-        if (log.isDebugEnabled()) log.debug("getLastActivity");
+        //if (log.isDebugEnabled()) log.debug("getLastActivity");
         LastActivities ret = exec(mTraktV2.sync().lastActivities());
         if(ret == null)
             return handleRet(null, new Exception(), null, ObjectType.NULL);
@@ -910,7 +910,7 @@ public class Trakt {
 
     /* add new list to trakt profile */
     public Result addList(int trial, String title) {
-        if (log.isDebugEnabled()) log.debug("addList");
+        //if (log.isDebugEnabled()) log.debug("addList");
         TraktList list = new TraktList();
         list.name = title;
         list.privacy = ListPrivacy.PRIVATE;
@@ -922,7 +922,7 @@ public class Trakt {
     }
 
     public Result deleteList(int trial, String id) {
-        if (log.isDebugEnabled()) log.debug("deleteList");
+        //if (log.isDebugEnabled()) log.debug("deleteList");
         Void response = exec(mTraktV2.users().deleteList(UserSlug.ME, id));
         if (response == null)
             return handleRet(null, new Exception(), null, ObjectType.NULL);
@@ -936,7 +936,7 @@ public class Trakt {
     }
 
     public Result getLists(int trial) {
-        if (log.isDebugEnabled()) log.debug("getLists");
+        //if (log.isDebugEnabled()) log.debug("getLists");
         List<TraktList> lists = exec(mTraktV2.users().lists(UserSlug.ME));
         if (lists == null)
             return handleRet(null, new Exception(), null, ObjectType.NULL);
@@ -944,7 +944,7 @@ public class Trakt {
     }
 
     public Result getListContent(int trial, int listId) {
-        if (log.isDebugEnabled()) log.debug("getListContent");
+        //if (log.isDebugEnabled()) log.debug("getListContent");
         List<ListEntry> items = exec(mTraktV2.users().listItems(UserSlug.ME, String.valueOf(listId), null));
         if (items == null)
             return handleRet(null, new Exception(), null, ObjectType.NULL);
@@ -952,7 +952,7 @@ public class Trakt {
     }
 
     public Result removeVideoFromList(int trial, int listId, ListEntry onlineItem) {
-        if (log.isDebugEnabled()) log.debug("removeVideoFromLit");
+        //if (log.isDebugEnabled()) log.debug("removeVideoFromLit");
         SyncItems syncItems = new SyncItems();
         if(onlineItem.episode!=null) {
             SyncEpisode syncEpisode = new SyncEpisode();
@@ -973,7 +973,7 @@ public class Trakt {
     }
 
     public Result addVideoToList(int trial, int listId, VideoStore.VideoList.VideoItem videoItem) {
-        if (log.isDebugEnabled()) log.debug("addVideoToList");
+        //if (log.isDebugEnabled()) log.debug("addVideoToList");
         SyncResponse ret = null;
         if (videoItem.episodeId > 0) {
             SyncEpisode se = new SyncEpisode();
@@ -1197,7 +1197,7 @@ public class Trakt {
     }
 
     public static boolean shouldMarkAsSeen(float progress) {
-        if (log.isDebugEnabled()) log.debug("shouldMarkAsSeen: {}", progress);
+        //if (log.isDebugEnabled()) log.debug("shouldMarkAsSeen: {}", progress);
         return progress >= SCROBBLE_THRESHOLD;
     }
 

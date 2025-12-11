@@ -1267,22 +1267,22 @@ public final class ScraperTables {
 
     public static void upgradeTo(SQLiteDatabase db, int toVersion) {
         if (toVersion == 37) {
-            if (log.isDebugEnabled()) log.debug("upgradeTo: {}", toVersion);
+            //if (log.isDebugEnabled()) log.debug("upgradeTo: {}", toVersion);
             db.execSQL("ALTER TABLE " + MOVIE_TABLE_NAME + " ADD COLUMN " + VideoStore.Video.VideoColumns.NOVA_PINNED + " INTEGER DEFAULT (0)");
             db.execSQL("ALTER TABLE " + SHOW_TABLE_NAME + " ADD COLUMN " + VideoStore.Video.VideoColumns.NOVA_PINNED + " INTEGER DEFAULT (0)");
         }
         if (toVersion == 38) {
-            if (log.isDebugEnabled()) log.debug("upgradeTo: {}", toVersion);
+            //if (log.isDebugEnabled()) log.debug("upgradeTo: {}", toVersion);
             db.execSQL("ALTER TABLE " + MOVIE_TABLE_NAME + " ADD COLUMN " + VideoStore.Video.VideoColumns.SCRAPER_C_ID + " INTEGER DEFAULT (-1)");
             db.execSQL(CREATE_MOVIE_COLLECTION_TABLE);
         }
         if (toVersion == 39) {
-            if (log.isDebugEnabled()) log.debug("upgradeTo: {}", toVersion);
+            //if (log.isDebugEnabled()) log.debug("upgradeTo: {}", toVersion);
             // create indexes to every non foreign keys with delete to speed up huge batch of delete in files_scanned during directory moves on network shares
             // performance hit comes from the cascade of triggers
             // without index, each delete from master table requires search through entire child table for foreign key'd items in O(N)
             // with index it is much lower (O(1) or whatever the index achieves)
-            if (log.isDebugEnabled()) log.debug("upgradeTo: creating indexes");
+            //if (log.isDebugEnabled()) log.debug("upgradeTo: creating indexes");
             db.execSQL("CREATE INDEX subtitles_idx ON subtitles(file_id)");
             db.execSQL("CREATE INDEX movie_trailers_idx ON movie_trailers(movie_id)");
             db.execSQL("CREATE INDEX movie_backdrops_idx ON movie_backdrops(movie_id)");
@@ -1307,26 +1307,26 @@ public final class ScraperTables {
             // create new triggers that does not call each time a clean of v_.*_deletable tables: do it once at startup
             // for some reasons sometimes the triggers are not dropped, thus make sure it is deleted
             db.execSQL("pragma writable_schema = ON");
-            if (log.isDebugEnabled()) log.debug("upgradeTo: removing trigger movie_delete");
+            //if (log.isDebugEnabled()) log.debug("upgradeTo: removing trigger movie_delete");
             db.execSQL("delete from sqlite_master where name = 'movie_delete'");
-            if (log.isDebugEnabled()) log.debug("upgradeTo: removing trigger show_delete");
+            //if (log.isDebugEnabled()) log.debug("upgradeTo: removing trigger show_delete");
             db.execSQL("delete from sqlite_master where name = 'show_delete'");
-            if (log.isDebugEnabled()) log.debug("upgradeTo: removing trigger episode_delete");
+            //if (log.isDebugEnabled()) log.debug("upgradeTo: removing trigger episode_delete");
             db.execSQL("delete from sqlite_master where name = 'episode_delete'");
             db.execSQL("pragma writable_schema = OFF");
             //db.execSQL(EPISODE_DELETE_TRIGGER_DROP);
             //db.execSQL(SHOW_DELETE_TRIGGER_DROP);
             //db.execSQL(MOVIE_DELETE_TRIGGER_DROP);
-            if (log.isDebugEnabled()) log.debug("upgradeTo: creating episode_delete trigger {}", EPISODE_DELETE_TRIGGER_CREATE_v2);
+            //if (log.isDebugEnabled()) log.debug("upgradeTo: creating episode_delete trigger {}", EPISODE_DELETE_TRIGGER_CREATE_v2);
             db.execSQL(EPISODE_DELETE_TRIGGER_CREATE_v2);
-            if (log.isDebugEnabled()) log.debug("upgradeTo: creating show_delete trigger {}", SHOW_DELETE_TRIGGER_CREATE_v2);
+            //if (log.isDebugEnabled()) log.debug("upgradeTo: creating show_delete trigger {}", SHOW_DELETE_TRIGGER_CREATE_v2);
             db.execSQL(SHOW_DELETE_TRIGGER_CREATE_v2);
-            if (log.isDebugEnabled()) log.debug("upgradeTo: creating movie_delete trigger {}", MOVIE_DELETE_TRIGGER_CREATE_v2);
+            //if (log.isDebugEnabled()) log.debug("upgradeTo: creating movie_delete trigger {}", MOVIE_DELETE_TRIGGER_CREATE_v2);
             db.execSQL(MOVIE_DELETE_TRIGGER_CREATE_v2);
-            if (log.isDebugEnabled()) log.debug("upgradeTo: all good");
+            //if (log.isDebugEnabled()) log.debug("upgradeTo: all good");
         }
         if (toVersion == 40) {
-            if (log.isDebugEnabled()) log.debug("upgradeTo: {}", toVersion);
+            //if (log.isDebugEnabled()) log.debug("upgradeTo: {}", toVersion);
             db.execSQL("ALTER TABLE " + MOVIE_TABLE_NAME + " ADD COLUMN " + ScraperStore.Movie.WRITERS_FORMATTED + " TEXT DEFAULT ''");
             db.execSQL("ALTER TABLE " + SHOW_TABLE_NAME + " ADD COLUMN " + ScraperStore.Show.WRITERS_FORMATTED + " TEXT DEFAULT ''");
             db.execSQL("ALTER TABLE " + EPISODE_TABLE_NAME + " ADD COLUMN " + ScraperStore.Episode.WRITERS_FORMATTED + " TEXT DEFAULT ''");
@@ -1344,14 +1344,14 @@ public final class ScraperTables {
             db.execSQL(CREATE_VIEW_SHOW_WRITERS);
             db.execSQL(CREATE_VIEW_EPISODE_WRITERS);
             db.execSQL(CREATE_VIEW_MOVIE_WRITERS);
-            if (log.isDebugEnabled()) log.debug("upgradeTo: creating indexes");
+            //if (log.isDebugEnabled()) log.debug("upgradeTo: creating indexes");
             // cf. v39 migration create indexes to speed up rescan in case of delete/renames
             db.execSQL("CREATE INDEX WRITERS_MOVIE_idx ON WRITERS_MOVIE(writer_writers)");
             db.execSQL("CREATE INDEX WRITERS_EPISODE_idx ON WRITERS_EPISODE(writer_writers)");
             db.execSQL("CREATE INDEX WRITERS_SHOW_idx ON WRITERS_SHOW(writer_writers)");
         }
         if (toVersion == 45) {
-            if (log.isDebugEnabled()) log.debug("upgradeTo: {} - adding performance indexes for scraper data", toVersion);
+            //if (log.isDebugEnabled()) log.debug("upgradeTo: {} - adding performance indexes for scraper data", toVersion);
             db.execSQL(CREATE_EPISODE_SEASON_EPISODE_IDX);
             db.execSQL(CREATE_MOVIE_YEAR_IDX);
             db.execSQL(CREATE_MOVIE_RATING_IDX);
@@ -1359,24 +1359,24 @@ public final class ScraperTables {
             db.execSQL(CREATE_MOVIE_VIDEO_ID_IDX);
         }
         if (toVersion == 46) {
-            if (log.isDebugEnabled()) log.debug("upgradeTo: {} - adding additional performance indexes for scraper data", toVersion);
+            //if (log.isDebugEnabled()) log.debug("upgradeTo: {} - adding additional performance indexes for scraper data", toVersion);
             db.execSQL(CREATE_SHOW_RATING_IDX);
             db.execSQL(CREATE_EPISODE_AIRED_IDX);
             db.execSQL(CREATE_MOVIE_COLLECTION_IDX);
         }
         if (toVersion == 47) {
-            if (log.isDebugEnabled()) log.debug("upgradeTo: {} - adding WatchingUpNextLoader performance indexes", toVersion);
+            //if (log.isDebugEnabled()) log.debug("upgradeTo: {} - adding WatchingUpNextLoader performance indexes", toVersion);
             db.execSQL(CREATE_EPISODE_SERIES_ORDERING_IDX);
             db.execSQL(CREATE_MOVIE_COLLECTION_YEAR_IDX);
             db.execSQL(CREATE_EPISODE_WATCHED_ORDERING_IDX);
             db.execSQL(CREATE_MOVIE_WATCHED_ORDERING_IDX);
         }
         if (toVersion == 48) {
-            if (log.isDebugEnabled()) log.debug("upgradeTo: {} - no scraper changes (handled in VideoOpenHelper)", toVersion);
+            //if (log.isDebugEnabled()) log.debug("upgradeTo: {} - no scraper changes (handled in VideoOpenHelper)", toVersion);
             // Version 48 changes are handled in VideoOpenHelper, not in ScraperTables
         }
         if (toVersion == 49) {
-            if (log.isDebugEnabled()) log.debug("upgradeTo: {} - adding movie release_date column and populating from year", toVersion);
+            //if (log.isDebugEnabled()) log.debug("upgradeTo: {} - adding movie release_date column and populating from year", toVersion);
             db.execSQL("ALTER TABLE " + MOVIE_TABLE_NAME + " ADD COLUMN " + ScraperStore.Movie.RELEASE_DATE + " TEXT");
             // Infer release_date from year_movie: format as YYYY-01-01 (January 1st of release year)
             db.execSQL("UPDATE " + MOVIE_TABLE_NAME + " SET " + ScraperStore.Movie.RELEASE_DATE + " = " +
@@ -1384,10 +1384,10 @@ public final class ScraperTables {
             db.execSQL("CREATE INDEX IF NOT EXISTS idx_movie_release_date ON " + MOVIE_TABLE_NAME + "(" + ScraperStore.Movie.RELEASE_DATE + ")");
         }
         if (toVersion == 51) {
-            if (log.isDebugEnabled()) log.debug("upgradeTo: {} - adding UNIQUE constraints to movie poster/backdrop tables to prevent duplicates", toVersion);
+            //if (log.isDebugEnabled()) log.debug("upgradeTo: {} - adding UNIQUE constraints to movie poster/backdrop tables to prevent duplicates", toVersion);
 
             // Movie Posters - recreate with UNIQUE constraints
-            if (log.isDebugEnabled()) log.debug("upgradeTo: recreating movie_posters table with UNIQUE constraints");
+            //if (log.isDebugEnabled()) log.debug("upgradeTo: recreating movie_posters table with UNIQUE constraints");
             db.execSQL("CREATE TABLE movie_posters_new ( \n" +
                     "    _id             INTEGER PRIMARY KEY,\n" +
                     "    movie_id        INTEGER REFERENCES movie ( _id ) ON DELETE CASCADE\n" +
@@ -1413,7 +1413,7 @@ public final class ScraperTables {
             db.execSQL("CREATE INDEX movie_posters_idx ON movie_posters(movie_id)");
 
             // Movie Backdrops - same process
-            if (log.isDebugEnabled()) log.debug("upgradeTo: recreating movie_backdrops table with UNIQUE constraints");
+            //if (log.isDebugEnabled()) log.debug("upgradeTo: recreating movie_backdrops table with UNIQUE constraints");
             db.execSQL("CREATE TABLE movie_backdrops_new ( \n" +
                     "    _id             INTEGER PRIMARY KEY,\n" +
                     "    movie_id        INTEGER REFERENCES movie ( _id ) ON DELETE CASCADE\n" +
@@ -1431,7 +1431,7 @@ public final class ScraperTables {
             db.execSQL(CREATE_MOVIE_BACKDROPS_DELETE_TRIGGER);
             db.execSQL("CREATE INDEX movie_backdrops_idx ON movie_backdrops(movie_id)");
 
-            if (log.isDebugEnabled()) log.debug("upgradeTo: {} - movie poster/backdrop tables successfully migrated", toVersion);
+            //if (log.isDebugEnabled()) log.debug("upgradeTo: {} - movie poster/backdrop tables successfully migrated", toVersion);
         }
     }
 }

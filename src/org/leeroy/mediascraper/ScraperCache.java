@@ -44,15 +44,15 @@ public class ScraperCache {
 
     public static void dumpCacheInfo() {
         if (cache == null) {
-            if (log.isDebugEnabled()) log.debug("dumpCacheInfo: cache not initialized");
+            //if (log.isDebugEnabled()) log.debug("dumpCacheInfo: cache not initialized");
             return;
         }
         try {
             double fillRatio = cache.size() / (double) cache.maxSize() * 100;
             double hitRatio = cache.hitCount() / (double) cache.requestCount() * 100;
-            if (log.isTraceEnabled()) log.trace("Cache filled {}% (size={}/maxsize={})", fillRatio, cache.size(), cache.maxSize());
-            if (log.isTraceEnabled()) log.trace("Cache hit {}% (hit={}/requests={})", hitRatio, cache.hitCount(), cache.requestCount());
-            if (log.isTraceEnabled()) log.trace("Cache request count {}, network count {}", cache.requestCount(), cache.networkCount());
+            //if (log.isTraceEnabled()) log.trace("Cache filled {}% (size={}/maxsize={})", fillRatio, cache.size(), cache.maxSize());
+            //if (log.isTraceEnabled()) log.trace("Cache hit {}% (hit={}/requests={})", hitRatio, cache.hitCount(), cache.requestCount());
+            //if (log.isTraceEnabled()) log.trace("Cache request count {}, network count {}", cache.requestCount(), cache.networkCount());
         } catch (IOException e) {
             log.error("caught IOException", e);
         }
@@ -61,7 +61,7 @@ public class ScraperCache {
     public static synchronized Cache getCache(Context context) {
         if (cache == null) {
             File cacheDir = new File(context.getCacheDir(), SCRAPER_CACHE);
-            if (log.isDebugEnabled()) log.debug("getCache: directory {}/{}", context.getCacheDir(), SCRAPER_CACHE);
+            //if (log.isDebugEnabled()) log.debug("getCache: directory {}/{}", context.getCacheDir(), SCRAPER_CACHE);
             if (!cacheDir.exists()) cacheDir.mkdirs();
             cache = new Cache(cacheDir, cacheSize);
         }
@@ -93,9 +93,9 @@ public class ScraperCache {
         public okhttp3.Response intercept(Chain chain) throws IOException {
             Response response = chain.proceed(chain.request());
             if (response.cacheResponse() != null) {
-                if (log.isTraceEnabled()) log.trace("okhttp response from cache");
+                //if (log.isTraceEnabled()) log.trace("okhttp response from cache");
             } else if (response.networkResponse() != null) {
-                if (log.isTraceEnabled()) log.trace("okhttp response from network");
+                //if (log.isTraceEnabled()) log.trace("okhttp response from network");
             }
             dumpCacheInfo();
             return response;

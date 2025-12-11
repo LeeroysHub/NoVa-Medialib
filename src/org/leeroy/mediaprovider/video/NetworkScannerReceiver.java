@@ -41,7 +41,7 @@ public class NetworkScannerReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Uri uri = intent.getData();
         String action = intent.getAction();
-        if (log.isDebugEnabled()) log.debug("onReceive intent:{} uri:{}", intent, uri);
+        //if (log.isDebugEnabled()) log.debug("onReceive intent:{} uri:{}", intent, uri);
         // we need uri telling us what is scanned
         if (uri == null)
             return;
@@ -56,7 +56,7 @@ public class NetworkScannerReceiver extends BroadcastReceiver {
     private static synchronized void add(Uri uri) {
         if (uri == null)
             return;
-        if (log.isDebugEnabled()) log.debug("add uri:{}", uri);
+        //if (log.isDebugEnabled()) log.debug("add uri:{}", uri);
         String path = uri.toString();
         sCurrentlyScanned.add(path);
     }
@@ -64,17 +64,17 @@ public class NetworkScannerReceiver extends BroadcastReceiver {
     private static synchronized void remove(Uri uri) {
         if (uri == null)
             return;
-        if (log.isDebugEnabled()) log.debug("remove uri:{}", uri);
+        //if (log.isDebugEnabled()) log.debug("remove uri:{}", uri);
         String path = uri.toString();
         sCurrentlyScanned.remove(path);
     }
 
     private static void dump() {
-        if (log.isDebugEnabled()) log.debug("> --- DUMP --- <");
+        //if (log.isDebugEnabled()) log.debug("> --- DUMP --- <");
         for (String key : sCurrentlyScanned) {
-            if (log.isDebugEnabled()) log.debug("> [{}]", key);
+            //if (log.isDebugEnabled()) log.debug("> [{}]", key);
         }
-        if (log.isDebugEnabled()) log.debug("> ------------ <");
+        //if (log.isDebugEnabled()) log.debug("> ------------ <");
     }
 
     public interface ScannerListener {
@@ -84,7 +84,7 @@ public class NetworkScannerReceiver extends BroadcastReceiver {
 
     public static synchronized boolean isScannerWorking() {
         // if there is a path in here then scanner is working.
-        if (log.isDebugEnabled()) log.debug("isScannerWorking: sCurrentlyScanned.size()={} {}", sCurrentlyScanned.size(), (sCurrentlyScanned.size() > 0));
+        //if (log.isDebugEnabled()) log.debug("isScannerWorking: sCurrentlyScanned.size()={} {}", sCurrentlyScanned.size(), (sCurrentlyScanned.size() > 0));
         return sCurrentlyScanned.size() > 0;
     }
 }

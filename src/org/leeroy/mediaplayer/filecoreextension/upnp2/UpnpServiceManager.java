@@ -143,17 +143,17 @@ public class UpnpServiceManager {
                     @Override
                     public void propertyChange(PropertyChangeEvent evt) {
                         if (evt.getOldValue() != evt.getNewValue()) {
-                            if (log.isDebugEnabled()) log.debug("NetworkState for {} changed:{} -> {}", evt.getPropertyName(), evt.getOldValue(), evt.getNewValue());
+                            //if (log.isDebugEnabled()) log.debug("NetworkState for {} changed:{} -> {}", evt.getPropertyName(), evt.getOldValue(), evt.getNewValue());
                             //we need to restart upnp service on network state change
                             if (mAndroidUpnpService!=null&&mState==State.RUNNING&&mHasStarted) {
-                                if (log.isDebugEnabled()) log.debug("restarting");
+                                //if (log.isDebugEnabled()) log.debug("restarting");
                                 mDevices.clear();
                                 informListenersOfDeviceListUpdate(mListeners);
                                 mAndroidUpnpService.getRegistry().removeListener(mRegistryListener);
                                 // Release multicast lock before unbinding
                                 if (mMulticastLock != null && mMulticastLock.isHeld()) {
                                     mMulticastLock.release();
-                                    if (log.isDebugEnabled()) log.debug("MulticastLock released before restart");
+                                    //if (log.isDebugEnabled()) log.debug("MulticastLock released before restart");
                                 }
                                 try {
                                     // Only unbind if service was actually connected to prevent crashes in AndroidUpnpServiceImpl
@@ -173,7 +173,7 @@ public class UpnpServiceManager {
             addNetworkListener();
             mHasStarted = true;
             mState = State.NOT_RUNNING;
-            if (log.isDebugEnabled()) log.debug("State NOT_RUNNING");
+            //if (log.isDebugEnabled()) log.debug("State NOT_RUNNING");
         }
     }
 
@@ -218,10 +218,10 @@ public class UpnpServiceManager {
             boolean result = mContext.bindService(new Intent(mContext, AndroidUpnpServiceImpl.class), mServiceConnection, Context.BIND_AUTO_CREATE);
             if (result) {
                 mState = State.STARTING;
-                if (log.isDebugEnabled()) log.debug("State STARTING");
+                //if (log.isDebugEnabled()) log.debug("State STARTING");
             } else {
                 mState = State.ERROR;
-                if (log.isDebugEnabled()) log.debug("State ERROR - bindService returned false!");
+                //if (log.isDebugEnabled()) log.debug("State ERROR - bindService returned false!");
             }
         }
     }
@@ -253,7 +253,7 @@ public class UpnpServiceManager {
             // Release multicast lock before unbinding (onServiceDisconnected won't be called)
             if (mMulticastLock != null && mMulticastLock.isHeld()) {
                 mMulticastLock.release();
-                if (log.isDebugEnabled()) log.debug("MulticastLock released in stop()");
+                //if (log.isDebugEnabled()) log.debug("MulticastLock released in stop()");
             }
 
             try {
@@ -293,16 +293,16 @@ public class UpnpServiceManager {
     final ServiceConnection mServiceConnection = new ServiceConnection() {
 
         public void onServiceConnected(ComponentName className, IBinder service) {
-            if (log.isDebugEnabled()) log.debug("onServiceConnected");
+            //if (log.isDebugEnabled()) log.debug("onServiceConnected");
             mAndroidUpnpService = (AndroidUpnpService) service;
             mServiceConnected = true;
             mState = State.RUNNING;
-            if (log.isDebugEnabled()) log.debug("State RUNNING");
+            //if (log.isDebugEnabled()) log.debug("State RUNNING");
 
             // Acquire multicast lock for UPnP discovery
             if (mMulticastLock != null && !mMulticastLock.isHeld()) {
                 mMulticastLock.acquire();
-                if (log.isDebugEnabled()) log.debug("MulticastLock acquired");
+                //if (log.isDebugEnabled()) log.debug("MulticastLock acquired");
             }
 
             // Listen for discovery stuff
@@ -325,14 +325,14 @@ public class UpnpServiceManager {
             // Release multicast lock
             if (mMulticastLock != null && mMulticastLock.isHeld()) {
                 mMulticastLock.release();
-                if (log.isDebugEnabled()) log.debug("MulticastLock released");
+                //if (log.isDebugEnabled()) log.debug("MulticastLock released");
             }
 
             // no more service
             mAndroidUpnpService = null;
             mServiceConnected = false;
             mState = State.NOT_RUNNING;
-            if (log.isDebugEnabled()) log.debug("State NOT_RUNNING");
+            //if (log.isDebugEnabled()) log.debug("State NOT_RUNNING");
         }
     };
 
@@ -423,9 +423,9 @@ public class UpnpServiceManager {
             Action action = service.getAction("Browse");
             if (action == null) return;
 
-            if (log.isDebugEnabled()) log.debug("deviceAdded: {} {} {} {}", device.getDisplayString(), device.getDetails().getFriendlyName(),
-                    device.getDetails().getSerialNumber(), device.getDetails().getManufacturerDetails().getManufacturer());
-            if (log.isDebugEnabled()) log.debug("deviceAdded: addDevice with hash code {}", device.hashCode());
+            //if (log.isDebugEnabled()) log.debug("deviceAdded: {} {} {} {}", device.getDisplayString(), device.getDetails().getFriendlyName(),
+                    //device.getDetails().getSerialNumber(), device.getDetails().getManufacturerDetails().getManufacturer());
+            //if (log.isDebugEnabled()) log.debug("deviceAdded: addDevice with hash code {}", device.hashCode());
             synchronized (this) {
                 // Add to list
                 mDevices.put(Integer.valueOf(device.hashCode()), device);
@@ -488,7 +488,7 @@ public class UpnpServiceManager {
         @Override
         public void run() {
             if (mAndroidUpnpService!=null) {
-                if (log.isDebugEnabled()) log.debug("mPeriodicSearchRunnable search");
+                //if (log.isDebugEnabled()) log.debug("mPeriodicSearchRunnable search");
                 mAndroidUpnpService.getControlPoint().search(new UDADeviceTypeHeader(new UDADeviceType("MediaServer")));
             }
             // program next search
@@ -525,7 +525,7 @@ public class UpnpServiceManager {
     private void addNetworkListener() {
         if (networkState == null) networkState = NetworkState.instance(mContext);
         if (!mNetworkStateListenerAdded && propertyChangeListener != null) {
-            if (log.isTraceEnabled()) log.trace("addNetworkListener: networkState.addPropertyChangeListener");
+            //if (log.isTraceEnabled()) log.trace("addNetworkListener: networkState.addPropertyChangeListener");
             networkState.addPropertyChangeListener(propertyChangeListener);
             mNetworkStateListenerAdded = true;
         }
@@ -534,7 +534,7 @@ public class UpnpServiceManager {
     private void removeNetworkListener() {
         if (networkState == null) networkState = NetworkState.instance(mContext);
         if (mNetworkStateListenerAdded && propertyChangeListener != null) {
-            if (log.isTraceEnabled()) log.trace("removeListener: networkState.removePropertyChangeListener");
+            //if (log.isTraceEnabled()) log.trace("removeListener: networkState.removePropertyChangeListener");
             networkState.removePropertyChangeListener(propertyChangeListener);
             mNetworkStateListenerAdded = false;
         }

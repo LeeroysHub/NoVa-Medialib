@@ -84,7 +84,7 @@ public class UpnpRawLister extends RawLister  {
         mUpnpServiceManager = UpnpServiceManager.getSingleton(null); //won't create, so we need to be sure it has already been created before
         mUri = uri;
         mLock = new Object();
-        if (log.isDebugEnabled()) log.debug("UpnpRawLister() uri={} lastPath={}", mUri,  FileUtils.getName(mUri));
+        //if (log.isDebugEnabled()) log.debug("UpnpRawLister() uri={} lastPath={}", mUri,  FileUtils.getName(mUri));
         // Get Device from its hash key that is in the Uri
         mDevice = mUpnpServiceManager.getDeviceByKey_blocking(Integer.parseInt(mUri.getHost()), 500); // NPE on subs listing
 
@@ -106,7 +106,7 @@ public class UpnpRawLister extends RawLister  {
     }
 
     public void listFiles(final Device device, final String containerId) {
-        if (log.isDebugEnabled()) log.debug("listFiles {}  containerId={}", device, containerId);
+        //if (log.isDebugEnabled()) log.debug("listFiles {}  containerId={}", device, containerId);
         Service service = device.findService(new UDAServiceId("ContentDirectory"));
         int ready = mUpnpServiceManager.execute(new Browse(service, containerId, BrowseFlag.DIRECT_CHILDREN) {
             @Override

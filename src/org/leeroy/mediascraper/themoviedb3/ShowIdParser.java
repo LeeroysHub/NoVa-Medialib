@@ -44,7 +44,7 @@ public class ShowIdParser {
         ShowTags result = new ShowTags();
 
         if (serie.overview != null) {
-            if (log.isDebugEnabled()) log.debug("getResult: {} overview/plot {}", serie.name, serie.overview);
+            //if (log.isDebugEnabled()) log.debug("getResult: {} overview/plot {}", serie.name, serie.overview);
             result.setPlot(serie.overview);
         } else {
             log.warn("getResult: {} has no overview/plot", serie.name);
@@ -53,7 +53,7 @@ public class ShowIdParser {
         result.setRating(Math.round(serie.vote_average.floatValue() * 10)/10.0f);
         result.setTitle(serie.name + (( year != null) ? " " + year : ""));
 
-        if (log.isDebugEnabled()) log.debug("getResult: found title={}", serie.name);
+        //if (log.isDebugEnabled()) log.debug("getResult: found title={}", serie.name);
 
         if (serie.content_ratings != null && serie.content_ratings.results != null)
             for (ContentRating results: serie.content_ratings.results)
@@ -62,7 +62,7 @@ public class ShowIdParser {
 
         if (serie.external_ids != null) result.setImdbId(serie.external_ids.imdb_id);
         result.setOnlineId(serie.id);
-        if (log.isDebugEnabled()) log.debug("getResult: onlineId={}, imdbId={}", serie.id, serie.external_ids.imdb_id);
+        //if (log.isDebugEnabled()) log.debug("getResult: onlineId={}, imdbId={}", serie.id, serie.external_ids.imdb_id);
         result.setGenres(getLocalizedGenres(serie.genres));
 
         for (Network network : serie.networks)
@@ -71,13 +71,13 @@ public class ShowIdParser {
         result.setPremiered(serie.first_air_date);
 
         if (serie.poster_path != null) {
-            if (log.isDebugEnabled()) log.debug("getResult: {} has poster_path={}{}", serie.id, ScraperImage.TMPL, serie.poster_path);
+            //if (log.isDebugEnabled()) log.debug("getResult: {} has poster_path={}{}", serie.id, ScraperImage.TMPL, serie.poster_path);
             result.addDefaultPosterTMDB(mContext, serie.poster_path);
-        } else if (log.isDebugEnabled()) log.debug("getResult: no poster_path for {}", serie.id);
+        } //else //if (log.isDebugEnabled()) log.debug("getResult: no poster_path for {}", serie.id);
         if (serie.backdrop_path != null) {
-            if (log.isDebugEnabled()) log.debug("getResult: {} has backdrop_path={}{}", serie.id, ScraperImage.TMBL, serie.backdrop_path);
+            //if (log.isDebugEnabled()) log.debug("getResult: {} has backdrop_path={}{}", serie.id, ScraperImage.TMBL, serie.backdrop_path);
             result.addDefaultBackdropTMDB(mContext, serie.backdrop_path);
-        } else if (log.isDebugEnabled()) log.debug("getResult: no backdrop_path for {}", serie.id);
+        } //else //if (log.isDebugEnabled()) log.debug("getResult: no backdrop_path for {}", serie.id);
 
         if (serie.credits != null) {
             if (serie.credits.guest_stars != null)

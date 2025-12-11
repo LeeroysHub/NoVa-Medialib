@@ -49,7 +49,7 @@ public class SearchShow {
         boolean serviceError = false;
         String showKey = null;
         String name;
-        if (log.isDebugEnabled()) log.debug("search: quering tmdb for {} year {} in {}, resultLimit={}", searchInfo.getShowName(), searchInfo.getFirstAiredYear(), language, resultLimit);
+        //if (log.isDebugEnabled()) log.debug("search: quering tmdb for {} year {} in {}, resultLimit={}", searchInfo.getShowName(), searchInfo.getFirstAiredYear(), language, resultLimit);
         try {
             Integer year = null;
             if (searchInfo.getFirstAiredYear() != null) {
@@ -62,11 +62,11 @@ public class SearchShow {
 
             String searchQueryString = searchInfo.getShowName();
             showKey = ShowUtils.cleanUpName(searchQueryString.toLowerCase()) + "|" + language;
-            if (log.isDebugEnabled()) log.debug("SearchShowResult: cache showKey {}", showKey);
+            //if (log.isDebugEnabled()) log.debug("SearchShowResult: cache showKey {}", showKey);
             response = showCache.get(showKey);
             //if (log.isTraceEnabled()) debugLruCache(showCache);
             if (response == null) {
-                if (log.isDebugEnabled()) log.debug("SearchShowResult: no boost for {} year {}", searchInfo.getShowName(), year);
+                //if (log.isDebugEnabled()) log.debug("SearchShowResult: no boost for {} year {}", searchInfo.getShowName(), year);
                 // adult search false by default
                 response = tmdb.searchService().tv(searchQueryString, 1, language, year, false).execute();
                 if (response.code() != 404) notFoundIssue = false; // this is an AND

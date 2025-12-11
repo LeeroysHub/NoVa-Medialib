@@ -83,7 +83,7 @@ public class ShowIdEpisodes {
                 //}
 
                 // set episode poster according to corresponding season poster
-                if (log.isDebugEnabled()) log.debug("getEpisodes: tvEpisode.season_number={}, tvSeasons.size={}", tvEpisode.season_number, tvSeasons.size());
+                //if (log.isDebugEnabled()) log.debug("getEpisodes: tvEpisode.season_number={}, tvSeasons.size={}", tvEpisode.season_number, tvSeasons.size());
 
                 if (tvSeasons != null) {
                     tvSeason = tvSeasons.get(tvEpisode.season_number);
@@ -100,26 +100,26 @@ public class ShowIdEpisodes {
                             if (seasonPoster == null) {
                                 seasonPoster = ShowIdImagesParser.genPoster(showTags.getTitle(), tvSeason.poster_path, language, false, context);
                                 sSeasonPosterImageCache.put(posterKey, seasonPoster);
-                                if (log.isTraceEnabled()) log.trace("getEpisodes: cached season poster ScraperImage for {}", posterKey);
+                                //if (log.isTraceEnabled()) log.trace("getEpisodes: cached season poster ScraperImage for {}", posterKey);
                             } else {
-                                if (log.isTraceEnabled()) log.trace("getEpisodes: reusing cached season poster ScraperImage for {}", posterKey);
+                                //if (log.isTraceEnabled()) log.trace("getEpisodes: reusing cached season poster ScraperImage for {}", posterKey);
                             }
                             episodeTags.addDefaultPoster(seasonPoster);
                         } else {
-                            if (log.isDebugEnabled()) log.debug("getEpisodes: tvSeason.poster_path is null get showTag default poster");
+                            //if (log.isDebugEnabled()) log.debug("getEpisodes: tvSeason.poster_path is null get showTag default poster");
                             episodeTags.addDefaultPoster(showTags.getDefaultPoster());
                         }
-                        if (log.isDebugEnabled()) log.debug("getEpisodes: {} s{}, has poster {} path {}", showTags.getTitle(), tvEpisode.season_number, episodeTags.getDefaultPoster().getLargeUrl(), episodeTags.getDefaultPoster().getLargeFile());
+                        //if (log.isDebugEnabled()) log.debug("getEpisodes: {} s{}, has poster {} path {}", showTags.getTitle(), tvEpisode.season_number, episodeTags.getDefaultPoster().getLargeUrl(), episodeTags.getDefaultPoster().getLargeFile());
                     }
                 } else {
-                    if (log.isDebugEnabled()) log.debug("getEpisodes: no poster set for {}s{}", showTags.getTitle(), tvEpisode.season_number);
+                    //if (log.isDebugEnabled()) log.debug("getEpisodes: no poster set for {}s{}", showTags.getTitle(), tvEpisode.season_number);
                 }
-                if (log.isDebugEnabled()) log.debug("getEpisodes: {} has plot {}", tvEpisode.name, tvEpisode.overview);
+                //if (log.isDebugEnabled()) log.debug("getEpisodes: {} has plot {}", tvEpisode.name, tvEpisode.overview);
                 episodeTags.setPlot(tvEpisode.overview);
                 episodeTags.setRating(Math.round(tvEpisode.vote_average.floatValue() * 10)/10.0f); // round up first decimal
                 episodeTags.setTitle(tvEpisode.name);
                 if (tvEpisode.external_ids != null) episodeTags.setImdbId(tvEpisode.external_ids.imdb_id);
-                if (log.isTraceEnabled()) log.trace("getEpisodes: showId={} episode has onlineId={}", showId, tvEpisode.id);
+                //if (log.isTraceEnabled()) log.trace("getEpisodes: showId={} episode has onlineId={}", showId, tvEpisode.id);
                 episodeTags.setOnlineId(tvEpisode.id);
                 episodeTags.setAired(tvEpisode.air_date);
                 episodeTags.setEpisode(tvEpisode.episode_number);
@@ -127,11 +127,11 @@ public class ShowIdEpisodes {
                 episodeTags.setShowId(showId);
                 episodeTags.setShowTags(showTags);
                 if (tvEpisode.still_path != null) {
-                    if (log.isTraceEnabled()) log.trace("getEpisodes: showId={} episode has still={}", showId, tvEpisode.still_path);
+                    //if (log.isTraceEnabled()) log.trace("getEpisodes: showId={} episode has still={}", showId, tvEpisode.still_path);
                     episodeTags.setEpisodePicture(tvEpisode.still_path, context, false);
                 } else {
                     // TODO MARC wrong AR it is picture style
-                    if (log.isTraceEnabled()) log.trace("getEpisodes: showId={} episode has null still using season poster instead...", showId);
+                    //if (log.isTraceEnabled()) log.trace("getEpisodes: showId={} episode has null still using season poster instead...", showId);
                     // when no still revert to episodeTags.getDefaultPoster() that should be the season poster (global poster is showTags.getDefaultPoster().getLargeUrl())
                     if (episodeTags.getDefaultPoster() != null)
                         episodeTags.setEpisodePicture(episodeTags.getDefaultPoster().getLargeUrl(), context, true);
@@ -141,7 +141,7 @@ public class ShowIdEpisodes {
                 if ((tvEpisode.overview == null || tvEpisode.overview.length() == 0 || tvEpisode.name == null || tvEpisode.name.length() == 0)
                         && !language.equals("en")) { // missing overview in native language
                     if (globalEpisodes.get(tvEpisode.id) == null) { // missing: get whole serie
-                        if (log.isDebugEnabled()) log.debug("getEpisodes: description in {} missing for tvEpisode.name s{}e{} fallback in en for the whole season", language, tvEpisode.season_number, tvEpisode.episode_number);
+                        //if (log.isDebugEnabled()) log.debug("getEpisodes: description in {} missing for tvEpisode.name s{}e{} fallback in en for the whole season", language, tvEpisode.season_number, tvEpisode.episode_number);
                         ShowIdSeasonSearchResult globalSeasonIdSearchResult = ShowIdSeasonSearch.getSeasonShowResponse(seasonKey, showId, tvEpisode.season_number, "en", adultScrape, tmdb);
                         // stack all episodes in en to find later the overview and name
                         if (globalSeasonIdSearchResult.status == ScrapeStatus.OKAY) {
@@ -149,7 +149,7 @@ public class ShowIdEpisodes {
                                 for (TvEpisode globalTvEpisode : globalSeasonIdSearchResult.tvSeason.episodes)
                                     globalEpisodes.put(globalTvEpisode.id, globalTvEpisode);
                             } else { // an error at this point is PARSER related
-                                if (log.isDebugEnabled()) log.debug("getEpisodes: error {}", globalSeasonIdSearchResult.status);
+                                //if (log.isDebugEnabled()) log.debug("getEpisodes: error {}", globalSeasonIdSearchResult.status);
                             }
                         }
                     }

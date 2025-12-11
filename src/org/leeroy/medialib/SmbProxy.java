@@ -59,7 +59,7 @@ public class SmbProxy extends Proxy{
                 file = MetaFile2Factory.getMetaFileForUrl(mUri);
             } catch (Exception e) {
                 // this is not really an error
-                if (log.isTraceEnabled()) log.trace("start: error getting metafile for url {}", mUri, e);
+                //if (log.isTraceEnabled()) log.trace("start: error getting metafile for url {}", mUri, e);
             }
             if(file != null) {
                 mStream = new StreamOverHttp(file, mimeType);

@@ -89,14 +89,14 @@ public class RemoteStateService extends Service implements UpnpServiceManager.Li
     @Override
     public void onCreate() {
         super.onCreate();
-        if (log.isDebugEnabled()) log.debug("onCreate() {}", this);
+        //if (log.isDebugEnabled()) log.debug("onCreate() {}", this);
         // Register as a lifecycle observer
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
     }
 
     @Override
     public void onDestroy() {
-        if (log.isDebugEnabled()) log.debug("onDestroy");
+        //if (log.isDebugEnabled()) log.debug("onDestroy");
         ProcessLifecycleOwner.get().getLifecycle().removeObserver(this);
         UpnpServiceManager.startServiceIfNeeded(this).removeListener(this);
         if (mUpnpId != null) {
@@ -108,13 +108,13 @@ public class RemoteStateService extends Service implements UpnpServiceManager.Li
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (log.isDebugEnabled()) log.debug("onStartCommand: {}", intent);
+        //if (log.isDebugEnabled()) log.debug("onStartCommand: {}", intent);
         if (!isForeground) return START_NOT_STICKY; // prevent to be executed if app is in background
         if (intent != null && ACTION_CHECK_SMB.equals(intent.getAction())) {
             // Prevent multiple concurrent handleDb operations to avoid thread explosion
             // and concurrent database access issues
             if (mHandleDbInProgress) {
-                if (log.isDebugEnabled()) log.debug("onStartCommand: handleDb already in progress, skipping");
+                //if (log.isDebugEnabled()) log.debug("onStartCommand: handleDb already in progress, skipping");
                 return START_STICKY;
             }
             mHandleDbInProgress = true;
@@ -137,7 +137,7 @@ public class RemoteStateService extends Service implements UpnpServiceManager.Li
 
     /** use to issue a check of the smb:// state */
     public static void start(Context context) {
-        if (log.isDebugEnabled()) log.debug("start");
+        //if (log.isDebugEnabled()) log.debug("start");
         if (!isForeground) return;
         Intent intent = new Intent(context, RemoteStateService.class);
         intent.setAction(ACTION_CHECK_SMB);
@@ -145,7 +145,7 @@ public class RemoteStateService extends Service implements UpnpServiceManager.Li
     }
 
     public static void stop(Context context) {
-        if (log.isDebugEnabled()) log.debug("stop");
+        //if (log.isDebugEnabled()) log.debug("stop");
         Intent intent = new Intent(context, RemoteStateService.class);
         try {
             context.stopService(intent);
@@ -158,22 +158,22 @@ public class RemoteStateService extends Service implements UpnpServiceManager.Li
         if(mUpnpId==null) mUpnpId =new ConcurrentHashMap<>();
         else mUpnpId.clear();
         final ContentResolver cr = context.getContentResolver();
-        if (log.isDebugEnabled()) log.debug("handleDb: hasConnection={}, hasLocalConnection={}", hasConnection, hasLocalConnection);
+        //if (log.isDebugEnabled()) log.debug("handleDb: hasConnection={}, hasLocalConnection={}", hasConnection, hasLocalConnection);
         if (hasConnection) {
             //Lmhosts.reset();
             final long now = System.currentTimeMillis() / 1000;
             // list all servers in the db
             Cursor c = cr.query(SERVER_URI, PROJECTION_SERVERS, SELECTION_ALL_NETWORK, null, null);
             if (c != null) {
-                if (log.isDebugEnabled()) log.debug("found {} servers", c.getCount());
+                //if (log.isDebugEnabled()) log.debug("found {} servers", c.getCount());
                 mServerDbUpdated = false;
                 while (c.moveToNext() && isForeground) {
                     final long id = c.getLong(COLUMN_ID);
                     final String server = c.getString(COLUMN_DATA);
                     final int active = c.getInt(COLUMN_ACTIVE);
-                    if (log.isDebugEnabled()) log.debug("handleDb: server: {} active: {}", server, active);
+                    //if (log.isDebugEnabled()) log.debug("handleDb: server: {} active: {}", server, active);
                     if(server.startsWith("sftp")||server.startsWith("ftp")||server.startsWith("webdav")||server.startsWith("sshj")) { //for distant folders, we don't check existence (for now)
-                        if (log.isDebugEnabled()) log.debug("handleDb: ftp server is assumed to exist: {}", server);
+                        //if (log.isDebugEnabled()) log.debug("handleDb: ftp server is assumed to exist: {}", server);
                         if (updateServerDb(id, cr, active, 1, now))
                             mServerDbUpdated = true;
                     } else if(!server.startsWith("upnp")) { // SMB goes there even if on cellular only
@@ -201,7 +201,7 @@ public class RemoteStateService extends Service implements UpnpServiceManager.Li
                                         }
                                         if (i < REMOTE_CHECK_RETRY_COUNT - 1) { // do not sleep after last attempt
                                             try {
-                                                if (log.isDebugEnabled()) log.debug("handleDb: server {} not found, retrying in {}ms ({}/{})", server, REMOTE_CHECK_RETRY_DELAY_MS, (i + 1), REMOTE_CHECK_RETRY_COUNT);
+                                                //if (log.isDebugEnabled()) log.debug("handleDb: server {} not found, retrying in {}ms ({}/{})", server, REMOTE_CHECK_RETRY_DELAY_MS, (i + 1), REMOTE_CHECK_RETRY_COUNT);
                                                 Thread.sleep(REMOTE_CHECK_RETRY_DELAY_MS);
                                             } catch (InterruptedException e) {
                                                 log.error("handleDb: sleep interrupted", e);
@@ -209,17 +209,17 @@ public class RemoteStateService extends Service implements UpnpServiceManager.Li
                                         }
                                     }
                                     if (serverExists) {
-                                        if (log.isDebugEnabled()) log.debug("handleDb: server exists: {}", server);
+                                        //if (log.isDebugEnabled()) log.debug("handleDb: server exists: {}", server);
                                         if (updateServerDb(id, cr, active, 1, now))
                                             mServerDbUpdated = true;
                                     } else {
                                         String smbDiscoveryInfo = SambaDiscovery.getIpFromShareName(serverUri.getHost());
                                         if (smbDiscoveryInfo == null) {
-                                            if (log.isDebugEnabled()) log.debug("handleDb: server does not exist after {} retries: {}", REMOTE_CHECK_RETRY_COUNT, server);
+                                            //if (log.isDebugEnabled()) log.debug("handleDb: server does not exist after {} retries: {}", REMOTE_CHECK_RETRY_COUNT, server);
                                             if (updateServerDb(id, cr, active, 0, now))
                                                 mServerDbUpdated = true;
                                         } else {
-                                            if (log.isDebugEnabled()) log.debug("handleDb: server exists in SambaDiscovery, not jcifs-ng: {}", server);
+                                            //if (log.isDebugEnabled()) log.debug("handleDb: server exists in SambaDiscovery, not jcifs-ng: {}", server);
                                             if (updateServerDb(id, cr, active, 1, now))
                                                 mServerDbUpdated = true;
                                         }
@@ -227,7 +227,7 @@ public class RemoteStateService extends Service implements UpnpServiceManager.Li
                                 }
                             }.start();
                         } else {
-                            if (log.isDebugEnabled()) log.debug("handleDb: no local connectivity setting all smb servers inactive");
+                            //if (log.isDebugEnabled()) log.debug("handleDb: no local connectivity setting all smb servers inactive");
                             setLocalServersInactive(context, cr);
                         }
                     } else if(server.startsWith("upnp")) {
@@ -236,31 +236,31 @@ public class RemoteStateService extends Service implements UpnpServiceManager.Li
                 }
                 if(mUpnpId != null && !mUpnpId.isEmpty() &&hasLocalConnection){
                     if(!mUpnpDiscoveryStarted) {
-                        if (log.isDebugEnabled()) log.debug("handleDb: start upnp discovery");
+                        //if (log.isDebugEnabled()) log.debug("handleDb: start upnp discovery");
                         //we start upnp discovery but we don't want to add the listener twice
                         UpnpServiceManager.startServiceIfNeeded(context).addListener(this);
                         mUpnpDiscoveryStarted=true;
-                    } else {
-                        if (log.isDebugEnabled()) log.debug("handleDb: upnp discovery already started");
-                    }
+                    } //else {
+                        //if (log.isDebugEnabled()) log.debug("handleDb: upnp discovery already started");
+                    //}
                     onDeviceListUpdate(new ArrayList<Device>(UpnpServiceManager.startServiceIfNeeded(context).getDevices()));
-                } else {
-                    if (log.isDebugEnabled()) log.debug("handleDb: no upnp server listed, no need to launch upnp discovery to get state information");
-                }
+                } else //{
+                    //if (log.isDebugEnabled()) log.debug("handleDb: no upnp server listed, no need to launch upnp discovery to get state information");
+                //}
                 c.close();
                 if (mServerDbUpdated) {
                     // notify about a change in the db
                     cr.notifyChange(NOTIFY_URI, null);
                 }
-            } else if (log.isDebugEnabled()) log.debug("handleDb: server query returned NULL");
+            } //else //if (log.isDebugEnabled()) log.debug("handleDb: server query returned NULL");
         } else {
-            if (log.isDebugEnabled()) log.debug("handleDb: no connectivity setting all smb servers inactive");
+            //if (log.isDebugEnabled()) log.debug("handleDb: no connectivity setting all smb servers inactive");
             setAllServersInactive(context, cr);
         }
     }
 
     protected final static void setAllServersInactive(Context context, ContentResolver contentResolver) {
-        if (log.isDebugEnabled()) log.debug("setAllServersInactive");
+        //if (log.isDebugEnabled()) log.debug("setAllServersInactive");
         // no more servers.
         ContentValues cv = new ContentValues(1);
         cv.put(VideoStore.SmbServer.SmbServerColumns.ACTIVE, "0");
@@ -271,7 +271,7 @@ public class RemoteStateService extends Service implements UpnpServiceManager.Li
     }
 
     protected final static void setLocalServersInactive(Context context, ContentResolver contentResolver) {
-        if (log.isDebugEnabled()) log.debug("setLocalServersInactive");
+        //if (log.isDebugEnabled()) log.debug("setLocalServersInactive");
         // no more local (smb+upnp) servers.
         ContentValues cv = new ContentValues(1);
         cv.put(VideoStore.SmbServer.SmbServerColumns.ACTIVE, "0");
@@ -283,19 +283,19 @@ public class RemoteStateService extends Service implements UpnpServiceManager.Li
 
     protected final static boolean updateServerDb(long id, ContentResolver cr, int oldState,
                                                   int newState, long time) {
-        if (log.isDebugEnabled()) log.debug("updateServerDb: id={}, oldState={}, newState={}", id, oldState, newState);
+        //if (log.isDebugEnabled()) log.debug("updateServerDb: id={}, oldState={}, newState={}", id, oldState, newState);
         if (oldState == newState) return false;
         ContentValues cv = new ContentValues();
         cv.put(VideoStore.SmbServer.SmbServerColumns.ACTIVE, String.valueOf(newState));
         if (newState != 0) {
-            if (log.isDebugEnabled()) log.debug("updateServerDb: tag as last seen now");
+            //if (log.isDebugEnabled()) log.debug("updateServerDb: tag as last seen now");
             // update last seen only if it's active now
             cv.put(VideoStore.SmbServer.SmbServerColumns.LAST_SEEN, String.valueOf(time));
         }
         String[] selectionArgs = new String[] {
                 String.valueOf(id)
         };
-        if (log.isDebugEnabled()) log.debug("DB: update server: {} values:{}", id, cv);
+        //if (log.isDebugEnabled()) log.debug("DB: update server: {} values:{}", id, cv);
         int result = cr.update(SERVER_URI, cv, SELECTION_ID, selectionArgs);
         return result > 0;
     }
@@ -312,7 +312,7 @@ public class RemoteStateService extends Service implements UpnpServiceManager.Li
                     break;
                 }
             }
-            if (log.isDebugEnabled()) log.debug("UPNP : is in list ?  {} {}", deviceName, String.valueOf(isInList));
+            //if (log.isDebugEnabled()) log.debug("UPNP : is in list ?  {} {}", deviceName, String.valueOf(isInList));
             long id = mUpnpId.get(deviceName).first;
             updateServerDb(id, cr, mUpnpId.get(deviceName).second, isInList?1:0, now);
             mUpnpId.put(deviceName, new Pair<>(id,isInList?1:0 ));
@@ -339,14 +339,14 @@ public class RemoteStateService extends Service implements UpnpServiceManager.Li
     @Override
     public void onStop(LifecycleOwner owner) {
         // App in background
-        if (log.isDebugEnabled()) log.debug("onStop: LifecycleOwner app in background, stopSelf");
+        //if (log.isDebugEnabled()) log.debug("onStop: LifecycleOwner app in background, stopSelf");
         isForeground = false;
         stopSelf();
     }
 
     @Override
     public void onStart(LifecycleOwner owner) {
-        if (log.isDebugEnabled()) log.debug("onStart: LifecycleOwner app in foreground");
+        //if (log.isDebugEnabled()) log.debug("onStart: LifecycleOwner app in foreground");
         isForeground = true;
     }
 

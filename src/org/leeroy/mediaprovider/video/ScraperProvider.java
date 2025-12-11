@@ -369,7 +369,7 @@ public class ScraperProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        if (log.isDebugEnabled()) log.debug("delete: URI {} selection:{} selectionArgs:{}", uri.toString(), selection, Arrays.toString(selectionArgs));
+        //if (log.isDebugEnabled()) log.debug("delete: URI {} selection:{} selectionArgs:{}", uri.toString(), selection, Arrays.toString(selectionArgs));
         int changed = internalDelete(uri, selection, selectionArgs);
         if (changed > 0) {
             // since deleting stuff affects actors, studios, shows etc notify a change for everything.
@@ -384,7 +384,7 @@ public class ScraperProvider extends ContentProvider {
         String whereClause;
         String[] whereArgs;
         SQLiteDatabase db = mDbHolder.get();
-        if (log.isDebugEnabled()) log.debug("Delete request with URI {}, selection:{}, selectionArgs:{}", uri.toString(), selection, Arrays.toString(selectionArgs));
+        //if (log.isDebugEnabled()) log.debug("Delete request with URI {}, selection:{}, selectionArgs:{}", uri.toString(), selection, Arrays.toString(selectionArgs));
         try {
             switch (sUriMatcher.match(uri)) {
                 case MOVIE:
@@ -425,7 +425,7 @@ public class ScraperProvider extends ContentProvider {
     @Override
     public ContentProviderResult[] applyBatch(ArrayList<ContentProviderOperation> operations)
             throws OperationApplicationException {
-        if (log.isDebugEnabled()) log.debug("applyBatch: operations:{}", operations);
+        //if (log.isDebugEnabled()) log.debug("applyBatch: operations:{}", operations);
         SQLiteDatabase db = mDbHolder.get();
         db.beginTransaction();
         ContentProviderResult[] result = null;
@@ -486,7 +486,7 @@ public class ScraperProvider extends ContentProvider {
 
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        if (log.isDebugEnabled()) log.debug("Insert request with URI {} values:{}", uri.toString(), values.toString());
+        //if (log.isDebugEnabled()) log.debug("Insert request with URI {} values:{}", uri.toString(), values.toString());
 
         long rowId = -1;
         Uri noteUri = null;
@@ -743,8 +743,8 @@ public class ScraperProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
             String sortOrder) {
-        if (log.isDebugEnabled()) log.debug("query: URI {} projection:{} selection:{} selectionArgs:{} sortOrder:{}",
-                uri.toString(), Arrays.toString(projection), selection, Arrays.toString(selectionArgs), sortOrder);
+        //if (log.isDebugEnabled()) log.debug("query: URI {} projection:{} selection:{} selectionArgs:{} sortOrder:{}",
+                //uri.toString(), Arrays.toString(projection), selection, Arrays.toString(selectionArgs), sortOrder);
         Bundle extras = new Bundle();
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         Cursor c;
@@ -1070,7 +1070,7 @@ public class ScraperProvider extends ContentProvider {
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
 
-        if (log.isDebugEnabled()) log.debug("Query handling ended.");
+        //if (log.isDebugEnabled()) log.debug("Query handling ended.");
         SQLiteDatabase db = mDbHolder.get();
         // TODO: try/catch used but this needs fixing!
         try {
@@ -1090,7 +1090,7 @@ public class ScraperProvider extends ContentProvider {
 
     @Override
     public ParcelFileDescriptor openFile(Uri uri, String mode) throws FileNotFoundException {
-        if (log.isDebugEnabled()) log.debug("openFile {} mode:{}", uri, mode);
+        //if (log.isDebugEnabled()) log.debug("openFile {} mode:{}", uri, mode);
         int match = sUriMatcher.match(uri);
         boolean thumb = uri.getQueryParameter("thumb") != null;
         String table = null;
@@ -1212,7 +1212,7 @@ public class ScraperProvider extends ContentProvider {
     @Override
     public int update(Uri uri, ContentValues values, String selection,
             String[] selectionArgs) {
-        if (log.isDebugEnabled()) log.debug("update: URI {} values:{} selection:{} selectionArgs:{}", uri, values, selection, selectionArgs);
+        //if (log.isDebugEnabled()) log.debug("update: URI {} values:{} selection:{} selectionArgs:{}", uri, values, selection, selectionArgs);
         String table;
         switch (sUriMatcher.match(uri)) {
             case EPISODE_ID:
@@ -1275,7 +1275,7 @@ public class ScraperProvider extends ContentProvider {
 
     @Override
     public int bulkInsert(Uri uri, ContentValues[] values) {
-        if (log.isDebugEnabled()) log.debug("bulkInsert uri={}, values={}", uri, values);
+        //if (log.isDebugEnabled()) log.debug("bulkInsert uri={}, values={}", uri, values);
         int result = 0;
         SQLiteDatabase db = mDbHolder.get();
         db.beginTransaction();
@@ -1289,7 +1289,7 @@ public class ScraperProvider extends ContentProvider {
     }
 
     private static void handleEpisodeFull(SQLiteQueryBuilder qb) {
-    	if (log.isDebugEnabled()) log.debug("File is a TV show.");
+    	//if (log.isDebugEnabled()) log.debug("File is a TV show.");
 
         qb.setTables(ScraperTables.EPISODE_TABLE_NAME +
                 " LEFT JOIN " + ScraperTables.FILMS_EPISODE_VIEW_NAME + " ON (" +
@@ -1310,7 +1310,7 @@ public class ScraperProvider extends ContentProvider {
     }
 
     private static void handleMovieFull(SQLiteQueryBuilder qb) {
-    	if (log.isDebugEnabled()) log.debug("File is a movie.");
+    	//if (log.isDebugEnabled()) log.debug("File is a movie.");
 
         qb.setTables(ScraperTables.MOVIE_TABLE_NAME +
                 " LEFT JOIN " + ScraperTables.FILMS_MOVIE_VIEW_NAME + " ON (" +
@@ -1341,7 +1341,7 @@ public class ScraperProvider extends ContentProvider {
     }
 
     private static void handleShowFull(SQLiteQueryBuilder qb) {
-    	if (log.isDebugEnabled()) log.debug("File is a TV show.");
+    	//if (log.isDebugEnabled()) log.debug("File is a TV show.");
 
         qb.setTables(ScraperTables.SHOW_TABLE_NAME +
                 " LEFT JOIN " +

@@ -46,7 +46,7 @@ public class NetworkScannerUtil {
     }
 
     public static void scheduleNewRescan(Context context, int startingTimeOfDay, int periode, boolean setPreference){
-        if (log.isDebugEnabled()) log.debug("scheduleNewRescan: resetting alarm starting at {}h, period: {}h", String.valueOf(startingTimeOfDay / 1000 / 60 / 60), String.valueOf(periode / 1000 / 60 / 60));
+        //if (log.isDebugEnabled()) log.debug("scheduleNewRescan: resetting alarm starting at {}h, period: {}h", String.valueOf(startingTimeOfDay / 1000 / 60 / 60), String.valueOf(periode / 1000 / 60 / 60));
 
         //start rescan if lastscan + period < current time (when has booted after scheduled time)
 
@@ -71,9 +71,9 @@ public class NetworkScannerUtil {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss.SSS");
             Date dt = new Date(nextStart);
             String S = sdf.format(dt);
-            if (log.isDebugEnabled()) log.debug("scheduleNewRescan: periode {}", periode/1000/60/60);
-            if (log.isDebugEnabled()) log.debug("scheduleNewRescan: launching at {}", S);
-            if (log.isDebugEnabled()) log.debug("scheduleNewRescan: launching in {} minutes", (nextStart - System.currentTimeMillis()) / 1000 / 60);
+            //if (log.isDebugEnabled()) log.debug("scheduleNewRescan: periode {}", periode/1000/60/60);
+            //if (log.isDebugEnabled()) log.debug("scheduleNewRescan: launching at {}", S);
+            //if (log.isDebugEnabled()) log.debug("scheduleNewRescan: launching in {} minutes", (nextStart - System.currentTimeMillis()) / 1000 / 60);
 
             jobBuilder.setOverrideDeadline(nextStart - System.currentTimeMillis());
 
@@ -84,13 +84,13 @@ public class NetworkScannerUtil {
             // avoid cellular? Nope
             //jobBuilder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED);
             jobScheduler.schedule(jobBuilder.build());
-            if (log.isDebugEnabled()) log.debug("scheduleNewRescan: job scheduled");
+            //if (log.isDebugEnabled()) log.debug("scheduleNewRescan: job scheduled");
         } else {
             jobScheduler.cancel(JOBID_NETSCANNER);
-            if (log.isDebugEnabled()) log.debug("scheduleNewRescan: job canceled");
+            //if (log.isDebugEnabled()) log.debug("scheduleNewRescan: job canceled");
         }
         if(setPreference) {
-            if (log.isDebugEnabled()) log.debug("scheduleNewRescan: preference");
+            //if (log.isDebugEnabled()) log.debug("scheduleNewRescan: preference");
             PreferenceManager.getDefaultSharedPreferences(context).edit().putInt(NetworkAutoRefresh.AUTO_RESCAN_STARTING_TIME_PREF,startingTimeOfDay).apply();
             PreferenceManager.getDefaultSharedPreferences(context).edit().putInt(NetworkAutoRefresh.AUTO_RESCAN_PERIOD, periode).apply();
         }

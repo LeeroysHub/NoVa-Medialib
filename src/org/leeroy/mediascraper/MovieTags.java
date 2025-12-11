@@ -213,7 +213,7 @@ public class MovieTags extends VideoTags {
         if (mCollectionId != -1) {
             // Check if this Movie Collection is already referenced in the scraperDB
             if (! isCollectionAlreadyKnown(mCollectionId, context)) {
-                if (log.isDebugEnabled()) log.debug("save: collection {} does not exist, saving it", mCollectionId);
+                //if (log.isDebugEnabled()) log.debug("save: collection {} does not exist, saving it", mCollectionId);
                 cop = ContentProviderOperation.newInsert(ScraperStore.MovieCollections.URI.BASE);
                 cop.withValue(ScraperStore.MovieCollections.ID, mCollectionId);
                 cop.withValue(ScraperStore.MovieCollections.NAME, mCollectionName);
@@ -228,7 +228,7 @@ public class MovieTags extends VideoTags {
                 cop.withValue(ScraperStore.MovieCollections.BACKDROP_THUMB_FILE, mCollectionBackdropThumbFile);
                 allOperations.add(cop.build());
             } else {
-                if (log.isDebugEnabled()) log.debug("save: collection {} already exists, updating only non-null fields", mCollectionId);
+                //if (log.isDebugEnabled()) log.debug("save: collection {} already exists, updating only non-null fields", mCollectionId);
                 cop = ContentProviderOperation.newUpdate(ScraperStore.MovieCollections.URI.BASE)
                         .withSelection(ScraperStore.MovieCollections.ID + "=?", new String[]{String.valueOf(mCollectionId)});
                 
@@ -440,7 +440,7 @@ public class MovieTags extends VideoTags {
 
     /** Add this url as the default show poster */
     public void addDefaultPosterTMDB(Context context, String path) {
-        if (log.isDebugEnabled()) log.debug("addDefaultPosterTMDB: poster {}{}", ScraperImage.TMPL, path);
+        //if (log.isDebugEnabled()) log.debug("addDefaultPosterTMDB: poster {}{}", ScraperImage.TMPL, path);
         ScraperImage image = new ScraperImage(ScraperImage.Type.MOVIE_POSTER, mTitle);
         image.setLargeUrl(ScraperImage.TMPL + path);
         image.setThumbUrl(ScraperImage.TMPT + path);
@@ -450,7 +450,7 @@ public class MovieTags extends VideoTags {
 
     /** Add this url image as the default show backdrop */
     public void addDefaultBackdropTMDB(Context context, String path) {
-        if (log.isDebugEnabled()) log.debug("addDefaultPosterTMDB: backdrop {}{}", ScraperImage.TMBL, path);
+        //if (log.isDebugEnabled()) log.debug("addDefaultPosterTMDB: backdrop {}{}", ScraperImage.TMBL, path);
         ScraperImage image = new ScraperImage(ScraperImage.Type.MOVIE_BACKDROP, mTitle);
         image.setLargeUrl(ScraperImage.TMBL + path);
         image.setThumbUrl(ScraperImage.TMBT + path);

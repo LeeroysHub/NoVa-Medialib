@@ -127,7 +127,7 @@ public class AllCollectionScrapeService extends IntentService implements Default
     }
 
     public void rescrapeCollection(Context context, Long collectionId) {
-        if (log.isDebugEnabled()) log.debug("rescrapeCollection: {}", collectionId);
+        //if (log.isDebugEnabled()) log.debug("rescrapeCollection: {}", collectionId);
         if (collectionId != null && collectionId > 0) {
             handleCursor(getCollectionCursor(collectionId));
         }
@@ -136,14 +136,14 @@ public class AllCollectionScrapeService extends IntentService implements Default
     }
 
     public void rescrapeAllCollections(Context context) {
-        if (log.isDebugEnabled()) log.debug("rescrapeAllCollections");
+        //if (log.isDebugEnabled()) log.debug("rescrapeAllCollections");
         handleCursor(getAllCursor());
         removeAllTask();
         stopSelf();
     }
 
     public void rescrapeNoImageCollections(Context context) {
-        if (log.isDebugEnabled()) log.debug("rescrapeNoImageCollections");
+        //if (log.isDebugEnabled()) log.debug("rescrapeNoImageCollections");
         handleCursor(getNoImageCursor());
         removeNoImageTask();
         stopSelf();
@@ -151,14 +151,14 @@ public class AllCollectionScrapeService extends IntentService implements Default
 
     public AllCollectionScrapeService() {
         super(AllCollectionScrapeService.class.getSimpleName());
-        if (log.isDebugEnabled()) log.debug("AllCollectionScrapeService");
+        //if (log.isDebugEnabled()) log.debug("AllCollectionScrapeService");
         setIntentRedelivery(true);
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        if (log.isDebugEnabled()) log.debug("onCreate");
+        //if (log.isDebugEnabled()) log.debug("onCreate");
 
         // ensure cache is initialized
         synchronized (AllCollectionScrapeService.class) {
@@ -186,7 +186,7 @@ public class AllCollectionScrapeService extends IntentService implements Default
 
     @Override
     public void onDestroy() {
-        if (log.isDebugEnabled()) log.debug("onDestroy");
+        //if (log.isDebugEnabled()) log.debug("onDestroy");
         cleanup();
         super.onDestroy();
     }
@@ -229,7 +229,7 @@ public class AllCollectionScrapeService extends IntentService implements Default
     }
 
     private void rescrapeAllCollections() {
-        if (log.isDebugEnabled()) log.debug("rescrapeAllCollections");
+        //if (log.isDebugEnabled()) log.debug("rescrapeAllCollections");
         nb.setContentText(getString(R.string.rescraping_collections));
         nm.notify(NOTIFICATION_ID, nb.build());
         handleCursor(getAllCursor());
@@ -238,7 +238,7 @@ public class AllCollectionScrapeService extends IntentService implements Default
     }
 
     private void rescrapeNoImageCollections() {
-        if (log.isDebugEnabled()) log.debug("rescrapeNoImageCollections");
+        //if (log.isDebugEnabled()) log.debug("rescrapeNoImageCollections");
         nb.setContentText(getString(R.string.rescraping_noimage_collections));
         nm.notify(NOTIFICATION_ID, nb.build());
         handleCursor(getNoImageCursor());
@@ -247,7 +247,7 @@ public class AllCollectionScrapeService extends IntentService implements Default
     }
 
     private void rescrapeCollection(Long collectionId) {
-        if (log.isDebugEnabled()) log.debug("rescrapeCollection: {}", collectionId);
+        //if (log.isDebugEnabled()) log.debug("rescrapeCollection: {}", collectionId);
         if (collectionId != null && collectionId > 0) {
             // update notification
             nb.setContentText(getString(R.string.rescraping_collection) + " " + collectionId.toString());
@@ -260,7 +260,7 @@ public class AllCollectionScrapeService extends IntentService implements Default
 
     private void handleCursor(Cursor cursor) {
 
-        if (log.isDebugEnabled()) log.debug("bind: {}", DatabaseUtils.dumpCursorToString(cursor));
+        //if (log.isDebugEnabled()) log.debug("bind: {}", DatabaseUtils.dumpCursorToString(cursor));
         
         // get configured language
         String language = Scraper.getLanguage(getApplicationContext());
@@ -269,7 +269,7 @@ public class AllCollectionScrapeService extends IntentService implements Default
             // do the processing
             while (cursor.moveToNext() && isForeground) {
                 long collectionId = cursor.getLong(0);
-                if (log.isDebugEnabled()) log.debug("handleCursor: scraping {}", collectionId);
+                //if (log.isDebugEnabled()) log.debug("handleCursor: scraping {}", collectionId);
                 // scrape collectionId
                 CollectionResult collectionResult = MovieCollection.getInfo(collectionId, language, getCollectionService());
 
@@ -281,7 +281,7 @@ public class AllCollectionScrapeService extends IntentService implements Default
                     collectionTag.setPlot(collectionInfo.description);
                     collectionTag.setPosterPath(collectionInfo.poster);
                     collectionTag.setBackdropPath(collectionInfo.backdrop);
-                    if (log.isDebugEnabled()) log.debug("handleCursor: scraping {}", collectionTag.mTitle);
+                    //if (log.isDebugEnabled()) log.debug("handleCursor: scraping {}", collectionTag.mTitle);
                     // generates the various posters/backdrops based on URL
                     collectionTag.downloadImage(getApplicationContext());
                     collectionTag.save(getApplicationContext(), true);
@@ -329,14 +329,14 @@ public class AllCollectionScrapeService extends IntentService implements Default
     @Override
     public void onStop(LifecycleOwner owner) {
         // App in background
-        if (log.isDebugEnabled()) log.debug("onStop: LifecycleOwner app in background stopSelf");
+        //if (log.isDebugEnabled()) log.debug("onStop: LifecycleOwner app in background stopSelf");
         cleanup();
         stopSelf();
     }
 
     @Override
     public void onStart(LifecycleOwner owner) {
-        if (log.isDebugEnabled()) log.debug("onStart: LifecycleOwner app in foreground");
+        //if (log.isDebugEnabled()) log.debug("onStart: LifecycleOwner app in foreground");
         isForeground = true;
         // App in foreground
     }

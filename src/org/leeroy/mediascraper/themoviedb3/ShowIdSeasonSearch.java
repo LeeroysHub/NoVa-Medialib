@@ -49,14 +49,14 @@ public class ShowIdSeasonSearch {
             put("include_adult", String.valueOf(adultScrape));
         }};
 
-        if (log.isDebugEnabled()) log.debug("getSeasonShowResponse: quering tmdb for showId {} season {} in {}", showId, season, language);
+        //if (log.isDebugEnabled()) log.debug("getSeasonShowResponse: quering tmdb for showId {} season {} in {}", showId, season, language);
 
         //String showKey = showId + "|" + "s" + season + "|" + language;
         ShowIdSeasonSearchResult myResult = sShowCache.get(seasonKey);
         if (log.isTraceEnabled()) debugLruCache(sShowCache);
 
         if (myResult == null) {
-            if (log.isDebugEnabled()) log.debug("getSeasonShowResponse: not in cache fetching s{} for showId {}", season, showId);
+            //if (log.isDebugEnabled()) log.debug("getSeasonShowResponse: not in cache fetching s{} for showId {}", season, showId);
             myResult = new ShowIdSeasonSearchResult();
             try {
                 // use appendToResponse to get imdbId
@@ -72,10 +72,10 @@ public class ShowIdSeasonSearch {
                         myResult.status = ScrapeStatus.NOT_FOUND;
                         // fallback to english if no result
                         if (!language.equals("en")) {
-                            if (log.isDebugEnabled()) log.debug("getSeasonShowResponse: retrying search for showId {} in en", showId);
+                            //if (log.isDebugEnabled()) log.debug("getSeasonShowResponse: retrying search for showId {} in en", showId);
                             return getSeasonShowResponse( seasonKey, showId, season,"en", adultScrape, tmdb);
                         }
-                        if (log.isDebugEnabled()) log.debug("getSeasonShowResponse: showId {} not found", showId);
+                        //if (log.isDebugEnabled()) log.debug("getSeasonShowResponse: showId {} not found", showId);
                         // record INVALID answer
                         // Caching the NOT FOUND to save scrape again and getting same answer
                         sShowCache.put(seasonKey, myResult);
@@ -87,7 +87,7 @@ public class ShowIdSeasonSearch {
                                 myResult.status = ScrapeStatus.OKAY;
                             } else {
                                 if (!language.equals("en")) {
-                                    if (log.isDebugEnabled()) log.debug("getSeasonShowResponse: retrying search for showId {} in en", showId);
+                                    //if (log.isDebugEnabled()) log.debug("getSeasonShowResponse: retrying search for showId {} in en", showId);
                                     return getSeasonShowResponse(seasonKey, showId, season,"en", adultScrape, tmdb);
                                 }
                                 myResult.status = ScrapeStatus.NOT_FOUND;
@@ -95,7 +95,7 @@ public class ShowIdSeasonSearch {
                             // record valid answer
                             sShowCache.put(seasonKey, myResult);
                         } else { // an error at this point is PARSER related
-                            if (log.isDebugEnabled()) log.debug("getSeasonShowResponse: error {}", seriesResponse.code());
+                            //if (log.isDebugEnabled()) log.debug("getSeasonShowResponse: error {}", seriesResponse.code());
                             myResult.status = ScrapeStatus.ERROR_PARSER;
                         }
                         break;
@@ -110,6 +110,6 @@ public class ShowIdSeasonSearch {
     }
 
     public static void debugLruCache(LruCache<String, ShowIdSeasonSearchResult> lruCache) {
-        if (log.isDebugEnabled()) log.debug("debugLruCache(Season): size={}, put={}, hit={}, miss={}, evict={}", lruCache.size(), lruCache.putCount(), lruCache.hitCount(), lruCache.missCount(), lruCache.evictionCount());
+        //if (log.isDebugEnabled()) log.debug("debugLruCache(Season): size={}, put={}, hit={}, miss={}, evict={}", lruCache.size(), lruCache.putCount(), lruCache.hitCount(), lruCache.missCount(), lruCache.evictionCount());
     }
 }

@@ -119,11 +119,11 @@ public class MovieScraper3 extends BaseScraper2 {
             return new ScrapeSearchResult(null, true, ScrapeStatus.ERROR, null);
         }
         MovieSearchInfo searchInfo = (MovieSearchInfo) info;
-        if (log.isDebugEnabled()) log.debug("getMatches2: movie search:{}", searchInfo.getName());
+        //if (log.isDebugEnabled()) log.debug("getMatches2: movie search:{}", searchInfo.getName());
         
         // get configured language
         String language = Scraper.getLanguage(mContext);
-        if (log.isDebugEnabled()) log.debug("movie search:{} year:{} language:{}", searchInfo.getName(), searchInfo.getYear(), language);
+        //if (log.isDebugEnabled()) log.debug("movie search:{} year:{} language:{}", searchInfo.getName(), searchInfo.getYear(), language);
         String[] candidates = {
                 searchInfo.getSearchSuggestion(),
                 searchInfo.getName()
@@ -185,7 +185,7 @@ public class MovieScraper3 extends BaseScraper2 {
     protected ScrapeDetailResult getDetailsInternal(SearchResult result, Bundle options) {
         // TODO: why it searches every first level result?
         String language = Scraper.getLanguage(mContext);
-        if (log.isDebugEnabled()) log.debug("getDetailsInternal: language={}", language);
+        //if (log.isDebugEnabled()) log.debug("getDetailsInternal: language={}", language);
 
         long movieId = result.getId();
         Uri searchFile = result.getFile();
@@ -219,7 +219,7 @@ public class MovieScraper3 extends BaseScraper2 {
 
         // if there was no movie description in the native language get it from default
         if (tag.getPlot() == null || tag.getPlot().isEmpty()) {
-            if (log.isDebugEnabled()) log.debug("ScrapeDetailResult: getting description in en because plot non existent in {}", language);
+            //if (log.isDebugEnabled()) log.debug("ScrapeDetailResult: getting description in en because plot non existent in {}", language);
             MovieIdDescription2.addDescription(movieId, tag, getMoviesService());
         }
         tag.downloadPoster(mContext);

@@ -63,7 +63,7 @@ public class HttpDownloadWrapper implements Closeable {
      * @throws IOException
      */
     public InputStream getInputStream(@Nullable Map<String, String> extraHeaders) throws IOException {
-        if (log.isDebugEnabled()) log.debug("getInputStream: Downloading [{}]", mUrl);
+        //if (log.isDebugEnabled()) log.debug("getInputStream: Downloading [{}]", mUrl);
 
         if (mUrlConnection != null) {
             throw new IllegalStateException("getInputStream: Cannot call getInputStream more than once.");

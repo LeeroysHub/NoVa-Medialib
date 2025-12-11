@@ -43,7 +43,7 @@ class TvShowFolderMatcher extends TvShowMatcher {
     }
 
     private static SearchInfo getMatch(String matchString, Uri file) {
-        if (log.isDebugEnabled()) log.debug("getMatch: matchString {} file {}", matchString, file.getPath());
+        //if (log.isDebugEnabled()) log.debug("getMatch: matchString {} file {}", matchString, file.getPath());
         // clean trailing "/" if exists
         matchString = removeTrailingSlash(matchString);
         // clean leading "/"
@@ -57,7 +57,7 @@ class TvShowFolderMatcher extends TvShowMatcher {
             String countryOfOrigin = showName.get(ShowUtils.ORIGIN);
             int seasonInt = StringUtils.parseInt(season, 0);
             int episodeInt = StringUtils.parseInt(episode, 0);
-            if (log.isDebugEnabled()) log.debug("getMatch: {} season {} episode {} year {} country {}", showTitle, season, episode, year, countryOfOrigin);
+            //if (log.isDebugEnabled()) log.debug("getMatch: {} season {} episode {} year {} country {}", showTitle, season, episode, year, countryOfOrigin);
             return new TvShowSearchInfo(file, showTitle, seasonInt, episodeInt, year, countryOfOrigin);
         }
         return null;

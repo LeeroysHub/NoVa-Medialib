@@ -35,14 +35,14 @@ public class NetworkRefreshJob extends JobService implements DefaultLifecycleObs
     @Override
     public void onCreate() {
         super.onCreate();
-        if (log.isDebugEnabled()) log.debug("onCreate");
+        //if (log.isDebugEnabled()) log.debug("onCreate");
         // Register as a lifecycle observer
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
     }
 
     @Override
     public boolean onStartJob(JobParameters params) {
-        if (log.isDebugEnabled()) log.debug("onStartJob");
+        //if (log.isDebugEnabled()) log.debug("onStartJob");
         Context context = getApplicationContext();
         Intent intent = new Intent(context, NetworkAutoRefresh.class);
         intent.setAction(NetworkAutoRefresh.ACTION_RESCAN_INDEXED_FOLDERS);
@@ -61,13 +61,13 @@ public class NetworkRefreshJob extends JobService implements DefaultLifecycleObs
     @Override
     public void onStop(LifecycleOwner owner) {
         // App in background
-        if (log.isDebugEnabled()) log.debug("onStop: LifecycleOwner app in background");
+        //if (log.isDebugEnabled()) log.debug("onStop: LifecycleOwner app in background");
         stopSelf();
     }
 
     @Override
     public void onStart(LifecycleOwner owner) {
         // App in foreground
-        if (log.isDebugEnabled()) log.debug("onStart: LifecycleOwner app in foreground");
+        //if (log.isDebugEnabled()) log.debug("onStart: LifecycleOwner app in foreground");
     }
 }

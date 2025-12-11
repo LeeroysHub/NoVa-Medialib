@@ -108,20 +108,20 @@ public class VideoStoreImportService extends Service implements Handler.Callback
     private static volatile boolean isForeground = true;
 
     public VideoStoreImportService() {
-        if (log.isDebugEnabled()) log.debug("VideoStoreImportService CTOR");
+        //if (log.isDebugEnabled()) log.debug("VideoStoreImportService CTOR");
     }
 
     @Override
     protected void finalize() throws Throwable {
-        if (log.isDebugEnabled()) log.debug("VideoStoreImportService DTOR");
+        //if (log.isDebugEnabled()) log.debug("VideoStoreImportService DTOR");
         super.finalize();
     }
 
     public static boolean startIfHandles(Context context, Intent broadcast) {
         String action = broadcast.getAction();
-        if (log.isDebugEnabled()) log.debug("startIfHandles: action {}, data {}, extra {}", action, broadcast.getData(), broadcast.getAction());
+        //if (log.isDebugEnabled()) log.debug("startIfHandles: action {}, data {}, extra {}", action, broadcast.getData(), broadcast.getAction());
         if (! ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
-            if (log.isDebugEnabled()) log.debug("startIfHandles: not in foreground, do nothing");
+            //if (log.isDebugEnabled()) log.debug("startIfHandles: not in foreground, do nothing");
             return false;
         }
         mContext = context;
@@ -133,23 +133,23 @@ public class VideoStoreImportService extends Service implements Handler.Callback
                 || LeeroyFlixMediaIntent.isVideoRemoveIntent(action)
                 || Intent.ACTION_SHUTDOWN.equals(action)
                 || LeeroyFlixMediaIntent.ACTION_VIDEO_SCANNER_IMPORT_INCR.equals(action)) {
-            if (log.isDebugEnabled()) log.debug("startIfHandles is true: sending intent to VideoStoreImportService");
+            //if (log.isDebugEnabled()) log.debug("startIfHandles is true: sending intent to VideoStoreImportService");
             Intent serviceIntent = new Intent(context, VideoStoreImportService.class);
             serviceIntent.setAction(action);
             serviceIntent.setData(broadcast.getData());
             if(broadcast.getExtras()!=null)
                 serviceIntent.putExtras(broadcast.getExtras()); //in case we have an extra... such as "recordLogExtra"
-            if (log.isDebugEnabled()) log.debug("startIfHandles: apps is foreground startService and pass intent to self");
+            //if (log.isDebugEnabled()) log.debug("startIfHandles: apps is foreground startService and pass intent to self");
             LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.startIfHandles", "apps is foreground mContext.startService and pass intent to self");
             context.startService(serviceIntent);
             return true;
         }
-        if (log.isDebugEnabled()) log.debug("startIfHandles is false: do nothing");
+        //if (log.isDebugEnabled()) log.debug("startIfHandles is false: do nothing");
         return false;
     }
 
     private Notification createNotification() {
-        if (log.isDebugEnabled()) log.debug("createNotification");
+        //if (log.isDebugEnabled()) log.debug("createNotification");
         // need to do that early to avoid ANR on Android 26+
         nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -170,10 +170,10 @@ public class VideoStoreImportService extends Service implements Handler.Callback
 
     @Override
     public void onCreate() {
-        if (log.isDebugEnabled()) log.debug("onCreate");
+        //if (log.isDebugEnabled()) log.debug("onCreate");
         // executed on each startService
         n = createNotification();
-        if (log.isDebugEnabled()) log.debug("onCreate: create notification + startService {}", NOTIFICATION_ID);
+        //if (log.isDebugEnabled()) log.debug("onCreate: create notification + startService {}", NOTIFICATION_ID);
         LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onCreate", "created notification + startService " + NOTIFICATION_ID + " notification null? " + (n == null));
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
         // importer logic
@@ -192,7 +192,7 @@ public class VideoStoreImportService extends Service implements Handler.Callback
         mVolumeState = new VolumeState(this);
         mVolumeStateObserver = volumes -> {
             for (Volume volume : volumes) {
-                if (log.isDebugEnabled()) log.debug("Change:{} to {}", volume.getMountPoint(), volume.getMountState());
+                //if (log.isDebugEnabled()) log.debug("Change:{} to {}", volume.getMountPoint(), volume.getMountState());
                 if (!volume.getMountState()) {
                     mHandler
                         .obtainMessage(MESSAGE_HIDE_VOLUME, DONT_KILL_SELF, volume.getStorageId())
@@ -230,15 +230,15 @@ public class VideoStoreImportService extends Service implements Handler.Callback
 
     @Override
     public void onDestroy() {
-        if (log.isDebugEnabled()) log.debug("onDestroy - ImportState before: {}", ImportState.VIDEO.getState());
+        //if (log.isDebugEnabled()) log.debug("onDestroy - ImportState before: {}", ImportState.VIDEO.getState());
         isForeground = false;
         cleanup();
         // Reset ImportState to IDLE regardless of current state to prevent stuck spinner
         if (ImportState.VIDEO.isInitialImport() || ImportState.VIDEO.isRegularImport()) {
-            if (log.isDebugEnabled()) log.debug("onDestroy - Resetting ImportState to IDLE");
+            //if (log.isDebugEnabled()) log.debug("onDestroy - Resetting ImportState to IDLE");
             ImportState.VIDEO.setState(State.IDLE);
         }
-        if (log.isDebugEnabled()) log.debug("onDestroy - ImportState after: {}", ImportState.VIDEO.getState());
+        //if (log.isDebugEnabled()) log.debug("onDestroy - ImportState after: {}", ImportState.VIDEO.getState());
     }
 
     /** whether it's ok do do an import now, will mark db dirty if not */
@@ -249,7 +249,7 @@ public class VideoStoreImportService extends Service implements Handler.Callback
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // intents are delivered here.
-        if (log.isDebugEnabled()) log.debug("onStartCommand:{} flags:{} startId:{} getAction {}", intent, flags, startId, ((intent != null) ? intent.getAction() : "null"));
+        //if (log.isDebugEnabled()) log.debug("onStartCommand:{} flags:{} startId:{} getAction {}", intent, flags, startId, ((intent != null) ? intent.getAction() : "null"));
         LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStartCommand", "created notification + startService " + NOTIFICATION_ID + " notification null? " + (n == null));
         if (intent == null || intent.getAction() == null) {
             removeAllMessages(mHandler);
@@ -257,19 +257,19 @@ public class VideoStoreImportService extends Service implements Handler.Callback
             if (sActive) { // not first start
                 // Post-Android P: Use incremental import since our enhanced volume management handles external storage properly
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-                    if (log.isDebugEnabled()) log.debug("onStartCommand: intent == null || intent.getAction() == null, sActive == true, do MESSAGE_IMPORT_INCR (post-Android P)");
+                    //if (log.isDebugEnabled()) log.debug("onStartCommand: intent == null || intent.getAction() == null, sActive == true, do MESSAGE_IMPORT_INCR (post-Android P)");
                     LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStartCommand", "intent null, sActive true do MESSAGE_IMPORT_INCR (post-Android P)");
                     m = mHandler.obtainMessage(MESSAGE_IMPORT_INCR, DONT_KILL_SELF, 0);
                 } else {
                     // Pre-Android P: Keep full import for external USB storage compatibility
-                    if (log.isDebugEnabled()) log.debug("onStartCommand: intent == null || intent.getAction() == null, sActive == true, do MESSAGE_IMPORT_FULL (pre-Android P)");
+                    //if (log.isDebugEnabled()) log.debug("onStartCommand: intent == null || intent.getAction() == null, sActive == true, do MESSAGE_IMPORT_FULL (pre-Android P)");
                     LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStartCommand", "intent null, sActive true do MESSAGE_IMPORT_FULL (pre-Android P)");
                     m = mHandler.obtainMessage(MESSAGE_IMPORT_FULL, DONT_KILL_SELF, 0);
                 }
                 ImportState.VIDEO.setState(State.REGULAR_IMPORT);
             } else {
                 // do a full import here to make sure that we have initial data
-                if (log.isDebugEnabled()) log.debug("onStartCommand: intent == null || intent.getAction() == null, sActive == false, do MESSAGE_IMPORT_FULL");
+                //if (log.isDebugEnabled()) log.debug("onStartCommand: intent == null || intent.getAction() == null, sActive == false, do MESSAGE_IMPORT_FULL");
                 LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStartCommand", "intent null, sActive false do MESSAGE_IMPORT_FULL");
                 m = mHandler.obtainMessage(MESSAGE_IMPORT_FULL, DONT_KILL_SELF, 0);
                 sActive = true;
@@ -285,26 +285,26 @@ public class VideoStoreImportService extends Service implements Handler.Callback
             String action = intent.getAction();
             // stopForeground needs to be called at each action finished when service gets idle: this is taken care by handleMessage
             if (Intent.ACTION_MEDIA_SCANNER_FINISHED.equals(action) || LeeroyFlixMediaIntent.ACTION_VIDEO_SCANNER_STORAGE_PERMISSION_GRANTED.equals(action)) {
-                if (log.isDebugEnabled()) log.debug("ACTION_MEDIA_SCANNER_FINISHED {}", intent.getData());
+                //if (log.isDebugEnabled()) log.debug("ACTION_MEDIA_SCANNER_FINISHED {}", intent.getData());
                 LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStartCommand", "ACTION_MEDIA_SCANNER_FINISHED" + intent.getData());
                 // happens rarely, on boot and when inserting / ejecting sd cards
                 removeAllMessages(mHandler);
                 Message m = mHandler.obtainMessage(MESSAGE_IMPORT_FULL, startId, flags);
                 mHandler.sendMessageDelayed(m, 1000);
                 mNeedToInitScraper = true;
-                if (log.isTraceEnabled()) log.trace("onStartCommand: ImportState.VIDEO.setAndroidScanning(false)");
+                //if (log.isTraceEnabled()) log.trace("onStartCommand: ImportState.VIDEO.setAndroidScanning(false)");
                 ImportState.VIDEO.setAndroidScanning(false);
             } else if (Intent.ACTION_MEDIA_SCANNER_STARTED.equals(action)) {
-                if (log.isDebugEnabled()) log.debug("ACTION_MEDIA_SCANNER_STARTED {}", intent.getData());
+                //if (log.isDebugEnabled()) log.debug("ACTION_MEDIA_SCANNER_STARTED {}", intent.getData());
                 LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStartCommand", "ACTION_MEDIA_SCANNER_STARTED " + intent.getData());
                 removeAllMessages(mHandler);
-                if (log.isTraceEnabled()) log.trace("onStartCommand: ImportState.VIDEO.setAndroidScanning(true)");
+                //if (log.isTraceEnabled()) log.trace("onStartCommand: ImportState.VIDEO.setAndroidScanning(true)");
                 ImportState.VIDEO.setAndroidScanning(true);
             } else if (LeeroyFlixMediaIntent.ACTION_VIDEO_SCANNER_METADATA_UPDATE.equals(action)) {
-                if (log.isDebugEnabled()) log.debug("onStartCommand: ACTION_VIDEO_SCANNER_METADATA_UPDATE {}", intent.getData());
+                //if (log.isDebugEnabled()) log.debug("onStartCommand: ACTION_VIDEO_SCANNER_METADATA_UPDATE {}", intent.getData());
                 LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStartCommand", "ACTION_MEDIA_SCANNER_STARTED " + intent.getData());
                 // requests to update metadata are processed directly and don't impact importing
-                if (log.isDebugEnabled()) log.debug("onStartCommand: SCAN STARTED {}", intent.getData());
+                //if (log.isDebugEnabled()) log.debug("onStartCommand: SCAN STARTED {}", intent.getData());
                 Message m = mHandler.obtainMessage(MESSAGE_UPDATE_METADATA, startId, flags, intent.getData());
                 m.sendToTarget();
             } else if (LeeroyFlixMediaIntent.isVideoRemoveIntent(action)) {
@@ -313,18 +313,18 @@ public class VideoStoreImportService extends Service implements Handler.Callback
                 Message m = mHandler.obtainMessage(MESSAGE_REMOVE_FILE, startId, flags, intent.getData());
                 m.sendToTarget();
             } else if (Intent.ACTION_SHUTDOWN.equals(action)) {
-                if (log.isDebugEnabled()) log.debug("onStartCommand: Import disabled due to shutdown");
+                //if (log.isDebugEnabled()) log.debug("onStartCommand: Import disabled due to shutdown");
                 LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStartCommand", "ACTION_SHUTDOWN");
                 Message m = mHandler.obtainMessage(MESSAGE_KILL, startId, flags);
                 mHandler.sendMessageDelayed(m, 1000);
             } else if (LeeroyFlixMediaIntent.ACTION_VIDEO_SCANNER_IMPORT_INCR.equals(action)) {
-                if (log.isDebugEnabled()) log.debug("onStartCommand: ACTION_VIDEO_SCANNER_IMPORT_INCR {}", intent.getData());
+                //if (log.isDebugEnabled()) log.debug("onStartCommand: ACTION_VIDEO_SCANNER_IMPORT_INCR {}", intent.getData());
                 LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStartCommand", "ACTION_VIDEO_SCANNER_IMPORT_INCR " + intent.getData());
                 removeAllMessages(mHandler);
                 Message m = mHandler.obtainMessage(MESSAGE_IMPORT_INCR, startId, flags);
                 mHandler.sendMessageDelayed(m, 1000);
             } else if (Intent.ACTION_MEDIA_SCANNER_SCAN_FILE.equals(action)) {
-                if (log.isDebugEnabled()) log.debug("onStartCommand: ACTION_MEDIA_SCANNER_SCAN_FILE {}", intent.getData());
+                //if (log.isDebugEnabled()) log.debug("onStartCommand: ACTION_MEDIA_SCANNER_SCAN_FILE {}", intent.getData());
                 LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStartCommand", "ACTION_MEDIA_SCANNER_SCAN_FILE " + intent.getData());
                 Message m = mHandler.obtainMessage(MESSAGE_UPDATE_METADATA, startId, flags, intent.getData());
                 m.sendToTarget();
@@ -340,14 +340,14 @@ public class VideoStoreImportService extends Service implements Handler.Callback
 
     public static void startService(Context context) {
         // this one is called only by VideoProvider at start or when app turns background->foreground
-        if (log.isDebugEnabled()) log.debug("startService");
+        //if (log.isDebugEnabled()) log.debug("startService");
         if (! ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) return;
         
         // Ensure MediaRetrieverService is running before starting VideoStoreImportService
         Intent mediaRetrieverIntent = new Intent(context, MediaRetrieverService.class);
         try {
             context.startService(mediaRetrieverIntent);
-            if (log.isDebugEnabled()) log.debug("startService: MediaRetrieverService start requested");
+            //if (log.isDebugEnabled()) log.debug("startService: MediaRetrieverService start requested");
         } catch (IllegalStateException e) {
             log.warn("startService: Failed to start MediaRetrieverService despite lifecycle check - timing issue", e);
         }
@@ -355,12 +355,12 @@ public class VideoStoreImportService extends Service implements Handler.Callback
         mContext = context;
         Intent intent = new Intent(context, VideoStoreImportService.class);
         LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.startService", "app in foreground calling startService");
-        if (log.isDebugEnabled()) log.debug("startService: app in foreground, starting service");
+        //if (log.isDebugEnabled()) log.debug("startService: app in foreground, starting service");
         context.startService(intent); // triggers an initial video import on local storage because files might have been created meanwhile
     }
 
     public static void stopService(Context context) {
-        if (log.isDebugEnabled()) log.debug("stopService");
+        //if (log.isDebugEnabled()) log.debug("stopService");
         LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.stopService", "stopping service");
         Intent intent = new Intent(context, VideoStoreImportService.class);
         intent.setAction(Intent.ACTION_SHUTDOWN);
@@ -369,12 +369,12 @@ public class VideoStoreImportService extends Service implements Handler.Callback
 
     @Override
     public IBinder onBind(Intent intent) {
-        if (log.isDebugEnabled()) log.debug("onBind:{}", intent);
+        //if (log.isDebugEnabled()) log.debug("onBind:{}", intent);
         return null;
     }
     @Override
     public boolean onUnbind(Intent intent) {
-        if (log.isDebugEnabled()) log.debug("onUnbind:{}", intent);
+        //if (log.isDebugEnabled()) log.debug("onUnbind:{}", intent);
         // unregister content observer
         if (mContentObserver != null) {
             try {
@@ -388,62 +388,62 @@ public class VideoStoreImportService extends Service implements Handler.Callback
 
     /** handler implementation, called in background thread */
     public boolean handleMessage(Message msg) {
-        if (log.isDebugEnabled()) log.debug("handleMessage:{} what:{} startid:{}", msg, msg.what, msg.arg1);
+        //if (log.isDebugEnabled()) log.debug("handleMessage:{} what:{} startid:{}", msg, msg.what, msg.arg1);
         switch (msg.what) {
             case MESSAGE_KILL:
-                if (log.isDebugEnabled()) log.debug("handleMessage: MESSAGE_KILL - ImportState before: {}", ImportState.VIDEO.getState());
+                //if (log.isDebugEnabled()) log.debug("handleMessage: MESSAGE_KILL - ImportState before: {}", ImportState.VIDEO.getState());
                 // Reset ImportState to IDLE regardless of current state to prevent stuck spinner
                 if (ImportState.VIDEO.isInitialImport() || ImportState.VIDEO.isRegularImport()) {
-                    if (log.isDebugEnabled()) log.debug("handleMessage: MESSAGE_KILL - Resetting ImportState to IDLE");
+                    //if (log.isDebugEnabled()) log.debug("handleMessage: MESSAGE_KILL - Resetting ImportState to IDLE");
                     ImportState.VIDEO.setState(State.IDLE);
                 }
-                if (log.isDebugEnabled()) log.debug("handleMessage: MESSAGE_KILL - ImportState after: {}", ImportState.VIDEO.getState());
+                //if (log.isDebugEnabled()) log.debug("handleMessage: MESSAGE_KILL - ImportState after: {}", ImportState.VIDEO.getState());
                 // this service used to be created through bind. So it couldn't be killed with stopself unless it was unbind
                 // (which wasn't done). To have the same behavior, do not stop service for now
-                if (log.isDebugEnabled()) log.debug("handleMessage: MESSAGE_KILL -> leaving foreground");
+                //if (log.isDebugEnabled()) log.debug("handleMessage: MESSAGE_KILL -> leaving foreground");
                 // Always clear the foreground notification when processing has finished. Some
                 // commands (remove file, metadata update, etc.) do not go through doImport()
                 // and were previously leaving the foreground notification visible forever.
                 stopForeground(true);
                 if (msg.arg1 != DONT_KILL_SELF){
-                    if (log.isDebugEnabled()) log.debug("handleMessage: stopSelf");
+                    //if (log.isDebugEnabled()) log.debug("handleMessage: stopSelf");
                     LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.handleMessage", "MESSAGE_KILL: stopSelf");
                     sActive = false;
                     stopSelf(msg.arg1);
                 } else {
                     LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.handleMessage", "MESSAGE_KILL: do not stopSelf");
-                    if (log.isDebugEnabled()) log.debug("handleMessage: MESSAGE_KILL: do not stopSelf");
+                    //if (log.isDebugEnabled()) log.debug("handleMessage: MESSAGE_KILL: do not stopSelf");
                 }
                 break;
             case MESSAGE_IMPORT_INCR:
-                if (log.isDebugEnabled()) log.debug("handleMessage: MESSAGE_IMPORT_INCR");
+                //if (log.isDebugEnabled()) log.debug("handleMessage: MESSAGE_IMPORT_INCR");
                 doImport(false);
                 mHandler.obtainMessage(MESSAGE_KILL, DONT_KILL_SELF, msg.arg2).sendToTarget();
                 break;
             case MESSAGE_IMPORT_FULL:
-                if (log.isDebugEnabled()) log.debug("handleMessage: MESSAGE_IMPORT_FULL");
+                //if (log.isDebugEnabled()) log.debug("handleMessage: MESSAGE_IMPORT_FULL");
                 doImport(true);
                 mHandler.obtainMessage(MESSAGE_KILL, DONT_KILL_SELF, msg.arg2).sendToTarget();
                 break;
             case MESSAGE_UPDATE_METADATA:
-                if (log.isDebugEnabled()) log.debug("handleMessage: MESSAGE_UPDATE_METADATA");
+                //if (log.isDebugEnabled()) log.debug("handleMessage: MESSAGE_UPDATE_METADATA");
                 mImporter.doScan((Uri)msg.obj);
                 mHandler.obtainMessage(MESSAGE_KILL, DONT_KILL_SELF, msg.arg2).sendToTarget();
                 break;
             case MESSAGE_REMOVE_FILE:
-                if (log.isDebugEnabled()) log.debug("handleMessage: MESSAGE_REMOVE_FILE");
+                //if (log.isDebugEnabled()) log.debug("handleMessage: MESSAGE_REMOVE_FILE");
                 mImporter.doRemove((Uri)msg.obj);
                 mHandler.obtainMessage(MESSAGE_KILL, DONT_KILL_SELF, msg.arg2).sendToTarget();
                 break;
             case MESSAGE_HIDE_VOLUME:
-                if (log.isDebugEnabled()) log.debug("handleMessage: MESSAGE_HIDE_VOLUME storageId={}", msg.arg2);
+                //if (log.isDebugEnabled()) log.debug("handleMessage: MESSAGE_HIDE_VOLUME storageId={}", msg.arg2);
                 // Trigger import to hide files using path-based volume checking
                 // This ensures volume state is properly checked and files are hidden
                 // while other mounted volumes remain visible
                 mHandler.obtainMessage(MESSAGE_IMPORT_INCR, DONT_KILL_SELF, msg.arg2).sendToTarget();
                 break;
             case MESSAGE_VOLUME_MOUNTED:
-                if (log.isDebugEnabled()) log.debug("handleMessage: MESSAGE_VOLUME_MOUNTED storageId={}", msg.arg2);
+                //if (log.isDebugEnabled()) log.debug("handleMessage: MESSAGE_VOLUME_MOUNTED storageId={}", msg.arg2);
                 handleVolumeMounted(msg.arg2);
                 // After restoring visibility trigger a new import to refresh metadata
                 Message importMsg = mHandler.obtainMessage(MESSAGE_IMPORT_FULL, DONT_KILL_SELF, msg.arg2);
@@ -463,14 +463,14 @@ public class VideoStoreImportService extends Service implements Handler.Callback
 
     /** starts import, fullMode decides which import implementation is used */
     private void doImport(boolean fullMode) {
-        if (log.isDebugEnabled()) log.debug("doImport: fullMode={}, notificationId={}", fullMode, NOTIFICATION_ID);
+        //if (log.isDebugEnabled()) log.debug("doImport: fullMode={}, notificationId={}", fullMode, NOTIFICATION_ID);
         if (! canReadExternalStorage(this)) {
-            if (log.isDebugEnabled()) log.debug("doImport: no read permission : stop import");
+            //if (log.isDebugEnabled()) log.debug("doImport: no read permission : stop import");
             return;
-        } else
-            if (log.isDebugEnabled()) log.debug("doImport: read permission : continue import");
+        } //else
+            //if (log.isDebugEnabled()) log.debug("doImport: read permission : continue import");
         if (!isForeground) {
-            if (log.isDebugEnabled()) log.debug("doImport: import request ignored due to device shutdown.");
+            //if (log.isDebugEnabled()) log.debug("doImport: import request ignored due to device shutdown.");
             return;
         }
         long start = System.currentTimeMillis();
@@ -479,12 +479,12 @@ public class VideoStoreImportService extends Service implements Handler.Callback
         else
             mImporter.doIncrementalImport();
         long end = System.currentTimeMillis();
-        if (log.isDebugEnabled()) log.debug("doImport took:{}ms full:{}", (end - start), fullMode);
+        //if (log.isDebugEnabled()) log.debug("doImport took:{}ms full:{}", (end - start), fullMode);
         // perform no longer possible delete_file and vob_insert db callbacks after incr or full import
         // this will also flush delete_files and vob_insert buffer tables
         processDeleteFileAndVobCallback();
         ImportState.VIDEO.setDirty(false);
-        if (log.isDebugEnabled()) log.debug("doImport: not dirty anymore");
+        //if (log.isDebugEnabled()) log.debug("doImport: not dirty anymore");
         // notify all that we have new stuff
         Intent intent = new Intent(LeeroyFlixMediaIntent.ACTION_VIDEO_SCANNER_SCAN_FINISHED, null);
         intent.setPackage(LeeroyFlixUtils.getGlobalContext().getPackageName());
@@ -493,7 +493,7 @@ public class VideoStoreImportService extends Service implements Handler.Callback
         // Explicitly start AutoScrapeService after scan completes to ensure scraping happens
         // This is needed because the ContentObserver may not reliably trigger during batch inserts
         if (org.leeroy.mediascraper.AutoScrapeService.isEnable(this)) {
-            if (log.isDebugEnabled()) log.debug("doImport: starting AutoScrapeService after scan completion");
+            //if (log.isDebugEnabled()) log.debug("doImport: starting AutoScrapeService after scan completion");
             org.leeroy.mediascraper.AutoScrapeService.startService(this);
         }
     }
@@ -529,16 +529,16 @@ public class VideoStoreImportService extends Service implements Handler.Callback
             try {
                 c = db.rawQuery("SELECT * FROM delete_files WHERE name IN (SELECT cover_movie FROM MOVIE UNION SELECT cover_show FROM SHOW UNION SELECT cover_episode FROM EPISODE) ORDER BY " + BaseColumns._ID + " ASC LIMIT " + WINDOW_SIZE, null);
                 cCount = c.getCount();
-                if (log.isDebugEnabled()) log.debug("processDeleteFileAndVobCallback: delete_files cover_movie new batch fetching window={} -> cursor has size {}", WINDOW_SIZE, cCount);
+                //if (log.isDebugEnabled()) log.debug("processDeleteFileAndVobCallback: delete_files cover_movie new batch fetching window={} -> cursor has size {}", WINDOW_SIZE, cCount);
                 if (cCount == 0) {
-                    if (log.isDebugEnabled()) log.debug("processDeleteFileAndVobCallback: delete_files cover_movie no more data");
+                    //if (log.isDebugEnabled()) log.debug("processDeleteFileAndVobCallback: delete_files cover_movie no more data");
                     break; // break out if no more data
                 }
                 while (c.moveToNext() && isForeground) {
                     long id = c.getLong(0);
                     String path = c.getString(1);
                     long count = c.getLong(2);
-                    if (log.isDebugEnabled()) log.debug("processDeleteFileAndVobCallback: clean delete_files {} path {} count {}", id, path, count);
+                    //if (log.isDebugEnabled()) log.debug("processDeleteFileAndVobCallback: clean delete_files {} path {} count {}", id, path, count);
                     // purge the db: delete row even if file delete callback fails (file deletion could be handled elsewhere
                     try {
                         // path should not be null but deal with it and remove entry in this case
@@ -566,16 +566,16 @@ public class VideoStoreImportService extends Service implements Handler.Callback
             try {
                 c = db.rawQuery("SELECT * FROM delete_files ORDER BY " + BaseColumns._ID + " ASC LIMIT " + WINDOW_SIZE, null);
                 cCount = c.getCount();
-                if (log.isDebugEnabled()) log.debug("processDeleteFileAndVobCallback: delete_files new batch fetching window={} -> cursor has size {}", WINDOW_SIZE, cCount);
+                //if (log.isDebugEnabled()) log.debug("processDeleteFileAndVobCallback: delete_files new batch fetching window={} -> cursor has size {}", WINDOW_SIZE, cCount);
                 if (cCount == 0) {
-                    if (log.isDebugEnabled()) log.debug("processDeleteFileAndVobCallback: delete_files no more data");
+                    //if (log.isDebugEnabled()) log.debug("processDeleteFileAndVobCallback: delete_files no more data");
                     break; // break out if no more data
                 }
                 while (c.moveToNext() && isForeground) {
                     long id = c.getLong(0);
                     String path = c.getString(1);
                     long count = c.getLong(2);
-                    if (log.isTraceEnabled()) log.trace("processDeleteFileAndVobCallback: delete_files {} path {} count {}", id, path, count);
+                    //if (log.isTraceEnabled()) log.trace("processDeleteFileAndVobCallback: delete_files {} path {} count {}", id, path, count);
                     DeleteFileCallbackArgs = new String[] {path, String.valueOf(count)};
                     delCb.callback(DeleteFileCallbackArgs);
                     // purge the db: delete row even if file delete callback fails (file deletion could be handled elsewhere
@@ -604,16 +604,16 @@ public class VideoStoreImportService extends Service implements Handler.Callback
             try {
                 c = db.rawQuery("SELECT * FROM vob_insert ORDER BY " + BaseColumns._ID + " ASC LIMIT " + WINDOW_SIZE, null);
                 cCount = c.getCount();
-                if (log.isDebugEnabled()) log.debug("processDeleteFileAndVobCallback: delete_files new batch fetching window={} -> cursor has size {}", WINDOW_SIZE, cCount);
+                //if (log.isDebugEnabled()) log.debug("processDeleteFileAndVobCallback: delete_files new batch fetching window={} -> cursor has size {}", WINDOW_SIZE, cCount);
                 // TOFIX crashes with CursorWindowAllocationException when doing getCount() though rawQuery is paginated catch it via RuntimeException
                 if (cCount == 0) {
-                    if (log.isDebugEnabled()) log.debug("processDeleteFileAndVobCallback: vob_insert no more data");
+                    //if (log.isDebugEnabled()) log.debug("processDeleteFileAndVobCallback: vob_insert no more data");
                     break; // break out if no more data
                 }
                 while (c.moveToNext() && isForeground) {
                     long id = c.getLong(0);
                     String path = c.getString(1);
-                    if (log.isTraceEnabled()) log.trace("processDeleteFileAndVobCallback: vob_insert {} path {}", id, path);
+                    //if (log.isTraceEnabled()) log.trace("processDeleteFileAndVobCallback: vob_insert {} path {}", id, path);
                     VobUpdateCallbackArgs = new String[] {path};
                     vobCb.callback(VobUpdateCallbackArgs);
                     // purge the db: delete row even if file delete callback fails (file deletion could be handled elsewhere
@@ -639,12 +639,12 @@ public class VideoStoreImportService extends Service implements Handler.Callback
     }
 
     private void handleVolumeMounted(int storageId) {
-        if (log.isDebugEnabled()) log.debug("handleVolumeMounted: storageId={}", storageId);
+        //if (log.isDebugEnabled()) log.debug("handleVolumeMounted: storageId={}", storageId);
 
         // For post-Android P, we use path-based unhiding in updateVolumeHiddenStates()
         // instead of storage_id-based unhiding here
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-            if (log.isDebugEnabled()) log.debug("handleVolumeMounted: post-Android P, skipping storage_id-based unhiding");
+            //if (log.isDebugEnabled()) log.debug("handleVolumeMounted: post-Android P, skipping storage_id-based unhiding");
         } else {
             // Pre-Android P: use existing storage_id-based unhiding
             ContentValues cv = new ContentValues();
@@ -654,7 +654,7 @@ public class VideoStoreImportService extends Service implements Handler.Callback
                     cv,
                     "storage_id=? AND volume_hidden != 0",
                     new String[]{String.valueOf(storageId)});
-            if (log.isDebugEnabled()) log.debug("handleVolumeMounted: cleared volume_hidden for {} rows", updated);
+            //if (log.isDebugEnabled()) log.debug("handleVolumeMounted: cleared volume_hidden for {} rows", updated);
         }
 
         // Key change: Use incremental import instead of full import for remounts
@@ -663,11 +663,11 @@ public class VideoStoreImportService extends Service implements Handler.Callback
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
             // Post-Android P: Use incremental import (much faster)
             importMsg = mHandler.obtainMessage(MESSAGE_IMPORT_INCR, DONT_KILL_SELF, storageId);
-            if (log.isDebugEnabled()) log.debug("handleVolumeMounted: triggering incremental import for post-Android P");
+            //if (log.isDebugEnabled()) log.debug("handleVolumeMounted: triggering incremental import for post-Android P");
         } else {
             // Pre-Android P: Keep existing full import behavior
             importMsg = mHandler.obtainMessage(MESSAGE_IMPORT_FULL, DONT_KILL_SELF, storageId);
-            if (log.isDebugEnabled()) log.debug("handleVolumeMounted: triggering full import for pre-Android P");
+            //if (log.isDebugEnabled()) log.debug("handleVolumeMounted: triggering full import for pre-Android P");
         }
 
         // Don't mark as dirty for post-Android P since we're doing incremental
@@ -680,7 +680,7 @@ public class VideoStoreImportService extends Service implements Handler.Callback
 
     /** removes all messages from handler */
     protected static void removeAllMessages(Handler handler) {
-        if (log.isDebugEnabled()) log.debug("removeAllMessages");
+        //if (log.isDebugEnabled()) log.debug("removeAllMessages");
         if (handler == null) {
             log.warn("removeAllMessages: handler is null, skipping");
             return;
@@ -699,16 +699,16 @@ public class VideoStoreImportService extends Service implements Handler.Callback
         }
         @Override
         public void onChange(boolean selfChange) {
-            if (log.isDebugEnabled()) log.debug("onChange");
+            //if (log.isDebugEnabled()) log.debug("onChange");
             // to avoid sending message to dead thread because mHandlerThread is no more, need to relaunch the service so that it is recreated in onCreate
             // happens really often
             if (importOk() && mHandler != null) {
-                if (log.isDebugEnabled()) log.debug("onChange: triggering VIDEO_SCANNER_IMPORT_INCR");
+                //if (log.isDebugEnabled()) log.debug("onChange: triggering VIDEO_SCANNER_IMPORT_INCR");
                 removeAllMessages(mHandler);
                 Message msg = mHandler.obtainMessage(MESSAGE_IMPORT_INCR, DONT_KILL_SELF, 0);
                 mHandler.sendMessageDelayed(msg, 1000);
             } else {
-                if (log.isDebugEnabled()) log.debug("onChange: NOT triggering import - importOk={}, mHandler is {}", importOk(), (mHandler == null ? "null" : "not null"));
+                //if (log.isDebugEnabled()) log.debug("onChange: NOT triggering import - importOk={}, mHandler is {}", importOk(), (mHandler == null ? "null" : "not null"));
             }
         }
     }
@@ -718,16 +718,16 @@ public class VideoStoreImportService extends Service implements Handler.Callback
         public LoggingConnection() {
         }
         public void onServiceConnected(ComponentName name, IBinder service) {
-            if (log.isDebugEnabled()) log.debug("onServiceConnected");
+            //if (log.isDebugEnabled()) log.debug("onServiceConnected");
         }
         public void onServiceDisconnected(ComponentName name) {
-            if (log.isDebugEnabled()) log.debug("onServiceDisconnected");
+            //if (log.isDebugEnabled()) log.debug("onServiceDisconnected");
         }
     }
 
     /** calls {@link IScraperService#setupDefaultContent(boolean) }*/
     private void initializeScraperData() {
-        if (log.isDebugEnabled()) log.debug("initializeScraperData()");
+        //if (log.isDebugEnabled()) log.debug("initializeScraperData()");
         Scraper scraper = new Scraper(this);
     }
 
@@ -735,14 +735,14 @@ public class VideoStoreImportService extends Service implements Handler.Callback
     public void onStop(LifecycleOwner owner) {
         // App in background
         isForeground = false;
-        if (log.isDebugEnabled()) log.debug("onStop: LifecycleOwner app in background, stopSelf");
+        //if (log.isDebugEnabled()) log.debug("onStop: LifecycleOwner app in background, stopSelf");
         LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStop (lifecycle)", "app is in background stopSelf");
         cleanup();
         stopSelf();
     }
 
     private void cleanup() {
-        if (log.isDebugEnabled()) log.debug("cleanup");
+        //if (log.isDebugEnabled()) log.debug("cleanup");
 
         // Remove lifecycle observer to prevent callbacks to destroyed service
         ProcessLifecycleOwner.get().getLifecycle().removeObserver(this);
@@ -750,7 +750,7 @@ public class VideoStoreImportService extends Service implements Handler.Callback
         // Stop MediaRetrieverService when VideoStoreImportService is being cleaned up
         Intent mediaRetrieverIntent = new Intent(this, MediaRetrieverService.class);
         stopService(mediaRetrieverIntent);
-        if (log.isDebugEnabled()) log.debug("cleanup: MediaRetrieverService stop requested");
+        //if (log.isDebugEnabled()) log.debug("cleanup: MediaRetrieverService stop requested");
 
         // Stop the handler thread
         if (mHandlerThread != null) {
@@ -788,22 +788,22 @@ public class VideoStoreImportService extends Service implements Handler.Callback
 
         // App in foreground - restart MediaRetrieverService
         isForeground = true;
-        if (log.isDebugEnabled()) log.debug("onStart: LifecycleOwner app in foreground, restarting MediaRetrieverService");
+        //if (log.isDebugEnabled()) log.debug("onStart: LifecycleOwner app in foreground, restarting MediaRetrieverService");
         
         // Restart MediaRetrieverService for foreground operation
         Intent mediaRetrieverIntent = new Intent(this, MediaRetrieverService.class);
         startService(mediaRetrieverIntent);
-        if (log.isDebugEnabled()) log.debug("onStart: MediaRetrieverService restart requested");
+        //if (log.isDebugEnabled()) log.debug("onStart: MediaRetrieverService restart requested");
         
         // when switching to foreground state and db
         // has potentially changed: trigger db import
         if (mVolumeState == null) {
-            if (log.isDebugEnabled()) log.debug("onStart: onForeGround && mVolumeState == null, recreating VolumeState");
+            //if (log.isDebugEnabled()) log.debug("onStart: onForeGround && mVolumeState == null, recreating VolumeState");
             // Recreate VolumeState if it was cleaned up (e.g., after background)
             mVolumeState = new VolumeState(this);
             mVolumeStateObserver = volumes -> {
                 for (Volume volume : volumes) {
-                    if (log.isDebugEnabled()) log.debug("Change:{} to {}", volume.getMountPoint(), volume.getMountState());
+                    //if (log.isDebugEnabled()) log.debug("Change:{} to {}", volume.getMountPoint(), volume.getMountState());
                     if (!volume.getMountState()) {
                         mHandler
                             .obtainMessage(MESSAGE_HIDE_VOLUME, DONT_KILL_SELF, volume.getStorageId())
@@ -817,14 +817,14 @@ public class VideoStoreImportService extends Service implements Handler.Callback
             };
             mVolumeState.addObserver(mVolumeStateObserver);
         }
-        if (log.isDebugEnabled()) log.debug("onStart: onForeGround, registering VolumeState receiver and updating state");
+        //if (log.isDebugEnabled()) log.debug("onStart: onForeGround, registering VolumeState receiver and updating state");
         mVolumeState.registerReceiver();
         mVolumeState.updateState();
 
         // Always trigger an import when returning to foreground to check volume states
         // (checkDatabaseForUnmountedVolumes() is called during import via updateVolumeHiddenStatesByPath())
         if (ImportState.VIDEO.isDirty()) {
-            if (log.isDebugEnabled()) log.debug("onStart: onForeGround && ImportState.isDirty MESSAGE_IMPORT_FULL");
+            //if (log.isDebugEnabled()) log.debug("onStart: onForeGround && ImportState.isDirty MESSAGE_IMPORT_FULL");
             LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStart", "app is foreground ImportState.isDirty MESSAGE_IMPORT_FULL");
             mHandler.obtainMessage(MESSAGE_IMPORT_FULL, DONT_KILL_SELF, 0).sendToTarget();
         }

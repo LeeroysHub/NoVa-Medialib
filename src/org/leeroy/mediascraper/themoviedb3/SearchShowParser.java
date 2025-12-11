@@ -56,19 +56,19 @@ public class SearchShowParser {
         SearchParserResult searchShowParserResult = new SearchParserResult();
         String countryOfOrigin = searchInfo.getCountryOfOrigin();
         int levenshteinDistanceTitle, levenshteinDistanceOriginalTitle;
-        if (log.isDebugEnabled()) log.debug("getSearchShowParserResult: examining response of {} entries in {}, for {} and specific year {}", response.body().total_results, language, searchInfo.getShowName(), year);
+        //if (log.isDebugEnabled()) log.debug("getSearchShowParserResult: examining response of {} entries in {}, for {} and specific year {}", response.body().total_results, language, searchInfo.getShowName(), year);
 
         List<BaseTvShow> resultsTvShow = new ArrayList<>(response.body().results);
 
         boolean isAirDateKnown = false;
         for (BaseTvShow series : resultsTvShow) {
-            if (log.isDebugEnabled()) log.debug("airdate {} airtime {}", series.name, ((series.first_air_date != null) ? series.first_air_date.toString() : null));
+            //if (log.isDebugEnabled()) log.debug("airdate {} airtime {}", series.name, ((series.first_air_date != null) ? series.first_air_date.toString() : null));
             if (series.id != SERIES_NOT_PERMITTED_ID) {
                 if (countryOfOrigin != null && !countryOfOrigin.isEmpty() && !series.origin_country.contains(countryOfOrigin)) {
-                    if (log.isDebugEnabled()) log.debug("getSearchShowParserResult: skip {} because does not contain countryOfOrigin {}", series.original_name, countryOfOrigin);
+                    //if (log.isDebugEnabled()) log.debug("getSearchShowParserResult: skip {} because does not contain countryOfOrigin {}", series.original_name, countryOfOrigin);
                     continue;
                 } else {
-                    if (log.isDebugEnabled()) log.debug("getSearchShowParserResult: {} contains countryOfOrigin{}", series.original_name, countryOfOrigin);
+                    //if (log.isDebugEnabled()) log.debug("getSearchShowParserResult: {} contains countryOfOrigin{}", series.original_name, countryOfOrigin);
                 }
                 Bundle extra = new Bundle();
                 extra.putString(ShowUtils.EPNUM, String.valueOf(searchInfo.getEpisode()));
@@ -82,7 +82,7 @@ public class SearchShowParser {
                 result.setId(series.id);
                 result.setLanguage(language);
                 result.setTitle(series.name);
-                if (log.isDebugEnabled()) log.debug("getSearchShowParserResult: examining {}, in {}", series.name, language);
+                //if (log.isDebugEnabled()) log.debug("getSearchShowParserResult: examining {}, in {}", series.name, language);
                 result.setScraper(showScraper);
                 result.setFile(searchInfo.getFile());
                 result.setOriginalTitle(series.original_name);
@@ -101,23 +101,23 @@ public class SearchShowParser {
                 levenshteinDistanceOriginalTitle = levenshteinDistance.apply(showNameLC, result.getOriginalTitle().toLowerCase());
                 result.setLevenshteinDistance(Math.min(levenshteinDistanceTitle, levenshteinDistanceOriginalTitle));
                 result.setReleaseOrFirstAiredDate(series.first_air_date);
-                if (log.isDebugEnabled()) log.debug("getSearchShowParserResult: between {} and {}/{} levenshteinDistanceTitle={}, levenshteinDistanceOriginalTitle={}, popularity={}, airdate={}, year={}", showNameLC, result.getOriginalTitle().toLowerCase(), result.getTitle().toLowerCase(), levenshteinDistanceTitle, levenshteinDistanceOriginalTitle, result.getPopularity(), series.first_air_date, result.getYear());
+                //if (log.isDebugEnabled()) log.debug("getSearchShowParserResult: between {} and {}/{} levenshteinDistanceTitle={}, levenshteinDistanceOriginalTitle={}, popularity={}, airdate={}, year={}", showNameLC, result.getOriginalTitle().toLowerCase(), result.getTitle().toLowerCase(), levenshteinDistanceTitle, levenshteinDistanceOriginalTitle, result.getPopularity(), series.first_air_date, result.getYear());
 
                 if (series.poster_path == null || series.poster_path.endsWith("missing/series.jpg") || series.poster_path.endsWith("missing/movie.jpg") || series.poster_path == "") {
-                    if (log.isDebugEnabled()) log.debug("getSearchShowParserResult: set aside {} because poster missing i.e. image={}", series.name, series.poster_path);
+                    //if (log.isDebugEnabled()) log.debug("getSearchShowParserResult: set aside {} because poster missing i.e. image={}", series.name, series.poster_path);
                     searchShowParserResult.resultsNoPoster.add(result);
                 } else {
-                    if (log.isDebugEnabled()) log.debug("getSearchShowParserResult: {} has poster_path {}{}", series.name, ScraperImage.TMPL, series.poster_path);
+                    //if (log.isDebugEnabled()) log.debug("getSearchShowParserResult: {} has poster_path {}{}", series.name, ScraperImage.TMPL, series.poster_path);
                     result.setPosterPath(series.poster_path);
                     if (series.backdrop_path == null || series.backdrop_path.endsWith("missing/series.jpg") || series.backdrop_path.endsWith("missing/movie.jpg") || series.backdrop_path == "") {
-                        if (log.isDebugEnabled()) log.debug("getSearchShowParserResult: set aside {} because banner missing i.e. banner={}", series.name, series.backdrop_path);
+                        //if (log.isDebugEnabled()) log.debug("getSearchShowParserResult: set aside {} because banner missing i.e. banner={}", series.name, series.backdrop_path);
                         searchShowParserResult.resultsNoBanner.add(result);
                     } else {
-                        if (log.isDebugEnabled()) log.debug("getSearchShowParserResult: {} has backdrop_path {}{} -> taking into account {} because banner/image exists and known airdate", series.name, ScraperImage.TMBL, series.backdrop_path, series.name);
+                        //if (log.isDebugEnabled()) log.debug("getSearchShowParserResult: {} has backdrop_path {}{} -> taking into account {} because banner/image exists and known airdate", series.name, ScraperImage.TMBL, series.backdrop_path, series.name);
                         // TODO MARC: this generates the thumb by resizing the large image: pass the two
                         result.setBackdropPath(series.backdrop_path);
                         if (! isAirDateKnown) {
-                            if (log.isDebugEnabled()) log.debug("getSearchShowParserResult: set aside {} because air date is missing", series.name);
+                            //if (log.isDebugEnabled()) log.debug("getSearchShowParserResult: set aside {} because air date is missing", series.name);
                             searchShowParserResult.resultsNoAirDate.add(result);
                         } else {
                             searchShowParserResult.resultsProbable.add(result);
@@ -126,7 +126,7 @@ public class SearchShowParser {
                 }
             }
         }
-        if (log.isDebugEnabled()) log.debug("getSearchShowParserResult: resultsProbable={}", searchShowParserResult.resultsProbable.toString());
+        //if (log.isDebugEnabled()) log.debug("getSearchShowParserResult: resultsProbable={}", searchShowParserResult.resultsProbable.toString());
 
         // perform the levenshtein distance sort on all results
         Collections.sort(searchShowParserResult.resultsProbable, SearchParserResult.comparator);
@@ -135,7 +135,7 @@ public class SearchShowParser {
         Collections.sort(searchShowParserResult.resultsNoAirDate, SearchParserResult.comparator);
 
         // dump
-        if (log.isTraceEnabled()) log.trace("getSearchShowParserResult: applying Levenshtein distance resultsProbableSorted={}", searchShowParserResult.resultsProbable.toString());
+        //if (log.isTraceEnabled()) log.trace("getSearchShowParserResult: applying Levenshtein distance resultsProbableSorted={}", searchShowParserResult.resultsProbable.toString());
         return searchShowParserResult;
     }
 }

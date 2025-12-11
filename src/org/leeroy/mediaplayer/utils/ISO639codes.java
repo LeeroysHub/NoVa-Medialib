@@ -149,7 +149,7 @@ public class ISO639codes {
         } else if (code.length() == 3) {
             return getLanguageNameFor3LetterCode(code);
         } else {
-            if (log.isDebugEnabled()) log.debug("getLanguageNameForLetterCode: Invalid code {}", code);
+            //if (log.isDebugEnabled()) log.debug("getLanguageNameForLetterCode: Invalid code {}", code);
             return code;
         }
     }
@@ -167,7 +167,7 @@ public class ISO639codes {
             } else {
                 // there is something missing make it obvious and fallback to original 3 letter code
                 languageName = code;
-                if (log.isDebugEnabled()) log.debug("getLanguageNameFor3LetterCode: No language name found for code {}", code);
+                //if (log.isDebugEnabled()) log.debug("getLanguageNameFor3LetterCode: No language name found for code {}", code);
             }
         }
         return languageName;
@@ -222,7 +222,7 @@ public class ISO639codes {
         if (code.length() == 3) result = convertIso6392bToIso6393(code);
         if (result.length() == 3) result = convertISO6393ToISO6391(result);
         if (result.length() == 2) {
-            if (log.isDebugEnabled()) log.debug("getISO6391ForLetterCode: code={} result={}", code, result);
+            //if (log.isDebugEnabled()) log.debug("getISO6391ForLetterCode: code={} result={}", code, result);
             return result;
         } else {
             log.error("getISO6391ForLetterCode: Invalid code {}", code);
@@ -237,7 +237,7 @@ public class ISO639codes {
 
     static public boolean isletterCode(String code) {
         String result = getLanguageNameForLetterCode(code);
-        if (log.isDebugEnabled()) log.debug("isletterCode: code={} result={}", code, result);
+        //if (log.isDebugEnabled()) log.debug("isletterCode: code={} result={}", code, result);
         return !code.equals(result);
     }
 
@@ -348,7 +348,7 @@ public class ISO639codes {
         if (matcher.find()) {
             String languageCode1 = matcher.group(1);
             String languageCode2 = matcher.group(2);
-            if (log.isDebugEnabled()) log.debug("findLanguageInString: languageCode1={} languageCode2={}", languageCode1, languageCode2);
+            //if (log.isDebugEnabled()) log.debug("findLanguageInString: languageCode1={} languageCode2={}", languageCode1, languageCode2);
             if (languageCode1 != null) {
                 languageCode = languageCode1;
                 if (languageCode1.equals("und") || languageCode1.equals("Unknown")) result = ""; // und = undefined
@@ -363,12 +363,12 @@ public class ISO639codes {
             matcher = regexPattern.matcher(string);
             if (matcher.find()) {
                 languageCode = matcher.group();
-                if (log.isDebugEnabled()) log.debug("findLanguageInString: languageCode={}", languageCode);
+                //if (log.isDebugEnabled()) log.debug("findLanguageInString: languageCode={}", languageCode);
                 if (languageCode.equals("und") || languageCode.equals("Unknown")) result = ""; // und = undefined
                 else result = ISO639codes.getLanguageNameForLetterCode(languageCode);
             } else result = "";
         }
-        if (log.isDebugEnabled()) log.debug("findLanguageInString: input={} -> result={}", string, result);
+        //if (log.isDebugEnabled()) log.debug("findLanguageInString: input={} -> result={}", string, result);
         return result;
     }
 
@@ -393,7 +393,7 @@ public class ISO639codes {
     public static String replaceLanguageCodeInString(String string) {
         // treat strings being "l_XYZ" or "l_XY" or "XYZ" or "XY" or "title (l_XYZ)" or "title (l_XY)"
         // and replace it with locale language corresponding to XY or XYZ letter code
-        if (log.isDebugEnabled()) log.debug("replaceLanguageCodeInString: input string={}", string);
+        //if (log.isDebugEnabled()) log.debug("replaceLanguageCodeInString: input string={}", string);
         if (string == null) return "";
         // avoid name=" (l_eng)" with starting space seen in Modern Family show
         String cleanString = removeStartingSpacesAndSurroundingParenthesis(string);
@@ -405,7 +405,7 @@ public class ISO639codes {
         if (matcher.find()) {
             String languageCode1 = matcher.group(1);
             String languageCode2 = matcher.group(2);
-            if (log.isDebugEnabled()) log.debug("replaceLanguageCodeInString: languageCode1={} languageCode2={}", languageCode1, languageCode2);
+            //if (log.isDebugEnabled()) log.debug("replaceLanguageCodeInString: languageCode1={} languageCode2={}", languageCode1, languageCode2);
             if (languageCode1 != null) {
                 languageCode = languageCode1;
                 if (languageCode1.equals("und") || languageCode1.equals("Unknown")) result = ""; // und = undefined
@@ -421,7 +421,7 @@ public class ISO639codes {
             matcher = regexPattern.matcher(cleanString);
             if (matcher.find()) {
                 languageCode = matcher.group();
-                if (log.isDebugEnabled()) log.debug("replaceLanguageCodeInString: languageCode={}", languageCode);
+                //if (log.isDebugEnabled()) log.debug("replaceLanguageCodeInString: languageCode={}", languageCode);
                 if (languageCode.equals("und") || languageCode.equals("Unknown")) result = ""; // und = undefined
                 else result = capitalizeFirstLetter(cleanString.replaceAll(pattern, ISO639codes.getLanguageNameForLetterCode(languageCode)));
             } else {
@@ -429,7 +429,7 @@ public class ISO639codes {
                 result = cleanString;
             }
         }
-        if (log.isDebugEnabled()) log.debug("replaceLanguageCodeInString: input={} -> result={}", string, result);
+        //if (log.isDebugEnabled()) log.debug("replaceLanguageCodeInString: input={} -> result={}", string, result);
         return result;
     }
 
@@ -477,7 +477,7 @@ public class ISO639codes {
                 }
             }
         }
-        if (log.isDebugEnabled()) log.debug("generateTrackName: input={}, lang={}, format{} -> cleanString={}, language={} -> result={}", string, lang, format, cleanString, language,result);
+        //if (log.isDebugEnabled()) log.debug("generateTrackName: input={}, lang={}, format{} -> cleanString={}, language={} -> result={}", string, lang, format, cleanString, language,result);
         return result;
     }
 

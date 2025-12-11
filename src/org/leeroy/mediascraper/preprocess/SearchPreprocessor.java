@@ -62,10 +62,10 @@ public class SearchPreprocessor {
     public SearchInfo parseFileBased(Uri uri, Uri simplifiedUri) {
         String candidate = FileUtils.getFileNameWithoutExtension(uri);
         for (InputMatcher matcher : PARSERS) {
-            if (log.isDebugEnabled()) log.debug("parseFileBased: trying parser {} for {} derived from uri {} and simplifiedUri {}",
-                    matcher.getMatcherName(), candidate,
-                    (uri != null) ? uri.getPath() : null,
-                    (simplifiedUri != null) ? simplifiedUri.getPath() : null);
+            //if (log.isDebugEnabled()) log.debug("parseFileBased: trying parser {} for {} derived from uri {} and simplifiedUri {}",
+                    //matcher.getMatcherName(), candidate,
+                    //(uri != null) ? uri.getPath() : null,
+                    //(simplifiedUri != null) ? simplifiedUri.getPath() : null);
             if (matcher.matchesFileInput(uri, simplifiedUri)) {
                 SearchInfo result = matcher.getFileInputMatch(uri, simplifiedUri);
                 if (result == null) {
@@ -75,8 +75,8 @@ public class SearchPreprocessor {
                             matcher.getMatcherName(), (uri != null) ? uri.toString() : null);
                     continue; // Try next matcher instead of crashing
                 }
-                if (log.isDebugEnabled()) log.debug("parseFileBased: result from {} for {} -> {}",
-                        matcher.getMatcherName(), candidate, result.getSearchSuggestion());
+                //if (log.isDebugEnabled()) log.debug("parseFileBased: result from {} for {} -> {}",
+                        //matcher.getMatcherName(), candidate, result.getSearchSuggestion());
                 return reParseInfo(result);
             }
         }

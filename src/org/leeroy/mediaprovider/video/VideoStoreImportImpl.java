@@ -107,7 +107,7 @@ public class VideoStoreImportImpl {
         for (String extPath: extPathList)
             for (String blacklistedDir : blacklistCamDirs)
                 BLACKLIST += " AND _data NOT LIKE '%" + extPath+blacklistedDir + "%'";
-        if (log.isDebugEnabled()) log.debug("VideoStoreImportImpl: BLACKLIST {}", BLACKLIST);
+        //if (log.isDebugEnabled()) log.debug("VideoStoreImportImpl: BLACKLIST {}", BLACKLIST);
     }
 
     public void destroy() {
@@ -117,7 +117,7 @@ public class VideoStoreImportImpl {
     public void doFullImport() {
         mIsImportInterrupted = false;
         int countStart = getLocalCount(mCr);
-        if (log.isDebugEnabled()) log.debug("doFullImport: ImportState.VIDEO.setState {}", (countStart == 0 ? State.INITIAL_IMPORT : State.REGULAR_IMPORT));
+        //if (log.isDebugEnabled()) log.debug("doFullImport: ImportState.VIDEO.setState {}", (countStart == 0 ? State.INITIAL_IMPORT : State.REGULAR_IMPORT));
         ImportState.VIDEO.setState(countStart == 0 ? State.INITIAL_IMPORT : State.REGULAR_IMPORT);
 
         // replace everything with new data
@@ -140,14 +140,14 @@ public class VideoStoreImportImpl {
             log.error("doFullImport: external storage (volume: 'external_primary') is not available");
         }
         ImportState.VIDEO.setState(State.IDLE);
-        if (log.isDebugEnabled()) log.debug("doFullImport: ImportState.VIDEO.setState(State.IDLE)");
+        //if (log.isDebugEnabled()) log.debug("doFullImport: ImportState.VIDEO.setState(State.IDLE)");
     }
 
     public void doIncrementalImport() {
         mIsImportInterrupted = false;
         int countStart = getLocalCount(mCr);
         ImportState.VIDEO.setState(countStart == 0 ? State.INITIAL_IMPORT : State.REGULAR_IMPORT);
-        if (log.isDebugEnabled()) log.debug("doIncrementalImport: ImportState.VIDEO.setState {}", (countStart == 0 ? State.INITIAL_IMPORT : State.REGULAR_IMPORT));
+        //if (log.isDebugEnabled()) log.debug("doIncrementalImport: ImportState.VIDEO.setState {}", (countStart == 0 ? State.INITIAL_IMPORT : State.REGULAR_IMPORT));
 
         String state = Environment.getExternalStorageState();
         if (Environment.MEDIA_MOUNTED.equals(state) || Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
@@ -168,7 +168,7 @@ public class VideoStoreImportImpl {
         }
 
         ImportState.VIDEO.setState(State.IDLE);
-        if (log.isDebugEnabled()) log.debug("doFullImport: ImportState.VIDEO.setState(State.IDLE)");
+        //if (log.isDebugEnabled()) log.debug("doFullImport: ImportState.VIDEO.setState(State.IDLE)");
     }
 
     private static final String[] ID_DATA_PROJ = new String[] {
@@ -184,7 +184,7 @@ public class VideoStoreImportImpl {
         int remaining = c.getCount();
         if (c == null || remaining == 0) {
             if (c != null) c.close();
-            if (log.isDebugEnabled()) log.debug("handleScanCursor: no media to scan");
+            //if (log.isDebugEnabled()) log.debug("handleScanCursor: no media to scan");
             return;
         }
 
@@ -202,7 +202,7 @@ public class VideoStoreImportImpl {
             while (c.moveToNext() && count < WINDOW_SIZE && !mIsImportInterrupted) {
                 count++;
                 ImportState.VIDEO.setRemainingCount(remaining--);
-                if (log.isDebugEnabled()) log.debug("handleScanCursor: ImportState.VIDEO.setRemainingCount {} count {}", remaining, count);
+                //if (log.isDebugEnabled()) log.debug("handleScanCursor: ImportState.VIDEO.setRemainingCount {} count {}", remaining, count);
                 String id;
                 String path;
                 int scraperID;
@@ -218,7 +218,7 @@ public class VideoStoreImportImpl {
                     continue;
                 }
                 Job job = new Job(path, id, blacklist);
-                if (log.isDebugEnabled()) log.debug("handleScanCursor: scanning {}", job.mPath);
+                //if (log.isDebugEnabled()) log.debug("handleScanCursor: scanning {}", job.mPath);
                 // update property with current file
                 ContentValues cv = null;
                 try {
@@ -248,17 +248,17 @@ public class VideoStoreImportImpl {
                     if (job.mRetrieve && scraperID <= 0) {
                         Uri videoFile = job.mPath;
                         if (videoFile != null) {
-                            if (log.isDebugEnabled()) log.debug("handleScanCursor: searching .nfo for {}", videoFile);
+                            //if (log.isDebugEnabled()) log.debug("handleScanCursor: searching .nfo for {}", videoFile);
                             NfoParser.NfoFile nfo = NfoParser.determineNfoFile(videoFile);
                             if (nfo != null && nfo.hasNfo()) {
-                                if (log.isDebugEnabled()) log.debug("handleScanCursor: .nfo found for {} : {}", videoFile, nfo.videoNfo);
+                                //if (log.isDebugEnabled()) log.debug("handleScanCursor: .nfo found for {} : {}", videoFile, nfo.videoNfo);
                                 BaseTags tagForFile = NfoParser.getTagForFile(nfo, context, importContext);
                                 if (tagForFile != null) {
-                                    if (log.isDebugEnabled()) log.debug("handleScanCursor: .nfo contains valid BaseTags for {}", videoFile);
+                                    //if (log.isDebugEnabled()) log.debug("handleScanCursor: .nfo contains valid BaseTags for {}", videoFile);
                                     long videoId = parseLong(job.mId, -1);
                                     if (videoId > 0) {
                                         tagForFile.save(context, videoId);
-                                        if (log.isDebugEnabled()) log.debug("handleScanCursor: BaseTags saved for {}", videoFile);
+                                        //if (log.isDebugEnabled()) log.debug("handleScanCursor: BaseTags saved for {}", videoFile);
                                         scraped++;
                                     }
                                 }
@@ -343,7 +343,7 @@ public class VideoStoreImportImpl {
         String where = WHERE_PATH;
         if (f.isFile())
             where = WHERE_FILE;
-        if (log.isDebugEnabled()) log.debug("doRemove: Removing file(s): {}", path);
+        //if (log.isDebugEnabled()) log.debug("doRemove: Removing file(s): {}", path);
         int deleted = mCr.delete(VideoStoreInternal.FILES_IMPORT, where, new String[]{path});
         log.info("doRemove: removed:" + deleted);
     }
@@ -355,7 +355,7 @@ public class VideoStoreImportImpl {
         // TODO MARC only works with local storage does not work with FileEditor editor = FileEditorFactoryWithUpnp.getFileEditorForUrl(what, null);
         // TODO MARC this makes fail the associate sub on remote storage
         mIsImportInterrupted = false;
-        if (log.isDebugEnabled()) log.debug("doScan: Scanning Metadata single uri: {}", what);
+        //if (log.isDebugEnabled()) log.debug("doScan: Scanning Metadata single uri: {}", what);
         if (what == null) return;
         String path = what.getPath();
 
@@ -370,7 +370,7 @@ public class VideoStoreImportImpl {
         String where = WHERE_PATH;
         if (f.isFile())
             where = WHERE_FILE;
-        if (log.isDebugEnabled()) log.debug("doScan: Scanning Metadata: {}", path);
+        //if (log.isDebugEnabled()) log.debug("doScan: Scanning Metadata: {}", path);
         //initNoMedia(mCr);
         Cursor c = mCr.query(VideoStoreInternal.FILES, ID_DATA_PROJ, where, new String[]{ path }, null);
         handleScanCursor(c, mCr, mContext, mBlackList);
@@ -385,7 +385,7 @@ public class VideoStoreImportImpl {
             + ") AND _id < " + VideoOpenHelper.SCANNED_ID_OFFSET;
     /** executes metadata scan of every unscanned file */
     private void doScan(ContentResolver cr, Context context, Blacklist blacklist) {
-        if (log.isDebugEnabled()) log.debug("doScan: Scanning Metadata all unscanned files");
+        //if (log.isDebugEnabled()) log.debug("doScan: Scanning Metadata all unscanned files");
         mIsImportInterrupted = false;
         Cursor c = null;
         int cursorCount = 0;
@@ -401,7 +401,7 @@ public class VideoStoreImportImpl {
                     bundle.putInt(ContentResolver.QUERY_ARG_SORT_DIRECTION, ContentResolver.QUERY_SORT_DIRECTION_ASCENDING);
                     bundle.putInt(ContentResolver.QUERY_ARG_LIMIT, WINDOW_SIZE);
                     bundle.putInt(ContentResolver.QUERY_ARG_OFFSET, 0);
-                    if (log.isDebugEnabled()) log.debug("doScan: >Q new batch fetching cursor with bundle={}", bundle.toString());
+                    //if (log.isDebugEnabled()) log.debug("doScan: >Q new batch fetching cursor with bundle={}", bundle.toString());
                     c = cr.query(VideoStoreInternal.FILES, ID_DATA_PROJ, bundle, null);
                 } else {
                     c = cr.query(VideoStoreInternal.FILES, ID_DATA_PROJ,
@@ -409,10 +409,10 @@ public class VideoStoreImportImpl {
                 }
                 if (c != null) cursorCount = c.getCount();
                 else cursorCount = 0;
-                if (log.isDebugEnabled()) log.debug("doScan: new batch fetching window={} 0<= entries <={}, new batch cursor has size {}", WINDOW_SIZE, WINDOW_SIZE, cursorCount);
+                //if (log.isDebugEnabled()) log.debug("doScan: new batch fetching window={} 0<= entries <={}, new batch cursor has size {}", WINDOW_SIZE, WINDOW_SIZE, cursorCount);
                 handleScanCursor(c, cr, context, blacklist);
                 if (cursorCount < WINDOW_SIZE) { // avoid infinite loop: trusts that handleScanCursor processes all entries
-                    if (log.isDebugEnabled()) log.debug("doScan: no more data after handleScanCursor, c.getCount()={}<WINDOW_SIZE={} exit loop", cursorCount, WINDOW_SIZE);
+                    //if (log.isDebugEnabled()) log.debug("doScan: no more data after handleScanCursor, c.getCount()={}<WINDOW_SIZE={} exit loop", cursorCount, WINDOW_SIZE);
                     break;
                 }
             } catch (SQLException | IllegalStateException e) {
@@ -436,7 +436,7 @@ public class VideoStoreImportImpl {
 
     /** creates ContentValues via MediaRetrieverService, can't be null */
     private ContentValues fromRetrieverService(Job job, String timeString) throws InterruptedException, MediaRetrieverServiceClient.ServiceManagementException {
-        if (log.isDebugEnabled()) log.debug("fromRetrieverService: Scanning metadata of: {}", job.mPath);
+        //if (log.isDebugEnabled()) log.debug("fromRetrieverService: Scanning metadata of: {}", job.mPath);
         ContentValues cv = new ContentValues();
         String path = job.mPath.toString();
         // tell mediaprovider that this update originates from here.
@@ -472,7 +472,7 @@ public class VideoStoreImportImpl {
         if (!job.mRetrieve)
             return cv;
 
-        if (log.isDebugEnabled()) log.debug("fromRetrieverService: Scanning metadata of: {}", path);
+        //if (log.isDebugEnabled()) log.debug("fromRetrieverService: Scanning metadata of: {}", path);
         switch (job.mMediaType) {
             case FileColumns.MEDIA_TYPE_VIDEO:
                 extract(cv, metadata, VideoColumns.LEEROYFLIX_ENCODING_PROFILE, IMediaMetadataRetriever.METADATA_KEY_ENCODING_PROFILE, "0");
@@ -649,10 +649,10 @@ public class VideoStoreImportImpl {
                         ids.add(c.getLong(0));
                     c.close();
                 }
-                if (log.isDebugEnabled()) log.debug("copyData: loaded {} existing IDs", ids.size());
+                //if (log.isDebugEnabled()) log.debug("copyData: loaded {} existing IDs", ids.size());
                 // transaction size limited, acts like buffered output stream and auto-flushes queue
                 BulkInserter inserter = new BulkInserter(VideoStoreInternal.FILES_IMPORT, cr, 2000);
-                if (log.isDebugEnabled()) log.debug("copyData: found items to import:{}", count);
+                //if (log.isDebugEnabled()) log.debug("copyData: found items to import:{}", count);
                 final int numberOfRows = allFiles.getCount();
                 int window = WINDOW_SIZE;
                 int index = 0;
@@ -693,17 +693,17 @@ public class VideoStoreImportImpl {
                         allFiles = CustomCursor.wrap(cr.query(MediaStore.Files.getContentUri("external"),
                                 FILES_PROJECTION_BP, where, whereArgs, BaseColumns._ID + " ASC LIMIT " + index + "," + window));
                     }
-                    if (log.isDebugEnabled()) log.debug("copyData: new batch fetching cursor from index={}, window={} -> index+window={} <= {}", index, window, (index + window), numberOfRows);
+                    //if (log.isDebugEnabled()) log.debug("copyData: new batch fetching cursor from index={}, window={} -> index+window={} <= {}", index, window, (index + window), numberOfRows);
 
                     String data;
                     Integer storageId;
 
                     int allFilesCount = allFiles.getCount();
                     if (allFiles != null && allFilesCount >0) {
-                        if (log.isDebugEnabled()) log.debug("copyData: new batch cursor has size {}", allFilesCount);
+                        //if (log.isDebugEnabled()) log.debug("copyData: new batch cursor has size {}", allFilesCount);
                         while (allFiles.moveToNext() && !mIsImportInterrupted) {
                             cursor_count++;
-                            if (log.isTraceEnabled()) log.trace("copyData: processing cursor number={}/{}, {}", cursor_count, numberOfRows, DatabaseUtils.dumpCurrentRowToString(allFiles));
+                            //if (log.isTraceEnabled()) log.trace("copyData: processing cursor number={}/{}, {}", cursor_count, numberOfRows, DatabaseUtils.dumpCurrentRowToString(allFiles));
                             try {
                                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) { // API26(O)+
                                     cv = new ContentValues(ccount + 1);
@@ -717,7 +717,7 @@ public class VideoStoreImportImpl {
                                     } else {
                                         storageId = 1;
                                     }
-                                    if (log.isTraceEnabled()) log.trace("copyData: _data={} -> storageId={}", data, storageId);
+                                    //if (log.isTraceEnabled()) log.trace("copyData: _data={} -> storageId={}", data, storageId);
                                     cv.put("storage_id", storageId);
                                     recordVisibleStorageId(storageId);
                                 } else {
@@ -733,9 +733,9 @@ public class VideoStoreImportImpl {
                             } catch (IllegalStateException ignored) { } //we silently ignore empty lines - it means content has been deleted while scanning
                         }
                         imported += inserter.execute();
-                        if (log.isDebugEnabled()) log.debug("copyData: inserted in dB {}", imported);
+                        //if (log.isDebugEnabled()) log.debug("copyData: inserted in dB {}", imported);
                     } else {
-                        if (log.isDebugEnabled()) log.debug("copyData: allFiles null now");
+                        //if (log.isDebugEnabled()) log.debug("copyData: allFiles null now");
                     }
 
                     index += window;
@@ -841,7 +841,7 @@ public class VideoStoreImportImpl {
         } finally {
             if (c != null) c.close();
         }
-        if (log.isDebugEnabled()) log.debug("getMaxId: highestMaxId={}", highestMaxId);
+        //if (log.isDebugEnabled()) log.debug("getMaxId: highestMaxId={}", highestMaxId);
         return Integer.toString(highestMaxId);
     }
 
@@ -859,7 +859,7 @@ public class VideoStoreImportImpl {
 
         Set<Integer> mountedStorageIds = getMountedReadableStorageIds();
         if (mountedStorageIds.isEmpty()) {
-            if (log.isDebugEnabled()) log.debug("updateVolumeHiddenStates: no mounted storage, skip hide/unhide");
+            //if (log.isDebugEnabled()) log.debug("updateVolumeHiddenStates: no mounted storage, skip hide/unhide");
             return;
         }
 
@@ -874,7 +874,7 @@ public class VideoStoreImportImpl {
 
             // Direct UPDATE is efficient; no need for windowing
             int hiddenCount = mCr.update(VideoStoreInternal.FILES_IMPORT, cvHidden, whereHidden.toString(), null);
-            if (log.isDebugEnabled()) log.debug("updateVolumeHiddenStates: hidden {} rows", hiddenCount);
+            //if (log.isDebugEnabled()) log.debug("updateVolumeHiddenStates: hidden {} rows", hiddenCount);
         }
 
         if (!TextUtils.isEmpty(existingFiles)) {
@@ -888,7 +888,7 @@ public class VideoStoreImportImpl {
 
                 // Direct UPDATE is efficient; no need for windowing
                 int presentCount = mCr.update(VideoStoreInternal.FILES_IMPORT, cvPresent, wherePresent, null);
-                if (log.isDebugEnabled()) log.debug("updateVolumeHiddenStates: unhidden {} rows", presentCount);
+                //if (log.isDebugEnabled()) log.debug("updateVolumeHiddenStates: unhidden {} rows", presentCount);
             }
         }
     }
@@ -979,9 +979,9 @@ public class VideoStoreImportImpl {
         // Also check for volumes in database that are no longer mounted (e.g., USB removed while app was in background)
         checkDatabaseForUnmountedVolumes(mountedVolumePaths, unmountedVolumePaths);
 
-        if (log.isDebugEnabled()) log.debug("updateVolumeHiddenStatesByPath: mounted={}, unmounted={}, recentlyMounted={}",
-                  mountedVolumePaths, unmountedVolumePaths, recentlyMountedVolumePaths);
-        if (log.isDebugEnabled()) log.debug("updateVolumeHiddenStatesByPath: ExtStorageManager USB storages: {}", storageManager.getExtUsbStorages());
+        //if (log.isDebugEnabled()) log.debug("updateVolumeHiddenStatesByPath: mounted={}, unmounted={}, recentlyMounted={}",
+                  //mountedVolumePaths, unmountedVolumePaths, recentlyMountedVolumePaths);
+        //if (log.isDebugEnabled()) log.debug("updateVolumeHiddenStatesByPath: ExtStorageManager USB storages: {}", storageManager.getExtUsbStorages());
 
         long now = System.currentTimeMillis() / 1000;
 
@@ -1028,7 +1028,7 @@ public class VideoStoreImportImpl {
 
         // Direct UPDATE is efficient; no need for windowing (UPDATE doesn't return cursors)
         int hidden = mCr.update(VideoStoreInternal.FILES_IMPORT, cv, where.toString(), null);
-        if (log.isDebugEnabled()) log.debug("hideFilesFromVolumes: hidden {} files from unmounted volumes", hidden);
+        //if (log.isDebugEnabled()) log.debug("hideFilesFromVolumes: hidden {} files from unmounted volumes", hidden);
     }
 
     private void unhideFilesFromVolumes(List<String> volumePaths) {
@@ -1048,14 +1048,14 @@ public class VideoStoreImportImpl {
 
         // Direct UPDATE is efficient; no need for windowing (UPDATE doesn't return cursors)
         int unhidden = mCr.update(VideoStoreInternal.FILES_IMPORT, cv, where.toString(), null);
-        if (log.isDebugEnabled()) log.debug("unhideFilesFromVolumes: unhidden {} files from mounted volumes", unhidden);
+        //if (log.isDebugEnabled()) log.debug("unhideFilesFromVolumes: unhidden {} files from mounted volumes", unhidden);
     }
 
     private void checkDatabaseForUnmountedVolumes(List<String> mountedVolumePaths, List<String> unmountedVolumePaths) {
         // Query database for distinct volume paths from file paths
         // Only check files that are currently visible (volume_hidden = 0)
-        if (log.isDebugEnabled()) log.debug("checkDatabaseForUnmountedVolumes: checking database for unmounted volumes");
-        if (log.isDebugEnabled()) log.debug("checkDatabaseForUnmountedVolumes: currently mounted: {}", mountedVolumePaths);
+        //if (log.isDebugEnabled()) log.debug("checkDatabaseForUnmountedVolumes: checking database for unmounted volumes");
+        //if (log.isDebugEnabled()) log.debug("checkDatabaseForUnmountedVolumes: currently mounted: {}", mountedVolumePaths);
         Cursor c = null;
         try {
             // Get all distinct file paths and extract volume paths in Java (safer than complex SQL)
@@ -1067,7 +1067,7 @@ public class VideoStoreImportImpl {
 
             java.util.Set<String> volumePaths = new java.util.HashSet<>();
             if (c != null) {
-                if (log.isDebugEnabled()) log.debug("checkDatabaseForUnmountedVolumes: found {} distinct file paths in database", c.getCount());
+                //if (log.isDebugEnabled()) log.debug("checkDatabaseForUnmountedVolumes: found {} distinct file paths in database", c.getCount());
                 while (c.moveToNext()) {
                     String filePath = c.getString(0);
                     if (filePath != null && filePath.startsWith("/storage/")) {
@@ -1097,20 +1097,20 @@ public class VideoStoreImportImpl {
             allCurrentlyMounted.add(Environment.getExternalStorageDirectory().getPath()); // Primary storage
 
             // Check each volume path to see if it's unmounted
-            if (log.isDebugEnabled()) log.debug("checkDatabaseForUnmountedVolumes: extracted {} distinct volume paths from database", volumePaths.size());
+            //if (log.isDebugEnabled()) log.debug("checkDatabaseForUnmountedVolumes: extracted {} distinct volume paths from database", volumePaths.size());
             for (String volumePath : volumePaths) {
-                if (log.isDebugEnabled()) log.debug("checkDatabaseForUnmountedVolumes: checking volume {}", volumePath);
+                //if (log.isDebugEnabled()) log.debug("checkDatabaseForUnmountedVolumes: checking volume {}", volumePath);
                 // If this volume is not in mounted list and not already in unmounted list, check if it's really unmounted
                 if (!mountedVolumePaths.contains(volumePath) && !unmountedVolumePaths.contains(volumePath)) {
                     // Check if volume is in ExtStorageManager's current mounted list
                     boolean isMounted = allCurrentlyMounted.contains(volumePath);
-                    if (log.isDebugEnabled()) log.debug("checkDatabaseForUnmountedVolumes: volume {} isMounted={}", volumePath, isMounted);
+                    //if (log.isDebugEnabled()) log.debug("checkDatabaseForUnmountedVolumes: volume {} isMounted={}", volumePath, isMounted);
                     if (!isMounted) {
-                        if (log.isDebugEnabled()) log.debug("checkDatabaseForUnmountedVolumes: found unmounted volume in database: {}", volumePath);
+                        //if (log.isDebugEnabled()) log.debug("checkDatabaseForUnmountedVolumes: found unmounted volume in database: {}", volumePath);
                         unmountedVolumePaths.add(volumePath);
                     }
                 } else {
-                    if (log.isDebugEnabled()) log.debug("checkDatabaseForUnmountedVolumes: volume {} is in mounted list or already in unmounted list", volumePath);
+                    //if (log.isDebugEnabled()) log.debug("checkDatabaseForUnmountedVolumes: volume {} is in mounted list or already in unmounted list", volumePath);
                 }
             }
         } catch (Exception e) {
@@ -1201,7 +1201,7 @@ public class VideoStoreImportImpl {
                 }
             }
 
-            if (log.isDebugEnabled()) log.debug("{}: verified files - hidden {}, found existing but unindexed {}", logTag, hiddenCount, existingCount);
+            //if (log.isDebugEnabled()) log.debug("{}: verified files - hidden {}, found existing but unindexed {}", logTag, hiddenCount, existingCount);
         } catch (Exception e) {
             log.error("verifyAndHideDeletedFiles: error verifying files", e);
         } finally {
@@ -1223,7 +1223,7 @@ public class VideoStoreImportImpl {
         for (String path : volumePaths) {
             // Check if volume is in ExtStorageManager's mounted lists
             boolean isMounted = allMountedVolumes.contains(path);
-            if (log.isDebugEnabled()) log.debug("checkVolumeStatesWithRecentMount: path={}, isMounted={}", path, isMounted);
+            //if (log.isDebugEnabled()) log.debug("checkVolumeStatesWithRecentMount: path={}, isMounted={}", path, isMounted);
             if (isMounted) {
                 mounted.add(path);
                 // Check if this volume was recently hidden (within last 5 minutes)
@@ -1303,7 +1303,7 @@ public class VideoStoreImportImpl {
                                 recordVisibleStorageId(c.getInt(storageIdx));
                             }
                         }
-                        if (log.isDebugEnabled()) log.debug("getRemoteIdList: count={} WINDOW_SIZE={} offset={}", count, WINDOW_SIZE, offset);
+                        //if (log.isDebugEnabled()) log.debug("getRemoteIdList: count={} WINDOW_SIZE={} offset={}", count, WINDOW_SIZE, offset);
                         if (count < WINDOW_SIZE) {
                             c.close();
                             break;
@@ -1332,14 +1332,14 @@ public class VideoStoreImportImpl {
             if (c != null) c.close();
         }
         String result = sb.toString();
-        if (log.isTraceEnabled()) log.trace("getRemoteIdList: ids of files visible {}", result);
+        //if (log.isTraceEnabled()) log.trace("getRemoteIdList: ids of files visible {}", result);
         return TextUtils.isEmpty(result) ? "" : result;
     }
 
 
     public static boolean isNoMediaPath(Uri uri) {
         String path = uri.toString();
-        if (log.isDebugEnabled()) log.debug("isNoMediaPath: check {}", path);
+        //if (log.isDebugEnabled()) log.debug("isNoMediaPath: check {}", path);
 
         if (path == null) return false;
 
@@ -1366,7 +1366,7 @@ public class VideoStoreImportImpl {
             if (slashIndex >= offset) {
                 slashIndex++; // move past slash
                 Uri file = Uri.parse(path.substring(0, slashIndex) + ".nomedia");
-                if (log.isDebugEnabled()) log.debug("isNoMediaPath: check {}", file.toString());
+                //if (log.isDebugEnabled()) log.debug("isNoMediaPath: check {}", file.toString());
                 FileEditor fe = FileEditorFactoryWithUpnp.getFileEditorForUrl(file, null);
                 if (fe.exists()) {
                     // we have a .nomedia in one of the parent directories

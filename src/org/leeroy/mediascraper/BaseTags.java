@@ -265,7 +265,7 @@ public abstract class BaseTags implements Parcelable {
     public void downloadPoster(Context context) {
         ScraperImage image = getDefaultPoster();
         if (image != null) {
-            if (log.isDebugEnabled()) log.debug("downloadPoster: {}, url {}", mTitle, image.getLargeUrl());
+            //if (log.isDebugEnabled()) log.debug("downloadPoster: {}, url {}", mTitle, image.getLargeUrl());
             image.download(context);
         } else
             log.warn("downloadPoster: image is null for {}", mTitle);
@@ -275,7 +275,7 @@ public abstract class BaseTags implements Parcelable {
     public void downloadPosters(Context context) {
         if (mPosters != null)
             for (ScraperImage poster : mPosters) {
-                if (log.isDebugEnabled()) log.debug("downloadPosters: {}, url {}", mTitle, poster.getLargeUrl());
+                //if (log.isDebugEnabled()) log.debug("downloadPosters: {}, url {}", mTitle, poster.getLargeUrl());
                 poster.download(context);
             } else
                 log.warn("downloadPosters: mPosters is null for {}", mTitle);
@@ -285,7 +285,7 @@ public abstract class BaseTags implements Parcelable {
     public void downloadBackdrops(Context context) {
         if (mPosters != null)
             for (ScraperImage backdrop : mBackdrops) {
-                if (log.isDebugEnabled()) log.debug("downloadBackdrops: {}, url {}", mTitle, backdrop.getLargeUrl());
+                //if (log.isDebugEnabled()) log.debug("downloadBackdrops: {}, url {}", mTitle, backdrop.getLargeUrl());
                 backdrop.download(context);
             } else
             log.warn("downloadBackdrops: mBackdrops is null for {}", mTitle);
@@ -294,7 +294,7 @@ public abstract class BaseTags implements Parcelable {
     public void downloadBackdrop(Context context) {
         ScraperImage image = getDefaultBackdrop();
         if (image != null) {
-            if (log.isDebugEnabled()) log.debug("downloadBackdrop: {}, url {}", mTitle, image.getLargeUrl());
+            //if (log.isDebugEnabled()) log.debug("downloadBackdrop: {}, url {}", mTitle, image.getLargeUrl());
             image.download(context);
         } else
             log.warn("downloadBackdrop: image is null for {}", mTitle);

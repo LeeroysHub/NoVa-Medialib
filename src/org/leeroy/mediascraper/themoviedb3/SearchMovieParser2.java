@@ -50,27 +50,27 @@ public class SearchMovieParser2 {
     private static SearchParserResult getSearchMovieParserResult(Response<MovieResultsPage> response, String movieName, String language, String year) {
         SearchParserResult searchMovieParserResult = new SearchParserResult();
         int levenshteinDistanceTitle, levenshteinDistanceOriginalTitle;
-        if (log.isDebugEnabled()) log.debug("getSearchMovieParserResult: examining response of {} entries in {}, for {} and specific year {}", response.body().total_results, language, movieName, year);
+        //if (log.isDebugEnabled()) log.debug("getSearchMovieParserResult: examining response of {} entries in {}, for {} and specific year {}", response.body().total_results, language, movieName, year);
         // sort first movies by popularity so that distinction between levenstein distance is operated on popularity
         List<BaseMovie> resultsMovie = new ArrayList<>(response.body().results);
         if (resultsMovie == null) {
-            if (log.isDebugEnabled()) log.debug("getSearchMovieParserResult: no results");
+            //if (log.isDebugEnabled()) log.debug("getSearchMovieParserResult: no results");
             return searchMovieParserResult;
         }
 
         boolean isReleaseDateKnown = false;
         for (BaseMovie movie : resultsMovie) {
-            if (log.isDebugEnabled()) log.debug("getSearchMovieParserResult: {} releaseDate {}", movie.original_title, ((movie.release_date != null) ? movie.release_date.toString() : null));
+            //if (log.isDebugEnabled()) log.debug("getSearchMovieParserResult: {} releaseDate {}", movie.original_title, ((movie.release_date != null) ? movie.release_date.toString() : null));
 
             SearchResult result = new SearchResult();
             result.setMovie();
             if (movie.id != null) result.setId(movie.id);
             if (movie.title != null) result.setTitle(movie.title);
-            if (log.isDebugEnabled()) log.debug("getSearchMovieParserResult: taking into account {}", movie.original_title);
+            //if (log.isDebugEnabled()) log.debug("getSearchMovieParserResult: taking into account {}", movie.original_title);
             // add backdrop and poster here already if it exists because MovieIdImages can return empty results...
-            if (log.isDebugEnabled()) log.debug("getSearchMovieParserResult: poster path {}", movie.poster_path);
+            //if (log.isDebugEnabled()) log.debug("getSearchMovieParserResult: poster path {}", movie.poster_path);
             if (movie.poster_path != null) result.setPosterPath(movie.poster_path);
-            if (log.isDebugEnabled()) log.debug("getSearchMovieParserResult: backdrop path {}", movie.backdrop_path);
+            //if (log.isDebugEnabled()) log.debug("getSearchMovieParserResult: backdrop path {}", movie.backdrop_path);
             if (movie.backdrop_path != null) result.setBackdropPath(movie.backdrop_path);
             if (movie.original_title != null) result.setOriginalTitle(movie.original_title);
             result.setYear((year != null) ? String.valueOf(year) : null);
@@ -89,23 +89,23 @@ public class SearchMovieParser2 {
             levenshteinDistanceOriginalTitle = originalTitle != null ? levenshteinDistance.apply(movieNameLC, originalTitle.toLowerCase()) : Integer.MAX_VALUE;
             result.setLevenshteinDistance(Math.min(levenshteinDistanceTitle, levenshteinDistanceOriginalTitle));
             result.setReleaseOrFirstAiredDate(movie.release_date);
-            if (log.isDebugEnabled()) log.debug("getSearchMovieParserResult: between {} and {}/{} levenshteinDistanceTitle={}, levenshteinDistanceOriginalTitle={}", movieNameLC, result.getOriginalTitle().toLowerCase(), result.getTitle().toLowerCase(), levenshteinDistanceTitle, levenshteinDistanceOriginalTitle);
+            //if (log.isDebugEnabled()) log.debug("getSearchMovieParserResult: between {} and {}/{} levenshteinDistanceTitle={}, levenshteinDistanceOriginalTitle={}", movieNameLC, result.getOriginalTitle().toLowerCase(), result.getTitle().toLowerCase(), levenshteinDistanceTitle, levenshteinDistanceOriginalTitle);
 
             if (movie.poster_path == null || movie.poster_path.endsWith("missing/series.jpg") || movie.poster_path.endsWith("missing/movie.jpg") || movie.poster_path == "") {
-                if (log.isDebugEnabled()) log.debug("getSearchMovieParserResult: set aside {} because poster missing i.e. image={}", movie.title, movie.poster_path);
+                //if (log.isDebugEnabled()) log.debug("getSearchMovieParserResult: set aside {} because poster missing i.e. image={}", movie.title, movie.poster_path);
                 searchMovieParserResult.resultsNoPoster.add(result);
             } else {
-                if (log.isDebugEnabled()) log.debug("getSearchMovieParserResult: {} has poster_path {}{}", movie.title, ScraperImage.TMPL, movie.poster_path);
+                //if (log.isDebugEnabled()) log.debug("getSearchMovieParserResult: {} has poster_path {}{}", movie.title, ScraperImage.TMPL, movie.poster_path);
                 result.setPosterPath(movie.poster_path);
                 if (movie.backdrop_path == null || movie.backdrop_path.endsWith("missing/series.jpg") || movie.backdrop_path.endsWith("missing/movie.jpg") || movie.backdrop_path == "") {
-                    if (log.isDebugEnabled()) log.debug("getSearchMovieParserResult: set aside {} because banner missing i.e. banner={}", movie.title, movie.backdrop_path);
+                    //if (log.isDebugEnabled()) log.debug("getSearchMovieParserResult: set aside {} because banner missing i.e. banner={}", movie.title, movie.backdrop_path);
                     searchMovieParserResult.resultsNoBanner.add(result);
                 } else {
-                    if (log.isDebugEnabled()) log.debug("getSearchMovieParserResult: {} has backdrop_path {}{}", movie.title, ScraperImage.TMBL, movie.backdrop_path);
+                    //if (log.isDebugEnabled()) log.debug("getSearchMovieParserResult: {} has backdrop_path {}{}", movie.title, ScraperImage.TMBL, movie.backdrop_path);
                     // TODO MARC: this generates the thumb by resizing the large image: pass the two
                     result.setBackdropPath(movie.backdrop_path);
                     if (! isReleaseDateKnown) {
-                        if (log.isDebugEnabled()) log.debug("getSearchMovieParserResult: set aside {} because release date is missing", movie.title);
+                        //if (log.isDebugEnabled()) log.debug("getSearchMovieParserResult: set aside {} because release date is missing", movie.title);
                         searchMovieParserResult.resultsNoAirDate.add(result);
                     } else {
                         // get the min of the levenshtein distance between cleaned file based show name and title and original title identified
@@ -114,7 +114,7 @@ public class SearchMovieParser2 {
                 }
             }
         }
-        if (log.isDebugEnabled()) log.debug("getSearchMovieParserResult: resultsProbable={}", searchMovieParserResult.resultsProbable.toString());
+        //if (log.isDebugEnabled()) log.debug("getSearchMovieParserResult: resultsProbable={}", searchMovieParserResult.resultsProbable.toString());
 
         // perform the levenshtein distance sort on all results
         if (searchMovieParserResult.resultsProbable != null)
@@ -125,7 +125,7 @@ public class SearchMovieParser2 {
             Collections.sort(searchMovieParserResult.resultsNoPoster, SearchParserResult.comparator);
         if (searchMovieParserResult.resultsNoAirDate != null)
             Collections.sort(searchMovieParserResult.resultsNoAirDate, SearchParserResult.comparator);
-        if (log.isTraceEnabled()) log.trace("getSearchMovieParserResult: applying Levenshtein distance resultsProbableSorted={}", searchMovieParserResult.resultsProbable.toString());
+        //if (log.isTraceEnabled()) log.trace("getSearchMovieParserResult: applying Levenshtein distance resultsProbableSorted={}", searchMovieParserResult.resultsProbable.toString());
         return searchMovieParserResult;
     }
 }

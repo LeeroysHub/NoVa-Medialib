@@ -121,7 +121,7 @@ public class EpisodeTags extends BaseTags {
         //---------------------------------------------------
         long showId = mShowTags.save(context, videoId);
 
-        if (log.isDebugEnabled()) log.debug("Save called for episode {} showId {} onlineId {}", mTitle, showId, mOnlineId);
+        //if (log.isDebugEnabled()) log.debug("Save called for episode {} showId {} onlineId {}", mTitle, showId, mOnlineId);
 
         //---------------------------------------------------------------------------------------
         // Create a new entry for this episode in the database.
@@ -439,7 +439,7 @@ public class EpisodeTags extends BaseTags {
     }
 
     public void setEpisodePicture(String string, Context ct, boolean isPoster) {
-        if (log.isDebugEnabled()) log.debug("setEpisodePicture: {} isPoster={}", string, isPoster);
+        //if (log.isDebugEnabled()) log.debug("setEpisodePicture: {} isPoster={}", string, isPoster);
         ScraperImage image;
         if (isPoster)
             image = new ScraperImage(Type.EPISODE_POSTER, "");

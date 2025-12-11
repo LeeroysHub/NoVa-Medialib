@@ -50,7 +50,7 @@ public class ShowIdImagesParser {
         List<ScraperImage> backdrops = new ArrayList<>();
         List<Pair<Image, String>> tempBackdrops = new ArrayList<>();
 
-        if (log.isDebugEnabled()) log.debug("getResult: global {} poster {}, backdrop {}", showTitle, tvShow.poster_path, tvShow.backdrop_path);
+        //if (log.isDebugEnabled()) log.debug("getResult: global {} poster {}, backdrop {}", showTitle, tvShow.poster_path, tvShow.backdrop_path);
 
         posters.add(genPoster(showTitle, tvShow.poster_path, language, true, context));
         backdrops.add(genBackdrop(showTitle, tvShow.backdrop_path, language, context));
@@ -59,7 +59,7 @@ public class ShowIdImagesParser {
         for (TvSeason season : tvShow.seasons) {
             i += 1;
             if (season != null) {
-                if (log.isDebugEnabled()) log.debug("getResult: {} s{} poster {}", showTitle, i, season.poster_path);
+                //if (log.isDebugEnabled()) log.debug("getResult: {} s{} poster {}", showTitle, i, season.poster_path);
                 if (season.poster_path != null && !"null".equals(season.poster_path))
                     posters.add(genPoster(showTitle, season.poster_path, language, false, context));
             }
@@ -107,12 +107,12 @@ public class ShowIdImagesParser {
         tempBackdrops = new ArrayList<>(uniqueBackdrops.values());
 
         for(Pair<Image, String> poster : tempPosters) {
-            if (log.isDebugEnabled()) log.debug("getResult: generating ScraperImage for poster for {}, large={}{}", showTitle, ScraperImage.TMPL, poster.first.file_path);
+            //if (log.isDebugEnabled()) log.debug("getResult: generating ScraperImage for poster for {}, large={}{}", showTitle, ScraperImage.TMPL, poster.first.file_path);
             posters.add(genPoster(showTitle, poster.first.file_path, poster.second, true, context));
         }
 
         for(Pair<Image, String> backdrop : tempBackdrops) {
-            if (log.isDebugEnabled()) log.debug("getResult: generating ScraperImage for backdrop for {}, large={}{}", showTitle, ScraperImage.TMBL, backdrop.first.file_path);
+            //if (log.isDebugEnabled()) log.debug("getResult: generating ScraperImage for backdrop for {}, large={}{}", showTitle, ScraperImage.TMBL, backdrop.first.file_path);
             backdrops.add(genBackdrop(showTitle, backdrop.first.file_path, backdrop.second, context));
         }
 
@@ -127,7 +127,7 @@ public class ShowIdImagesParser {
         image.setLargeUrl(ScraperImage.TMPL + path);
         image.setThumbUrl(ScraperImage.TMPT + path);
         image.generateFileNames(context);
-        if (log.isDebugEnabled()) log.debug("genPoster: {}, has poster {} path {}", showTitle, image.getLargeUrl(), image.getLargeFile());
+        //if (log.isDebugEnabled()) log.debug("genPoster: {}, has poster {} path {}", showTitle, image.getLargeUrl(), image.getLargeFile());
         return image;
     }
 
@@ -137,7 +137,7 @@ public class ShowIdImagesParser {
         image.setLargeUrl(ScraperImage.TMBL + path);
         image.setThumbUrl(ScraperImage.TMBT + path);
         image.generateFileNames(context);
-        if (log.isDebugEnabled()) log.debug("genBackdrop: {}, has backdrop {} path {}", showTitle, image.getLargeUrl(), image.getLargeFile());
+        //if (log.isDebugEnabled()) log.debug("genBackdrop: {}, has backdrop {} path {}", showTitle, image.getLargeUrl(), image.getLargeFile());
         return image;
     }
 }
