@@ -973,10 +973,10 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
             MediaThumbRequest req = null;
             try {
                 // Avoid duplicate enqueue when the UI binds the same item repeatedly.
-                if (hasPendingThumbRequest(path, id)) {
-                    //if (log.isDebugEnabled()) log.debug("requestMediaThumbnail: already pending for {} ({})", path, id);
-                    return null;
-                }
+                //if (hasPendingThumbRequest(path, id)) {
+                //    //if (log.isDebugEnabled()) log.debug("requestMediaThumbnail: already pending for {} ({})", path, id);
+                //    return null;
+                //}
                 req = new MediaThumbRequest(
                         getContext(), path,id, uri, priority);
                 mMediaThumbQueue.add(req);
@@ -990,7 +990,7 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
         }
     }
 
-    private boolean hasPendingThumbRequest(String path, long id) {
+    /* private boolean hasPendingThumbRequest(String path, long id) {
         if (mCurrentThumbRequest != null && sameThumbRequest(mCurrentThumbRequest, path, id)) {
             return true;
         }
@@ -1000,11 +1000,11 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
             }
         }
         return false;
-    }
+    } 
 
     private boolean sameThumbRequest(MediaThumbRequest request, String path, long id) {
         return request != null && request.mOrigId == id && TextUtils.equals(request.mPath, path);
-    }
+    } */
 
     private static final UriMatcher URI_MATCHER =
             new UriMatcher(UriMatcher.NO_MATCH);
