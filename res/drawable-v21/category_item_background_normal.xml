@@ -5,10 +5,9 @@
     <item>
         <selector
             xmlns:android="http://schemas.android.com/apk/res/android" android:exitFadeDuration="0" >
-            <item android:state_pressed="true" android:drawable="@color/lightblue400" />
-            <item android:state_activated="true" android:drawable="@color/lightblue500" />
+            <item android:state_pressed="true" android:drawable="@drawable/rounded_rectangle_grey" />
+            <item android:state_activated="true" android:drawable="@drawable/rounded_rectangle_grey" />
             <item android:drawable="@android:color/transparent"/>
         </selector>
     </item>
-
 </ripple>

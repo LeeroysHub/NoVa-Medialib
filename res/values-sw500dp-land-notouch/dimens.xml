@@ -27,7 +27,7 @@
 
     <!-- ============ MUSIC & VIDEO BROWSER ============ -->
 <dimen name="content_list_left_margin">3dip</dimen>
-<dimen name="content_list_right_margin">0dip</dimen>
+<dimen name="content_list_right_margin">10dip</dimen>
 <dimen name="content_list_vertical_spacing_between_items">1dip</dimen>
 <dimen name="content_grid_vertical_spacing_between_items">12dip</dimen>
 <dimen name="content_grid_horizontal_minimal_spacing_between_items">7dip</dimen>
@@ -48,7 +48,7 @@
 <dimen name="video_details_poster_width">87dip</dimen>
 <dimen name="video_details_poster_margin_top">1dip</dimen>
 <dimen name="video_details_poster_margin_bottom">1dip</dimen>
-<dimen name="video_details_poster_margin_left">1dip</dimen>
+<dimen name="video_details_poster_margin_left">10dip</dimen>
 <dimen name="video_details_number_width">45dip</dimen>
 <dimen name="video_show_details_item_height">135dip</dimen>
 
@@ -81,7 +81,7 @@
 <dimen name="global_resume_video_height">37dip</dimen>
 <dimen name="global_resume_playbutton_width">30dip</dimen>
 <dimen name="global_resume_playbutton_height">30dip</dimen>
-<dimen name="global_resume_icon_padding_left">22dip</dimen>
+<dimen name="global_resume_icon_padding_left">10dip</dimen>
 <dimen name="global_resume_icon_padding_right">7dip</dimen>
 
     <!-- ============ QUICK ACTION ============ -->
