@@ -295,6 +295,11 @@ public class LibAvos {
         nativeSetAudioSpeed(audioSpeed);
     }
 
+    public static void setRaisePriority(boolean enable) {
+        Log.d(TAG, "setRaisePriority " + enable);
+        nativeSetRaisePriority(enable);
+    }
+
     public static void setAndroidFrameTiming(boolean enable) {
         Log.d(TAG, "setAndroidFrameTiming " + enable);
         nativeSetAndroidFrameTiming(enable);
@@ -364,6 +369,8 @@ public class LibAvos {
     private static native void nativeSetAudioSpeed(float audioSpeed);
 
     private static native void nativeSetAndroidFrameTiming(boolean enable);
+
+    private static native void nativeSetRaisePriority(boolean enable);
 
     private static native void nativeEnableAudioSpeed(boolean enable);
 
