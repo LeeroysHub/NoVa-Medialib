@@ -766,16 +766,16 @@ public final class ScraperTables {
             "delete from genre where _id in (select _id from v_genre_deletable); " +
             "DELETE FROM SHOW WHERE SHOW._id = OLD.show_episode AND NOT EXISTS (SELECT 1 FROM EPISODE WHERE show_episode = OLD.show_episode LIMIT 1); " +
             // set scraper type / id to -1 if something is refering this episode
-            "UPDATE " + VideoOpenHelper.FILES_TABLE_NAME + " SET ArchosMediaScraper_id=-1, ArchosMediaScraper_type=-1 " +
-            "WHERE ArchosMediaScraper_id = OLD._id AND ArchosMediaScraper_type = " + ScraperStore.SCRAPER_TYPE_SHOW + ";" +
+            "UPDATE " + VideoOpenHelper.FILES_TABLE_NAME + " SET lfx_mediascraper_id=-1, lfx_mediascraper_type=-1 " +
+            "WHERE lfx_mediascraper_id = OLD._id AND lfx_mediascraper_type = " + ScraperStore.SCRAPER_TYPE_SHOW + ";" +
             "END";
     private static final String EPISODE_DELETE_TRIGGER_CREATE_v2 =
             "CREATE TRIGGER episode_delete AFTER DELETE ON episode " +
                     "BEGIN " +
                     "DELETE FROM SHOW WHERE SHOW._id = OLD.show_episode AND NOT EXISTS (SELECT 1 FROM EPISODE WHERE show_episode = OLD.show_episode LIMIT 1); " +
                     // set scraper type / id to -1 if something is refering this episode
-                    "UPDATE " + VideoOpenHelper.FILES_TABLE_NAME + " SET ArchosMediaScraper_id=-1, ArchosMediaScraper_type=-1 " +
-                    "WHERE ArchosMediaScraper_id = OLD._id AND ArchosMediaScraper_type = " + ScraperStore.SCRAPER_TYPE_SHOW + ";" +
+                    "UPDATE " + VideoOpenHelper.FILES_TABLE_NAME + " SET lfx_mediascraper_id=-1, lfx_mediascraper_type=-1 " +
+                    "WHERE lfx_mediascraper_id = OLD._id AND lfx_mediascraper_type = " + ScraperStore.SCRAPER_TYPE_SHOW + ";" +
                     "END";
     private static final String MOVIE_DELETE_TRIGGER_DROP = "DROP TRIGGER IF EXISTS movie_delete";
     private static final String MOVIE_DELETE_TRIGGER_CREATE =
@@ -785,8 +785,8 @@ public final class ScraperTables {
             "delete from director where _id in (select _id from v_director_deletable); " +
             "delete from genre where _id in (select _id from v_genre_deletable); " +
             // set scraper type / id to -1 if something is refering this episode
-            "UPDATE " + VideoOpenHelper.FILES_TABLE_NAME + " SET ArchosMediaScraper_id=-1, ArchosMediaScraper_type=-1 " +
-            "WHERE ArchosMediaScraper_id = OLD._id AND ArchosMediaScraper_type = " + ScraperStore.SCRAPER_TYPE_MOVIE + ";" +
+            "UPDATE " + VideoOpenHelper.FILES_TABLE_NAME + " SET lfx_mediascraper_id=-1, lfx_mediascraper_type=-1 " +
+            "WHERE lfx_mediascraper_id = OLD._id AND lfx_mediascraper_type = " + ScraperStore.SCRAPER_TYPE_MOVIE + ";" +
             "INSERT INTO delete_files(name,use_count) VALUES(OLD.cover_movie, (SELECT COUNT("
             + ScraperStore.Movie.COVER + ") FROM " + MOVIE_TABLE_NAME + "  WHERE " + ScraperStore.Movie.COVER
             + " = OLD.cover_movie));" +
@@ -795,8 +795,8 @@ public final class ScraperTables {
             "CREATE TRIGGER movie_delete AFTER DELETE ON movie " +
                     "BEGIN " +
                     // set scraper type / id to -1 if something is refering this episode
-                    "UPDATE " + VideoOpenHelper.FILES_TABLE_NAME + " SET ArchosMediaScraper_id=-1, ArchosMediaScraper_type=-1 " +
-                    "WHERE ArchosMediaScraper_id = OLD._id AND ArchosMediaScraper_type = " + ScraperStore.SCRAPER_TYPE_MOVIE + ";" +
+                    "UPDATE " + VideoOpenHelper.FILES_TABLE_NAME + " SET lfx_mediascraper_id=-1, lfx_mediascraper_type=-1 " +
+                    "WHERE lfx_mediascraper_id = OLD._id AND lfx_mediascraper_type = " + ScraperStore.SCRAPER_TYPE_MOVIE + ";" +
                     "INSERT INTO delete_files(name,use_count) VALUES(OLD.cover_movie, (SELECT COUNT("
                     + ScraperStore.Movie.COVER + ") FROM " + MOVIE_TABLE_NAME + "  WHERE " + ScraperStore.Movie.COVER
                     + " = OLD.cover_movie));" +
@@ -820,14 +820,14 @@ public final class ScraperTables {
     private static final String MOVIE_INSERT_TRIGGER_CREATE =
             "CREATE TRIGGER movie_insert AFTER INSERT ON movie " +
             "BEGIN " +
-            "UPDATE " + VideoOpenHelper.FILES_TABLE_NAME + " SET ArchosMediaScraper_id=NEW._id, ArchosMediaScraper_type=" + ScraperStore.SCRAPER_TYPE_MOVIE +
+            "UPDATE " + VideoOpenHelper.FILES_TABLE_NAME + " SET lfx_mediascraper_id=NEW._id, lfx_mediascraper_type=" + ScraperStore.SCRAPER_TYPE_MOVIE +
             " WHERE remote_id=NEW.video_id;" +
             "END";
     private static final String EPISODE_INSERT_TRIGGER_DROP = "DROP TRIGGER IF EXISTS episode_insert";
     private static final String EPISODE_INSERT_TRIGGER_CREATE =
             "CREATE TRIGGER episode_insert AFTER INSERT ON episode " +
             "BEGIN " +
-            "UPDATE " + VideoOpenHelper.FILES_TABLE_NAME + " SET ArchosMediaScraper_id=NEW._id, ArchosMediaScraper_type=" + ScraperStore.SCRAPER_TYPE_SHOW +
+            "UPDATE " + VideoOpenHelper.FILES_TABLE_NAME + " SET lfx_mediascraper_id=NEW._id, lfx_mediascraper_type=" + ScraperStore.SCRAPER_TYPE_SHOW +
             " WHERE remote_id=NEW.video_id;" +
             "END";
     // uses cover_episode instead of cover_show if != null
@@ -1302,7 +1302,7 @@ public final class ScraperTables {
             db.execSQL("CREATE INDEX BELONGS_SHOW_idx ON BELONGS_SHOW(genre_belongs)");
             db.execSQL("CREATE INDEX PLAYS_SHOW_idx ON PLAYS_SHOW(actor_plays)");
             db.execSQL("CREATE INDEX PRODUCES_SHOW_idx ON PRODUCES_SHOW(studio_produces)");
-            db.execSQL("CREATE INDEX files_scraper_idx ON files(ArchosMediaScraper_id, ArchosMediaScraper_type)");
+            db.execSQL("CREATE INDEX files_scraper_idx ON files(lfx_mediascraper_id, lfx_mediascraper_type)");
             db.execSQL("CREATE INDEX MOVIE_cover_idx ON MOVIE(cover_movie)");
             // create new triggers that does not call each time a clean of v_.*_deletable tables: do it once at startup
             // for some reasons sometimes the triggers are not dropped, thus make sure it is deleted

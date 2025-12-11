@@ -379,19 +379,19 @@ public final class VideoStore {
              * The Synchronization ID
              * <P>Type: TEXT</P>
              */
-            public static final String ARCHOS_SYNC_ID = "Archos_syncId";
+            public static final String ARCHOS_SYNC_ID = "lfx_syncId";
 
             /**
              * Is this file consumable or not?
              * <P>Type: TEXT</P>
              */
-            public static final String ARCHOS_NON_CONSUMABLE = "Archos_nonConsumable";
+            public static final String ARCHOS_NON_CONSUMABLE = "lfx_nonConsumable";
 
             /**
              * Used by MediaScanner in light-indexing mode to store the remote server id
              * <P>Type: INTEGER</P>
              */
-            public static final String ARCHOS_SMB_SERVER = "Archos_smbserver";
+            public static final String ARCHOS_SMB_SERVER = "lfx_smbserver";
 
             /**
              * The bucket id of the video. This is a read-only property that
@@ -891,44 +891,44 @@ public final class VideoStore {
             public static final String BOOKMARK = "bookmark";
 
             /**
-             * Private archos flag to mark an entry as favorite (date entry is marked)
+             * Private leeroyflix flag to mark an entry as favorite (date entry is marked)
              * Units are seconds since 1970.
              * <P>Type: INTEGER (long)</P>
              */
-            public static final String IS_ARCHOS_FAVORITE = "Archos_favorite_track";
+            public static final String IS_ARCHOS_FAVORITE = "lfx_favorite_track";
 
             /**
-             * Private archos flag
+             * Private leeroyflix flag
              * <P>Type: INTEGER</P>
              */
-            public static final String ARCHOS_BOOKMARK = "Archos_bookmark";
+            public static final String ARCHOS_BOOKMARK = "lfx_bookmark";
 
             /**
              * unique ID used for upnp
              */
-            public static final String ARCHOS_UNIQUE_ID = "Archos_unique_id";
+            public static final String ARCHOS_UNIQUE_ID = "lfx_unique_id";
 
             /**
-            * Private archos flag to store the last date a media was played
+            * Private leeroyflix flag to store the last date a media was played
              * Units are seconds since 1970.
              * <P>Type: INTEGER (long)</P>
              */
-            public static final String ARCHOS_LAST_TIME_PLAYED = "Archos_lastTimePlayed";
+            public static final String ARCHOS_LAST_TIME_PLAYED = "lfx_lastTimePlayed";
 
             /**
-             * Private archos flag to store data needed by the Avos video player
+             * Private leeroyflix flag to store data needed by the Avos video player
              * <P>Type: INTEGER</P>
              */
-            public static final String ARCHOS_PLAYER_PARAMS = "Archos_playerParams";
+            public static final String ARCHOS_PLAYER_PARAMS = "lfx_playerParams";
 
             /**
-             * Private archos flag to store the subtitle delay (needed by the Avos video player)
+             * Private leeroyflix flag to store the subtitle delay (needed by the Avos video player)
              * <P>Type: INTEGER</P>
              */
-            public static final String ARCHOS_PLAYER_SUBTITLE_DELAY = "Archos_playerSubtitleDelay";
+            public static final String ARCHOS_PLAYER_SUBTITLE_DELAY = "lfx_playerSubtitleDelay";
 
             /**
-             * Private archos flag to store the subtitle (speed) ratio (needed by the Avos video player)<br>
+             * Private leeroyflix flag to store the subtitle (speed) ratio (needed by the Avos video player)<br>
              * <ul>
              * <li> 0: No Correction
              * <li> 1 : NTSC -> PAL
@@ -936,108 +936,108 @@ public final class VideoStore {
              * </ol>
              * <P>Type: INTEGER</P>
              */
-            public static final String ARCHOS_PLAYER_SUBTITLE_RATIO = "Archos_playerSubtitleRatio";
+            public static final String ARCHOS_PLAYER_SUBTITLE_RATIO = "lfx_playerSubtitleRatio";
 
             /**
-             * Private archos flag to store the selected subtitle language (2-letter code)
+             * Private Archos flag to store the selected subtitle language (2-letter code)
              * Used for validating subtitle track selection when re-enumerating files.
              * <P>Type: TEXT</P>
              */
-            public static final String ARCHOS_SUBTITLE_LANGUAGE = "Archos_subtitleLanguage";
+            public static final String ARCHOS_SUBTITLE_LANGUAGE = "lfx_subtitleLanguage";
 
             /**
-             * Private archos flag to store the associated scraper id
+             * Private Archos flag to store the associated scraper id
              * <P>Type: INTEGER</P>
              */
-            public static final String ARCHOS_MEDIA_SCRAPER_ID = "ArchosMediaScraper_id";
+            public static final String ARCHOS_MEDIA_SCRAPER_ID = "lfx_mediascraper_id";
 
             /**
-             * Private archos flag to store the associated scraper media type
+             * Private leeroyflix flag to store the associated scraper media type
              * <P>Type: INTEGER</P>
              */
-            public static final String ARCHOS_MEDIA_SCRAPER_TYPE = "ArchosMediaScraper_type";
+            public static final String ARCHOS_MEDIA_SCRAPER_TYPE = "lfx_mediascraper_type";
 
             /**
-             * Private archos flag to store the the number of subtitle tracks
+             * Private leeroyflix flag to store the the number of subtitle tracks
              * <P>Type: INTEGER</P>
              */
-            public static final String ARCHOS_NUMBER_OF_SUBTITLE_TRACKS = "Archos_numberOfSubtitleTracks";
+            public static final String ARCHOS_NUMBER_OF_SUBTITLE_TRACKS = "lfx_numberOfSubtitleTracks";
 
             /**
-             * Private archos flag to store the number of audio tracks
+             * Private leeroyflix flag to store the number of audio tracks
              * <P>Type: INTEGER</P>
              */
-            public static final String ARCHOS_NUMBER_OF_AUDIO_TRACKS = "Archos_numberOfAudioTracks";
+            public static final String ARCHOS_NUMBER_OF_AUDIO_TRACKS = "lfx_numberOfAudioTracks";
 
             /**
-             * Private archos flag to store the video FourCCCodec
+             * Private leeroyflix flag to store the video FourCCCodec
              * <P>Type: INTEGER</P>
              */
-            public static final String ARCHOS_VIDEO_FOURCC_CODEC = "Archos_videoFourCCCodec";
+            public static final String ARCHOS_VIDEO_FOURCC_CODEC = "lfx_videoFourCCCodec";
 
             /**
-             * Private archos flag to store the video bitrate
+             * Private leeroyflix flag to store the video bitrate
              * <P>Type: INTEGER</P>
              */
-            public static final String ARCHOS_VIDEO_BITRATE = "Archos_videoBitRate";
+            public static final String ARCHOS_VIDEO_BITRATE = "lfx_videoBitRate";
 
             /**
-             * Private archos flag to store the frames per thousand seconds
+             * Private leeroyflix flag to store the frames per thousand seconds
              * <P>Type: INTEGER</P>
              */
-            public static final String ARCHOS_FRAMES_PER_THOUSAND_SECONDS = "Archos_framesPerThousandSeconds";
+            public static final String ARCHOS_FRAMES_PER_THOUSAND_SECONDS = "lfx_framesPerThousandSeconds";
 
             /**
-             * Private archos flag to store the encoding profile
+             * Private leeroyflix flag to store the encoding profile
              * <P>Type: TEXT</P>
              */
-            public static final String ARCHOS_ENCODING_PROFILE = "Archos_encodingProfile";
+            public static final String ARCHOS_ENCODING_PROFILE = "lfx_encodingProfile";
 
             /**
-             * Private archos flag to store the scan type
+             * Private leeroyflix flag to store the scan type
              * <P>TYPE: INTEGER<P>
              */
-            public static final String ARCHOS_SCAN_TYPE = "Archos_scanType";
+            public static final String ARCHOS_SCAN_TYPE = "lfx_scanType";
 
             /**
-             * Private archos flag to hide some special Files. Used for multipart DVD video vobs.
+             * Private leeroyflix flag to hide some special Files. Used for multipart DVD video vobs.
              * <P>TYPE: INTEGER<P>
              */
-            public static final String ARCHOS_HIDE_FILE = "Archos_hideFile";
+            public static final String ARCHOS_HIDE_FILE = "lfx_hideFile";
 
             /**
-             * Private archos flag to hide files on user request.
+             * Private leeroyflix flag to hide files on user request.
              * <P>TYPE: INTEGER<P>
              */
-            public static final String ARCHOS_HIDDEN_BY_USER = "Archos_hiddenByUser";
+            public static final String ARCHOS_HIDDEN_BY_USER = "lfx_hiddenByUser";
 
             /**
              * Custom title set by our apps. Use TITLE to query, it will show this one if it is set.
              * <P>TYPE: TEXT<P>
              */
-            public static final String ARCHOS_TITLE = "Archos_title";
+            public static final String ARCHOS_TITLE = "lfx_title";
 
             /**
-             * Private archos flag to store if video is seen on trakt.
+             * Private leeroyflix flag to store if video is seen on trakt.
              * <P>TYPE: INTEGER<P>
              */
-            public static final String ARCHOS_TRAKT_SEEN = "Archos_traktSeen";
+            public static final String ARCHOS_TRAKT_SEEN = "lfx_traktSeen";
 
             /**
-             * Private archos flag to store if video is on trakt library.
+             * Private leeroyflix flag to store if video is on trakt library.
              * <P>TYPE: INTEGER<P>
              */
-            public static final String ARCHOS_TRAKT_LIBRARY = "Archos_traktLibrary";
+            public static final String ARCHOS_TRAKT_LIBRARY = "lfx_traktLibrary";
 
             /**
-             * Private archos flag to store trakt resume point for synchronisation.
+             * Private leeroyflix flag to store trakt resume point for synchronisation.
              * <P>TYPE: INTEGER<P>
              */
             
-            public static final String ARCHOS_TRAKT_RESUME = "Archos_traktResume";
+            public static final String ARCHOS_TRAKT_RESUME = "lfx_traktResume";
             
             /**
-             * Private archos flag to store if video is 3D, and which type if it is.
+             * Private leeroyflix flag to store if video is 3D, and which type if it is.
              * <ul>
              * <li> 0 : 2D
              * <li> 1 : 3D Unknown type
@@ -1047,7 +1047,7 @@ public final class VideoStore {
              * </ol>
              * <P>Type: INTEGER</P>
              */
-            public static final String ARCHOS_VIDEO_STEREO = "Archos_videoStereo";
+            public static final String ARCHOS_VIDEO_STEREO = "lfx_videoStereo";
 
             /**
              * Constant for the {@link #ARCHOS_VIDEO_STEREO} column indicating that the video is 2D.
@@ -1075,7 +1075,7 @@ public final class VideoStore {
             public static final int ARCHOS_STEREO_3D_ANAGLYPH = 4;
 
             /**
-             * Private archos flag to store the video definition.
+             * Private leeroyflix flag to store the video definition.
              * <ul>
              * <li> 0 : SD
              * <li> 1 : 720p
@@ -1083,7 +1083,7 @@ public final class VideoStore {
              * </ol>
              * <P>Type: INTEGER</P>
              */
-            public static final String ARCHOS_VIDEO_DEFINITION = "Archos_videoDefinition";
+            public static final String ARCHOS_VIDEO_DEFINITION = "lfx_videoDefinition";
 
             /**
              * Constant for the {@link #ARCHOS_VIDEO_DEFINITION} column indicating that we do not know the definition.
@@ -1110,15 +1110,15 @@ public final class VideoStore {
              */
             public static final int ARCHOS_DEFINITION_SD = 4;
 
-            public static final String ARCHOS_GUESSED_VIDEO_FORMAT = "Archos_guessedVideoFormat";
+            public static final String ARCHOS_GUESSED_VIDEO_FORMAT = "lfx_guessedVideoFormat";
 
-            public static final String ARCHOS_GUESSED_AUDIO_FORMAT = "Archos_guessedAudioFormat";
+            public static final String ARCHOS_GUESSED_AUDIO_FORMAT = "lfx_guessedAudioFormat";
 
-            public static final String ARCHOS_CALCULATED_VIDEO_FORMAT = "Archos_calculatedVideoFormat";
+            public static final String ARCHOS_CALCULATED_VIDEO_FORMAT = "lfx_calculatedVideoFormat";
 
-            public static final String ARCHOS_CALCULATED_BEST_AUDIOTRACK_CHANNELS = "Archos_bestAudiotrack";
+            public static final String ARCHOS_CALCULATED_BEST_AUDIOTRACK_CHANNELS = "lfx_bestAudiotrack";
 
-            public static final String ARCHOS_CALCULATED_BEST_AUDIOTRACK_FORMAT = "Archos_bestAudiotrackFormat";
+            public static final String ARCHOS_CALCULATED_BEST_AUDIOTRACK_FORMAT = "lfx_bestAudiotrackFormat";
 
 
             public static final int ARCHOS_AUDIO_FIVEDOTONE = 1;
@@ -1530,35 +1530,35 @@ public final class VideoStore {
             public static final String SCRAPER_S_CONTENT_RATING = ScraperStore.Show.CONTENT_RATING;
 
             /**
-             * Private archos flag to store the number of time a thumbnail creation
+             * Private leeroyflix flag to store the number of time a thumbnail creation
              * has failed for this media.
              * <P>Type: INTEGER</P>
              */
-            public static final String ARCHOS_THUMB_TRY = "Archos_thumbTry";
+            public static final String ARCHOS_THUMB_TRY = "lfx_thumbTry";
 
             /**
-             * Private archos flag to store the samplerate
+             * Private leeroyflix flag to store the samplerate
              * <P> Type: INTEGER (long)</P>
              */
-            public static final String ARCHOS_SAMPLERATE = "Archos_sampleRate";
+            public static final String ARCHOS_SAMPLERATE = "lfx_sampleRate";
 
             /**
-             * Private archos flag to store the number of Channels
+             * Private leeroyflix flag to store the number of Channels
              * <P> Type: INTEGER (long)</P>
              */
-            public static final String ARCHOS_NUMBER_OF_CHANNELS = "Archos_numberOfChannels";
+            public static final String ARCHOS_NUMBER_OF_CHANNELS = "lfx_numberOfChannels";
 
             /**
-             * Private archos flag to store the audio bitrate
+             * Private leeroyflix flag to store the audio bitrate
              * <P> Type: INTEGER (long) </P>
              */
-            public static final String ARCHOS_AUDIO_BITRATE = "Archos_audioBitRate";
+            public static final String ARCHOS_AUDIO_BITRATE = "lfx_audioBitRate";
 
             /**
-             * Private archos flag to store the audio wave codec
+             * Private leeroyflix flag to store the audio wave codec
              * <P> Type: INTEGER (long) </P>
              */
-            public static final String ARCHOS_AUDIO_WAVE_CODEC = "Archos_audioWaveCodec";
+            public static final String ARCHOS_AUDIO_WAVE_CODEC = "lfx_audioWaveCodec";
 
             /**
              * Amount of subtitles assiciated with this video in Subtitles table

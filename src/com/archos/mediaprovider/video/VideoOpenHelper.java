@@ -100,7 +100,7 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                 "format = NEW.format , \n" +
                 "parent = NEW.parent , \n" +
                 "storage_id = NEW.storage_id , \n" +
-                "Archos_smbserver = 0 , \n" +
+                "lfx_smbserver = 0 , \n" +
                 "volume_hidden = 0\n" + // NEW - set hidden to false
                 "WHERE _data=NEW._data;\n" +
              "END";
@@ -157,9 +157,9 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
             "    format              INTEGER,\n" +
             "    parent              INTEGER DEFAULT ( -1 ),\n" +
             "    storage_id          INTEGER,\n" +
-            "    Archos_smbserver    INTEGER DEFAULT ( 0 ),\n" +
-            "    Archos_videoStereo  INTEGER DEFAULT (0),\n" +
-            "    Archos_videoDefinition INTEGER DEFAULT (0),\n" +
+            "    lfx_smbserver    INTEGER DEFAULT ( 0 ),\n" +
+            "    lfx_videoStereo  INTEGER DEFAULT (0),\n" +
+            "    lfx_videoDefinition INTEGER DEFAULT (0),\n" +
             VideoColumns.ARCHOS_UNIQUE_ID + " STRING DEFAULT (''),\n" +
             VideoColumns.ARCHOS_GUESSED_AUDIO_FORMAT + " STRING,\n" +
             VideoColumns.ARCHOS_GUESSED_VIDEO_FORMAT +" STRING\n" +
@@ -189,9 +189,9 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                 "format = NEW.format , \n" +
                 "parent = NEW.parent , \n" +
                 "storage_id = NEW.storage_id , \n" +
-                "Archos_smbserver = NEW.Archos_smbserver , \n" +
-                "Archos_videoStereo = NEW.Archos_videoStereo , \n" +
-                "Archos_videoDefinition = NEW.Archos_videoDefinition, \n" +
+                "lfx_smbserver = NEW.lfx_smbserver , \n" +
+                "lfx_videoStereo = NEW.lfx_videoStereo , \n" +
+                "lfx_videoDefinition = NEW.lfx_videoDefinition, \n" +
                 VideoColumns.ARCHOS_GUESSED_AUDIO_FORMAT+" = NEW."+VideoColumns.ARCHOS_GUESSED_AUDIO_FORMAT+", \n" + // new
                 VideoColumns.ARCHOS_GUESSED_VIDEO_FORMAT+" = NEW."+VideoColumns.ARCHOS_GUESSED_VIDEO_FORMAT+"\n" + // new
                 "WHERE remote_id=(NEW._id + " + SCANNED_ID_OFFSET + ");" +
@@ -206,7 +206,7 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
 
     // indexes for network scanner performance optimization
     private static final String CREATE_FILES_SCANNED_IDX_UNIQUE_ID =
-            "CREATE INDEX IF NOT EXISTS idx_archos_unique_id ON " + FILES_SCANNED_TABLE_NAME + "(archos_unique_id)";
+            "CREATE INDEX IF NOT EXISTS idx_lfx_unique_id ON " + FILES_SCANNED_TABLE_NAME + "(lfx_unique_id)";
 
     private static final String CREATE_FILES_SCANNED_IDX_DATA =
             "CREATE INDEX IF NOT EXISTS idx_data_prefix ON " + FILES_SCANNED_TABLE_NAME + "(_data)";
@@ -233,7 +233,7 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
             "    format                          INTEGER,\n" +
             "    parent                          INTEGER DEFAULT ( -1 ),\n" +
             "    storage_id                      INTEGER,\n" +
-            "    Archos_smbserver                INTEGER DEFAULT ( 0 ), \n" +
+            "    lfx_smbserver                INTEGER DEFAULT ( 0 ), \n" +
             "    remote_id                       INTEGER UNIQUE ON CONFLICT IGNORE,\n" +
             "    scan_state                      INTEGER DEFAULT ( 0 ),\n" +
             "    mime_type                       TEXT,\n" +
@@ -261,36 +261,36 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
             "    mini_thumb_data                 TEXT,\n" +
             "    mini_thumb_magic                INTEGER,\n" +
             "    bookmark                        INTEGER,\n" +
-            "    Archos_favorite_track           INTEGER DEFAULT ( 0 ),\n" +
-            "    Archos_bookmark                 INTEGER DEFAULT ( 0 ),\n" +
-            "    Archos_lastTimePlayed           INTEGER DEFAULT ( 0 ),\n" +
-            "    Archos_playerParams             INTEGER DEFAULT ( 0 ),\n" +
-            "    Archos_playerSubtitleDelay      INTEGER DEFAULT ( 0 ),\n" +
-            "    ArchosMediaScraper_id           INTEGER DEFAULT ( 0 ),\n" +
-            "    ArchosMediaScraper_type         INTEGER DEFAULT ( 0 ),\n" +
-            "    Archos_numberOfSubtitleTracks   INTEGER DEFAULT ( -1 ),\n" +
-            "    Archos_numberOfAudioTracks      INTEGER DEFAULT ( -1 ),\n" +
-            "    Archos_sampleRate               INTEGER DEFAULT ( 0 ),\n" +
-            "    Archos_numberOfChannels         INTEGER DEFAULT ( 0 ),\n" +
-            "    Archos_audioWaveCodec           INTEGER DEFAULT ( 0 ),\n" +
-            "    Archos_audioBitRate             INTEGER DEFAULT ( 0 ),\n" +
-            "    Archos_videoFourCCCodec         INTEGER DEFAULT ( 0 ),\n" +
-            "    Archos_videoBitRate             INTEGER DEFAULT ( 0 ),\n" +
-            "    Archos_framesPerThousandSeconds INTEGER DEFAULT ( 0 ),\n" +
-            "    Archos_encodingProfile          TEXT    DEFAULT ( NULL ),\n" +
-            "    Archos_playerSubtitleRatio      INTEGER DEFAULT ( 0 ),\n" +
-            "    Archos_thumbTry                 INTEGER DEFAULT ( 0 ),\n" +
-            "    Archos_hideFile                 INTEGER DEFAULT ( 0 ),\n" +
-            "    Archos_title                    TEXT    DEFAULT ( NULL ),\n" +
+            "    lfx_favorite_track           INTEGER DEFAULT ( 0 ),\n" +
+            "    lfx_bookmark                 INTEGER DEFAULT ( 0 ),\n" +
+            "    lfx_lastTimePlayed           INTEGER DEFAULT ( 0 ),\n" +
+            "    lfx_playerParams             INTEGER DEFAULT ( 0 ),\n" +
+            "    lfx_playerSubtitleDelay      INTEGER DEFAULT ( 0 ),\n" +
+            "    lfx_mediascraper_id           INTEGER DEFAULT ( 0 ),\n" +
+            "    lfx_mediascraper_type         INTEGER DEFAULT ( 0 ),\n" +
+            "    lfx_numberOfSubtitleTracks   INTEGER DEFAULT ( -1 ),\n" +
+            "    lfx_numberOfAudioTracks      INTEGER DEFAULT ( -1 ),\n" +
+            "    lfx_sampleRate               INTEGER DEFAULT ( 0 ),\n" +
+            "    lfx_numberOfChannels         INTEGER DEFAULT ( 0 ),\n" +
+            "    lfx_audioWaveCodec           INTEGER DEFAULT ( 0 ),\n" +
+            "    lfx_audioBitRate             INTEGER DEFAULT ( 0 ),\n" +
+            "    lfx_videoFourCCCodec         INTEGER DEFAULT ( 0 ),\n" +
+            "    lfx_videoBitRate             INTEGER DEFAULT ( 0 ),\n" +
+            "    lfx_framesPerThousandSeconds INTEGER DEFAULT ( 0 ),\n" +
+            "    lfx_encodingProfile          TEXT    DEFAULT ( NULL ),\n" +
+            "    lfx_playerSubtitleRatio      INTEGER DEFAULT ( 0 ),\n" +
+            "    lfx_thumbTry                 INTEGER DEFAULT ( 0 ),\n" +
+            "    lfx_hideFile                 INTEGER DEFAULT ( 0 ),\n" +
+            "    lfx_title                    TEXT    DEFAULT ( NULL ),\n" +
             "    subtitle_count_ext INTEGER DEFAULT (0),\n" +
             "    autoscrape_status INTEGER DEFAULT (0)\n," +
             "    volume_hidden INTEGER DEFAULT (0)\n," +
-            "    Archos_traktSeen INTEGER DEFAULT (0)\n," +
-            "    Archos_traktLibrary INTEGER DEFAULT (0)\n," +
-            "    Archos_videoStereo INTEGER DEFAULT (0)\n," +
-            "    Archos_videoDefinition INTEGER DEFAULT (0),\n" +
-            "    Archos_traktResume INTEGER DEFAULT (0),\n" +
-            "    Archos_hiddenByUser INTEGER DEFAULT (0),\n" +
+            "    lfx_traktSeen INTEGER DEFAULT (0)\n," +
+            "    lfx_traktLibrary INTEGER DEFAULT (0)\n," +
+            "    lfx_videoStereo INTEGER DEFAULT (0)\n," +
+            "    lfx_videoDefinition INTEGER DEFAULT (0),\n" +
+            "    lfx_traktResume INTEGER DEFAULT (0),\n" +
+            "    lfx_hiddenByUser INTEGER DEFAULT (0),\n" +
             VideoColumns.ARCHOS_CALCULATED_VIDEO_FORMAT + " STRING,\n" +
             VideoColumns.ARCHOS_CALCULATED_BEST_AUDIOTRACK_FORMAT + " STRING,\n" +
             VideoColumns.ARCHOS_GUESSED_AUDIO_FORMAT + " STRING,\n" +
@@ -316,18 +316,18 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
 
     // triggers to remove scraper data on scraper id change
     private static final String CREATE_FILES_TRIGGER_SCRAPER_MOVIE_CLEANUP =
-            "CREATE TRIGGER scraper_movie_cleanup AFTER UPDATE OF ArchosMediaScraper_id ON " +
-            FILES_TABLE_NAME + " WHEN OLD.ArchosMediaScraper_type=" + ScraperStore.SCRAPER_TYPE_MOVIE +
-            " AND NEW.ArchosMediaScraper_id != OLD.ArchosMediaScraper_id " +
+            "CREATE TRIGGER scraper_movie_cleanup AFTER UPDATE OF lfx_mediascraper_id ON " +
+            FILES_TABLE_NAME + " WHEN OLD.lfx_mediascraper_type=" + ScraperStore.SCRAPER_TYPE_MOVIE +
+            " AND NEW.lfx_mediascraper_id != OLD.lfx_mediascraper_id " +
             "BEGIN " +
-            "DELETE FROM movie WHERE _id = OLD.ArchosMediaScraper_id; " +
+            "DELETE FROM movie WHERE _id = OLD.lfx_mediascraper_id; " +
             "END";
     private static final String CREATE_FILES_TRIGGER_SCRAPER_EPISODE_CLEANUP =
-            "CREATE TRIGGER scraper_episode_cleanup AFTER UPDATE OF ArchosMediaScraper_id ON " +
-            FILES_TABLE_NAME + " WHEN OLD.ArchosMediaScraper_type=" + ScraperStore.SCRAPER_TYPE_SHOW +
-            " AND NEW.ArchosMediaScraper_id != OLD.ArchosMediaScraper_id " +
+            "CREATE TRIGGER scraper_episode_cleanup AFTER UPDATE OF lfx_mediascraper_id ON " +
+            FILES_TABLE_NAME + " WHEN OLD.lfx_mediascraper_type=" + ScraperStore.SCRAPER_TYPE_SHOW +
+            " AND NEW.lfx_mediascraper_id != OLD.lfx_mediascraper_id " +
             "BEGIN " +
-            "DELETE FROM episode WHERE _id = OLD.ArchosMediaScraper_id; " +
+            "DELETE FROM episode WHERE _id = OLD.lfx_mediascraper_id; " +
             "END";
     /* VOB file detection to trigger code that hides unwanted vobs */
     // trigger to callback java VobHandler when a new vob is inserted
@@ -368,9 +368,9 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
             "CREATE INDEX bucket_index ON " + FILES_TABLE_NAME + " (bucket_id, media_type" /*TODO ?? + ", datetaken"*/ + ", _id)";
     private static final String CREATE_FILES_IDX_PATH =
             "CREATE INDEX path_index ON " + FILES_TABLE_NAME + "(_data)";
-    // should speed up most queries on Video that contain the typical Archos_hideFile = 0
+    // should speed up most queries on Video that contain the typical lfx_hideFile = 0
     private static final String CREATE_FILES_HIDDEN_IDX =
-            "CREATE INDEX files_hidden ON " + FILES_TABLE_NAME + " (volume_hidden, media_type, Archos_hideFile)";
+            "CREATE INDEX files_hidden ON " + FILES_TABLE_NAME + " (volume_hidden, media_type, lfx_hideFile)";
 
     // ------------- ---##[ SMB Server mechanism ]## ---------------------------
     // smb_server table holds server identifier and active state
@@ -388,7 +388,7 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
     public static final String SMB_SERVER_ACTIVE_VIEW_NAME = "smb_server_acitve";
     private static final String CREATE_SMB_SERVER_ACTIVE_VIEW =
             "CREATE VIEW " + SMB_SERVER_ACTIVE_VIEW_NAME + " AS " +
-            "SELECT _id AS Archos_smbserver FROM smb_server WHERE active != 0";
+            "SELECT _id AS lfx_smbserver FROM smb_server WHERE active != 0";
 
     /* ---------------------------------------------------------------------- */
     /* --                       VIDEO database part                           */
@@ -406,9 +406,9 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "    date_added,\n" +
                     "    date_modified,\n" +
                     "    inserted,\n" +
-                    "    coalesce( archos_title, title ) AS title,\n" +
+                    "    coalesce( lfx_title, title ) AS title,\n" +
                     "    title AS android_title,\n" +
-                    "    archos_title,\n" +
+                    "    lfx_title,\n" +
                     "    duration,\n" +
                     "    artist,\n" +
                     "    album,\n" +
@@ -428,28 +428,28 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "    bookmark,\n" +
                     "    width,\n" +
                     "    height,\n" +
-                    "    Archos_favorite_track,\n" +
-                    "    Archos_bookmark,\n" +
-                    "    Archos_lastTimePlayed,\n" +
-                    "    Archos_playerParams,\n" +
-                    "    Archos_playerSubtitleDelay,\n" +
-                    "    ArchosMediaScraper_id,\n" +
-                    "    ArchosMediaScraper_type,\n" +
-                    "    Archos_numberOfSubtitleTracks,\n" +
+                    "    lfx_favorite_track,\n" +
+                    "    lfx_bookmark,\n" +
+                    "    lfx_lastTimePlayed,\n" +
+                    "    lfx_playerParams,\n" +
+                    "    lfx_playerSubtitleDelay,\n" +
+                    "    lfx_mediascraper_id,\n" +
+                    "    lfx_mediascraper_type,\n" +
+                    "    lfx_numberOfSubtitleTracks,\n" +
                     "    subtitle_count_ext,\n" +
-                    "    Archos_numberOfAudioTracks,\n" +
-                    "    Archos_sampleRate,\n" +
-                    "    Archos_numberOfChannels,\n" +
-                    "    Archos_audioWaveCodec,\n" +
-                    "    Archos_audioBitRate,\n" +
-                    "    Archos_videoFourCCCodec,\n" +
-                    "    Archos_videoBitRate,\n" +
-                    "    Archos_framesPerThousandSeconds,\n" +
-                    "    Archos_encodingProfile,\n" +
-                    "    Archos_playerSubtitleRatio,\n" +
-                    "    Archos_thumbTry,\n" +
-                    "    Archos_hideFile,\n" +
-                    "    Archos_hiddenByUser,\n" +  //NEW hidden by user feature
+                    "    lfx_numberOfAudioTracks,\n" +
+                    "    lfx_sampleRate,\n" +
+                    "    lfx_numberOfChannels,\n" +
+                    "    lfx_audioWaveCodec,\n" +
+                    "    lfx_audioBitRate,\n" +
+                    "    lfx_videoFourCCCodec,\n" +
+                    "    lfx_videoBitRate,\n" +
+                    "    lfx_framesPerThousandSeconds,\n" +
+                    "    lfx_encodingProfile,\n" +
+                    "    lfx_playerSubtitleRatio,\n" +
+                    "    lfx_thumbTry,\n" +
+                    "    lfx_hideFile,\n" +
+                    "    lfx_hiddenByUser,\n" +  //NEW hidden by user feature
                     "    m._id AS m_id,\n" +
                     "    s._id AS s_id,\n" +
                     "    e._id AS e_id,\n" +
@@ -543,11 +543,11 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "    mb.m_bd_large_url,\n" +
                     "    mb.m_bd_large_file,\n" +
                     "    autoscrape_status,\n" +
-                    "    Archos_traktSeen,\n" +
-                    "    Archos_traktLibrary,\n" +
-                    "    Archos_videoStereo,\n" +
-                    "    Archos_videoDefinition,\n" +
-                    "    Archos_traktResume,\n" +
+                    "    lfx_traktSeen,\n" +
+                    "    lfx_traktLibrary,\n" +
+                    "    lfx_videoStereo,\n" +
+                    "    lfx_videoDefinition,\n" +
+                    "    lfx_traktResume,\n" +
                     "    "+VideoColumns.ARCHOS_CALCULATED_VIDEO_FORMAT +",\n" +
                     "    "+VideoColumns.ARCHOS_CALCULATED_BEST_AUDIOTRACK_FORMAT +",\n" +
                     "    "+VideoColumns.ARCHOS_GUESSED_VIDEO_FORMAT+",\n" +
@@ -566,8 +566,8 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "WHERE\n" +
                     "    volume_hidden == 0 AND\n" +
                     "    media_type == 3 AND\n" +
-                    "    (Archos_smbserver == 0 OR\n" +
-                    "    Archos_smbserver IN (SELECT _id FROM smb_server WHERE active == 1))";
+                    "    (lfx_smbserver == 0 OR\n" +
+                    "    lfx_smbserver IN (SELECT _id FROM smb_server WHERE active == 1))";
 
 	private static final String CREATE_VIDEO_VIEW_V37 =
 			"CREATE VIEW " + VIDEO_VIEW_NAME + " AS SELECT \n" +
@@ -579,9 +579,9 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
 					"    date_added,\n" +
 					"    date_modified,\n" +
 					"    inserted,\n" +
-					"    coalesce( archos_title, title ) AS title,\n" +
+					"    coalesce( lfx_title, title ) AS title,\n" +
 					"    title AS android_title,\n" +
-					"    archos_title,\n" +
+					"    lfx_title,\n" +
 					"    duration,\n" +
 					"    artist,\n" +
 					"    album,\n" +
@@ -601,28 +601,28 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
 					"    bookmark,\n" +
 					"    width,\n" +
 					"    height,\n" +
-					"    Archos_favorite_track,\n" +
-					"    Archos_bookmark,\n" +
-					"    Archos_lastTimePlayed,\n" +
-					"    Archos_playerParams,\n" +
-					"    Archos_playerSubtitleDelay,\n" +
-					"    ArchosMediaScraper_id,\n" +
-					"    ArchosMediaScraper_type,\n" +
-					"    Archos_numberOfSubtitleTracks,\n" +
+					"    lfx_favorite_track,\n" +
+					"    lfx_bookmark,\n" +
+					"    lfx_lastTimePlayed,\n" +
+					"    lfx_playerParams,\n" +
+					"    lfx_playerSubtitleDelay,\n" +
+					"    lfx_mediascraper_id,\n" +
+					"    lfx_mediascraper_type,\n" +
+					"    lfx_numberOfSubtitleTracks,\n" +
 					"    subtitle_count_ext,\n" +
-					"    Archos_numberOfAudioTracks,\n" +
-					"    Archos_sampleRate,\n" +
-					"    Archos_numberOfChannels,\n" +
-					"    Archos_audioWaveCodec,\n" +
-					"    Archos_audioBitRate,\n" +
-					"    Archos_videoFourCCCodec,\n" +
-					"    Archos_videoBitRate,\n" +
-					"    Archos_framesPerThousandSeconds,\n" +
-					"    Archos_encodingProfile,\n" +
-					"    Archos_playerSubtitleRatio,\n" +
-					"    Archos_thumbTry,\n" +
-					"    Archos_hideFile,\n" +
-					"    Archos_hiddenByUser,\n" +  //NEW hidden by user feature
+					"    lfx_numberOfAudioTracks,\n" +
+					"    lfx_sampleRate,\n" +
+					"    lfx_numberOfChannels,\n" +
+					"    lfx_audioWaveCodec,\n" +
+					"    lfx_audioBitRate,\n" +
+					"    lfx_videoFourCCCodec,\n" +
+					"    lfx_videoBitRate,\n" +
+					"    lfx_framesPerThousandSeconds,\n" +
+					"    lfx_encodingProfile,\n" +
+					"    lfx_playerSubtitleRatio,\n" +
+					"    lfx_thumbTry,\n" +
+					"    lfx_hideFile,\n" +
+					"    lfx_hiddenByUser,\n" +  //NEW hidden by user feature
 					"    m._id AS m_id,\n" +
 					"    s._id AS s_id,\n" +
 					"    e._id AS e_id,\n" +
@@ -716,11 +716,11 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
 					"    mb.m_bd_large_url,\n" +
 					"    mb.m_bd_large_file,\n" +
 					"    autoscrape_status,\n" +
-					"    Archos_traktSeen,\n" +
-					"    Archos_traktLibrary,\n" +
-					"    Archos_videoStereo,\n" +
-					"    Archos_videoDefinition,\n" +
-					"    Archos_traktResume,\n" +
+					"    lfx_traktSeen,\n" +
+					"    lfx_traktLibrary,\n" +
+					"    lfx_videoStereo,\n" +
+					"    lfx_videoDefinition,\n" +
+					"    lfx_traktResume,\n" +
 					"    "+VideoColumns.ARCHOS_CALCULATED_VIDEO_FORMAT +",\n" +
 					"    "+VideoColumns.ARCHOS_CALCULATED_BEST_AUDIOTRACK_FORMAT +",\n" +
 					"    "+VideoColumns.ARCHOS_GUESSED_VIDEO_FORMAT+",\n" +
@@ -740,8 +740,8 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
 					"WHERE\n" +
 					"    volume_hidden == 0 AND\n" +
 					"    media_type == 3 AND\n" +
-					"    (Archos_smbserver == 0 OR\n" +
-					"    Archos_smbserver IN (SELECT _id FROM smb_server WHERE active == 1))";
+					"    (lfx_smbserver == 0 OR\n" +
+					"    lfx_smbserver IN (SELECT _id FROM smb_server WHERE active == 1))";
 
 	// add movie collection information
     private static final String CREATE_VIDEO_VIEW_V38 =
@@ -754,9 +754,9 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "    date_added,\n" +
                     "    date_modified,\n" +
                     "    inserted,\n" +
-                    "    coalesce( archos_title, title ) AS title,\n" +
+                    "    coalesce( lfx_title, title ) AS title,\n" +
                     "    title AS android_title,\n" +
-                    "    archos_title,\n" +
+                    "    lfx_title,\n" +
                     "    duration,\n" +
                     "    artist,\n" +
                     "    album,\n" +
@@ -776,28 +776,28 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "    bookmark,\n" +
                     "    width,\n" +
                     "    height,\n" +
-                    "    Archos_favorite_track,\n" +
-                    "    Archos_bookmark,\n" +
-                    "    Archos_lastTimePlayed,\n" +
-                    "    Archos_playerParams,\n" +
-                    "    Archos_playerSubtitleDelay,\n" +
-                    "    ArchosMediaScraper_id,\n" +
-                    "    ArchosMediaScraper_type,\n" +
-                    "    Archos_numberOfSubtitleTracks,\n" +
+                    "    lfx_favorite_track,\n" +
+                    "    lfx_bookmark,\n" +
+                    "    lfx_lastTimePlayed,\n" +
+                    "    lfx_playerParams,\n" +
+                    "    lfx_playerSubtitleDelay,\n" +
+                    "    lfx_mediascraper_id,\n" +
+                    "    lfx_mediascraper_type,\n" +
+                    "    lfx_numberOfSubtitleTracks,\n" +
                     "    subtitle_count_ext,\n" +
-                    "    Archos_numberOfAudioTracks,\n" +
-                    "    Archos_sampleRate,\n" +
-                    "    Archos_numberOfChannels,\n" +
-                    "    Archos_audioWaveCodec,\n" +
-                    "    Archos_audioBitRate,\n" +
-                    "    Archos_videoFourCCCodec,\n" +
-                    "    Archos_videoBitRate,\n" +
-                    "    Archos_framesPerThousandSeconds,\n" +
-                    "    Archos_encodingProfile,\n" +
-                    "    Archos_playerSubtitleRatio,\n" +
-                    "    Archos_thumbTry,\n" +
-                    "    Archos_hideFile,\n" +
-                    "    Archos_hiddenByUser,\n" +  //NEW hidden by user feature
+                    "    lfx_numberOfAudioTracks,\n" +
+                    "    lfx_sampleRate,\n" +
+                    "    lfx_numberOfChannels,\n" +
+                    "    lfx_audioWaveCodec,\n" +
+                    "    lfx_audioBitRate,\n" +
+                    "    lfx_videoFourCCCodec,\n" +
+                    "    lfx_videoBitRate,\n" +
+                    "    lfx_framesPerThousandSeconds,\n" +
+                    "    lfx_encodingProfile,\n" +
+                    "    lfx_playerSubtitleRatio,\n" +
+                    "    lfx_thumbTry,\n" +
+                    "    lfx_hideFile,\n" +
+                    "    lfx_hiddenByUser,\n" +  //NEW hidden by user feature
                     "    m._id AS m_id,\n" +
                     "    s._id AS s_id,\n" +
                     "    e._id AS e_id,\n" +
@@ -891,11 +891,11 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "    mb.m_bd_large_url,\n" +
                     "    mb.m_bd_large_file,\n" +
                     "    autoscrape_status,\n" +
-                    "    Archos_traktSeen,\n" +
-                    "    Archos_traktLibrary,\n" +
-                    "    Archos_videoStereo,\n" +
-                    "    Archos_videoDefinition,\n" +
-                    "    Archos_traktResume,\n" +
+                    "    lfx_traktSeen,\n" +
+                    "    lfx_traktLibrary,\n" +
+                    "    lfx_videoStereo,\n" +
+                    "    lfx_videoDefinition,\n" +
+                    "    lfx_traktResume,\n" +
                     "    "+VideoColumns.ARCHOS_CALCULATED_VIDEO_FORMAT +",\n" +
                     "    "+VideoColumns.ARCHOS_CALCULATED_BEST_AUDIOTRACK_FORMAT +",\n" +
                     "    "+VideoColumns.ARCHOS_GUESSED_VIDEO_FORMAT+",\n" +
@@ -927,8 +927,8 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "WHERE\n" +
                     "    volume_hidden == 0 AND\n" +
                     "    media_type == 3 AND\n" +
-                    "    (Archos_smbserver == 0 OR\n" +
-                    "    Archos_smbserver IN (SELECT _id FROM smb_server WHERE active == 1))";
+                    "    (lfx_smbserver == 0 OR\n" +
+                    "    lfx_smbserver IN (SELECT _id FROM smb_server WHERE active == 1))";
 
 
     // add movie collection information
@@ -942,9 +942,9 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "    date_added,\n" +
                     "    date_modified,\n" +
                     "    inserted,\n" +
-                    "    coalesce( archos_title, title ) AS title,\n" +
+                    "    coalesce( lfx_title, title ) AS title,\n" +
                     "    title AS android_title,\n" +
-                    "    archos_title,\n" +
+                    "    lfx_title,\n" +
                     "    duration,\n" +
                     "    artist,\n" +
                     "    album,\n" +
@@ -964,28 +964,28 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "    bookmark,\n" +
                     "    width,\n" +
                     "    height,\n" +
-                    "    Archos_favorite_track,\n" +
-                    "    Archos_bookmark,\n" +
-                    "    Archos_lastTimePlayed,\n" +
-                    "    Archos_playerParams,\n" +
-                    "    Archos_playerSubtitleDelay,\n" +
-                    "    ArchosMediaScraper_id,\n" +
-                    "    ArchosMediaScraper_type,\n" +
-                    "    Archos_numberOfSubtitleTracks,\n" +
+                    "    lfx_favorite_track,\n" +
+                    "    lfx_bookmark,\n" +
+                    "    lfx_lastTimePlayed,\n" +
+                    "    lfx_playerParams,\n" +
+                    "    lfx_playerSubtitleDelay,\n" +
+                    "    lfx_mediascraper_id,\n" +
+                    "    lfx_mediascraper_type,\n" +
+                    "    lfx_numberOfSubtitleTracks,\n" +
                     "    subtitle_count_ext,\n" +
-                    "    Archos_numberOfAudioTracks,\n" +
-                    "    Archos_sampleRate,\n" +
-                    "    Archos_numberOfChannels,\n" +
-                    "    Archos_audioWaveCodec,\n" +
-                    "    Archos_audioBitRate,\n" +
-                    "    Archos_videoFourCCCodec,\n" +
-                    "    Archos_videoBitRate,\n" +
-                    "    Archos_framesPerThousandSeconds,\n" +
-                    "    Archos_encodingProfile,\n" +
-                    "    Archos_playerSubtitleRatio,\n" +
-                    "    Archos_thumbTry,\n" +
-                    "    Archos_hideFile,\n" +
-                    "    Archos_hiddenByUser,\n" +  //NEW hidden by user feature
+                    "    lfx_numberOfAudioTracks,\n" +
+                    "    lfx_sampleRate,\n" +
+                    "    lfx_numberOfChannels,\n" +
+                    "    lfx_audioWaveCodec,\n" +
+                    "    lfx_audioBitRate,\n" +
+                    "    lfx_videoFourCCCodec,\n" +
+                    "    lfx_videoBitRate,\n" +
+                    "    lfx_framesPerThousandSeconds,\n" +
+                    "    lfx_encodingProfile,\n" +
+                    "    lfx_playerSubtitleRatio,\n" +
+                    "    lfx_thumbTry,\n" +
+                    "    lfx_hideFile,\n" +
+                    "    lfx_hiddenByUser,\n" +  //NEW hidden by user feature
                     "    m._id AS m_id,\n" +
                     "    s._id AS s_id,\n" +
                     "    e._id AS e_id,\n" +
@@ -1083,11 +1083,11 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "    mb.m_bd_large_url,\n" +
                     "    mb.m_bd_large_file,\n" +
                     "    autoscrape_status,\n" +
-                    "    Archos_traktSeen,\n" +
-                    "    Archos_traktLibrary,\n" +
-                    "    Archos_videoStereo,\n" +
-                    "    Archos_videoDefinition,\n" +
-                    "    Archos_traktResume,\n" +
+                    "    lfx_traktSeen,\n" +
+                    "    lfx_traktLibrary,\n" +
+                    "    lfx_videoStereo,\n" +
+                    "    lfx_videoDefinition,\n" +
+                    "    lfx_traktResume,\n" +
                     "    "+VideoColumns.ARCHOS_CALCULATED_VIDEO_FORMAT +",\n" +
                     "    "+VideoColumns.ARCHOS_CALCULATED_BEST_AUDIOTRACK_FORMAT +",\n" +
                     "    "+VideoColumns.ARCHOS_GUESSED_VIDEO_FORMAT+",\n" +
@@ -1119,8 +1119,8 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "WHERE\n" +
                     "    volume_hidden == 0 AND\n" +
                     "    media_type == 3 AND\n" +
-                    "    (Archos_smbserver == 0 OR\n" +
-                    "    Archos_smbserver IN (SELECT _id FROM smb_server WHERE active == 1))";
+                    "    (lfx_smbserver == 0 OR\n" +
+                    "    lfx_smbserver IN (SELECT _id FROM smb_server WHERE active == 1))";
 
     // add movie release_date column for improved sorting
     private static final String CREATE_VIDEO_VIEW_V49 =
@@ -1133,9 +1133,9 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "    date_added,\n" +
                     "    date_modified,\n" +
                     "    inserted,\n" +
-                    "    coalesce( archos_title, title ) AS title,\n" +
+                    "    coalesce( lfx_title, title ) AS title,\n" +
                     "    title AS android_title,\n" +
-                    "    archos_title,\n" +
+                    "    lfx_title,\n" +
                     "    duration,\n" +
                     "    artist,\n" +
                     "    album,\n" +
@@ -1155,28 +1155,28 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "    bookmark,\n" +
                     "    width,\n" +
                     "    height,\n" +
-                    "    Archos_favorite_track,\n" +
-                    "    Archos_bookmark,\n" +
-                    "    Archos_lastTimePlayed,\n" +
-                    "    Archos_playerParams,\n" +
-                    "    Archos_playerSubtitleDelay,\n" +
-                    "    ArchosMediaScraper_id,\n" +
-                    "    ArchosMediaScraper_type,\n" +
-                    "    Archos_numberOfSubtitleTracks,\n" +
+                    "    lfx_favorite_track,\n" +
+                    "    lfx_bookmark,\n" +
+                    "    lfx_lastTimePlayed,\n" +
+                    "    lfx_playerParams,\n" +
+                    "    lfx_playerSubtitleDelay,\n" +
+                    "    lfx_mediascraper_id,\n" +
+                    "    lfx_mediascraper_type,\n" +
+                    "    lfx_numberOfSubtitleTracks,\n" +
                     "    subtitle_count_ext,\n" +
-                    "    Archos_numberOfAudioTracks,\n" +
-                    "    Archos_sampleRate,\n" +
-                    "    Archos_numberOfChannels,\n" +
-                    "    Archos_audioWaveCodec,\n" +
-                    "    Archos_audioBitRate,\n" +
-                    "    Archos_videoFourCCCodec,\n" +
-                    "    Archos_videoBitRate,\n" +
-                    "    Archos_framesPerThousandSeconds,\n" +
-                    "    Archos_encodingProfile,\n" +
-                    "    Archos_playerSubtitleRatio,\n" +
-                    "    Archos_thumbTry,\n" +
-                    "    Archos_hideFile,\n" +
-                    "    Archos_hiddenByUser,\n" +
+                    "    lfx_numberOfAudioTracks,\n" +
+                    "    lfx_sampleRate,\n" +
+                    "    lfx_numberOfChannels,\n" +
+                    "    lfx_audioWaveCodec,\n" +
+                    "    lfx_audioBitRate,\n" +
+                    "    lfx_videoFourCCCodec,\n" +
+                    "    lfx_videoBitRate,\n" +
+                    "    lfx_framesPerThousandSeconds,\n" +
+                    "    lfx_encodingProfile,\n" +
+                    "    lfx_playerSubtitleRatio,\n" +
+                    "    lfx_thumbTry,\n" +
+                    "    lfx_hideFile,\n" +
+                    "    lfx_hiddenByUser,\n" +
                     "    m._id AS m_id,\n" +
                     "    s._id AS s_id,\n" +
                     "    e._id AS e_id,\n" +
@@ -1275,11 +1275,11 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "    mb.m_bd_large_url,\n" +
                     "    mb.m_bd_large_file,\n" +
                     "    autoscrape_status,\n" +
-                    "    Archos_traktSeen,\n" +
-                    "    Archos_traktLibrary,\n" +
-                    "    Archos_videoStereo,\n" +
-                    "    Archos_videoDefinition,\n" +
-                    "    Archos_traktResume,\n" +
+                    "    lfx_traktSeen,\n" +
+                    "    lfx_traktLibrary,\n" +
+                    "    lfx_videoStereo,\n" +
+                    "    lfx_videoDefinition,\n" +
+                    "    lfx_traktResume,\n" +
                     "    "+VideoColumns.ARCHOS_CALCULATED_VIDEO_FORMAT +",\n" +
                     "    "+VideoColumns.ARCHOS_CALCULATED_BEST_AUDIOTRACK_FORMAT +",\n" +
                     "    "+VideoColumns.ARCHOS_GUESSED_VIDEO_FORMAT+",\n" +
@@ -1311,8 +1311,8 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "WHERE\n" +
                     "    volume_hidden == 0 AND\n" +
                     "    media_type == 3 AND\n" +
-                    "    (Archos_smbserver == 0 OR\n" +
-                    "    Archos_smbserver IN (SELECT _id FROM smb_server WHERE active == 1))";
+                    "    (lfx_smbserver == 0 OR\n" +
+                    "    lfx_smbserver IN (SELECT _id FROM smb_server WHERE active == 1))";
 
     // add subtitle language column for track validation
     private static final String CREATE_VIDEO_VIEW_V50 =
@@ -1325,9 +1325,9 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "    date_added,\n" +
                     "    date_modified,\n" +
                     "    inserted,\n" +
-                    "    coalesce( archos_title, title ) AS title,\n" +
+                    "    coalesce( lfx_title, title ) AS title,\n" +
                     "    title AS android_title,\n" +
-                    "    archos_title,\n" +
+                    "    lfx_title,\n" +
                     "    duration,\n" +
                     "    artist,\n" +
                     "    album,\n" +
@@ -1347,29 +1347,29 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "    bookmark,\n" +
                     "    width,\n" +
                     "    height,\n" +
-                    "    Archos_favorite_track,\n" +
-                    "    Archos_bookmark,\n" +
-                    "    Archos_lastTimePlayed,\n" +
-                    "    Archos_playerParams,\n" +
-                    "    Archos_playerSubtitleDelay,\n" +
-                    "    Archos_subtitleLanguage,\n" +
-                    "    ArchosMediaScraper_id,\n" +
-                    "    ArchosMediaScraper_type,\n" +
-                    "    Archos_numberOfSubtitleTracks,\n" +
+                    "    lfx_favorite_track,\n" +
+                    "    lfx_bookmark,\n" +
+                    "    lfx_lastTimePlayed,\n" +
+                    "    lfx_playerParams,\n" +
+                    "    lfx_playerSubtitleDelay,\n" +
+                    "    lfx_subtitleLanguage,\n" +
+                    "    lfx_mediascraper_id,\n" +
+                    "    lfx_mediascraper_type,\n" +
+                    "    lfx_numberOfSubtitleTracks,\n" +
                     "    subtitle_count_ext,\n" +
-                    "    Archos_numberOfAudioTracks,\n" +
-                    "    Archos_sampleRate,\n" +
-                    "    Archos_numberOfChannels,\n" +
-                    "    Archos_audioWaveCodec,\n" +
-                    "    Archos_audioBitRate,\n" +
-                    "    Archos_videoFourCCCodec,\n" +
-                    "    Archos_videoBitRate,\n" +
-                    "    Archos_framesPerThousandSeconds,\n" +
-                    "    Archos_encodingProfile,\n" +
-                    "    Archos_playerSubtitleRatio,\n" +
-                    "    Archos_thumbTry,\n" +
-                    "    Archos_hideFile,\n" +
-                    "    Archos_hiddenByUser,\n" +
+                    "    lfx_numberOfAudioTracks,\n" +
+                    "    lfx_sampleRate,\n" +
+                    "    lfx_numberOfChannels,\n" +
+                    "    lfx_audioWaveCodec,\n" +
+                    "    lfx_audioBitRate,\n" +
+                    "    lfx_videoFourCCCodec,\n" +
+                    "    lfx_videoBitRate,\n" +
+                    "    lfx_framesPerThousandSeconds,\n" +
+                    "    lfx_encodingProfile,\n" +
+                    "    lfx_playerSubtitleRatio,\n" +
+                    "    lfx_thumbTry,\n" +
+                    "    lfx_hideFile,\n" +
+                    "    lfx_hiddenByUser,\n" +
                     "    m._id AS m_id,\n" +
                     "    s._id AS s_id,\n" +
                     "    e._id AS e_id,\n" +
@@ -1468,11 +1468,11 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "    mb.m_bd_large_url,\n" +
                     "    mb.m_bd_large_file,\n" +
                     "    autoscrape_status,\n" +
-                    "    Archos_traktSeen,\n" +
-                    "    Archos_traktLibrary,\n" +
-                    "    Archos_videoStereo,\n" +
-                    "    Archos_videoDefinition,\n" +
-                    "    Archos_traktResume,\n" +
+                    "    lfx_traktSeen,\n" +
+                    "    lfx_traktLibrary,\n" +
+                    "    lfx_videoStereo,\n" +
+                    "    lfx_videoDefinition,\n" +
+                    "    lfx_traktResume,\n" +
                     "    "+VideoColumns.ARCHOS_CALCULATED_VIDEO_FORMAT +",\n" +
                     "    "+VideoColumns.ARCHOS_CALCULATED_BEST_AUDIOTRACK_FORMAT +",\n" +
                     "    "+VideoColumns.ARCHOS_GUESSED_VIDEO_FORMAT+",\n" +
@@ -1504,8 +1504,8 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "WHERE\n" +
                     "    volume_hidden == 0 AND\n" +
                     "    media_type == 3 AND\n" +
-                    "    (Archos_smbserver == 0 OR\n" +
-                    "    Archos_smbserver IN (SELECT _id FROM smb_server WHERE active == 1))";
+                    "    (lfx_smbserver == 0 OR\n" +
+                    "    lfx_smbserver IN (SELECT _id FROM smb_server WHERE active == 1))";
 
     // ------------- ---##[ Video Thumbnails     ]## ---------------------------
     public static final String VIDEOTHUMBNAIL_TABLE_NAME = "videothumbnails";
@@ -1524,7 +1524,7 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
     // Performance indexes for core video functionality
     private static final String CREATE_VIDEO_IDX_LAST_PLAYED =
             "CREATE INDEX IF NOT EXISTS idx_video_last_played_desc ON " + FILES_TABLE_NAME + 
-            "(Archos_lastTimePlayed DESC) WHERE Archos_lastTimePlayed > 0";
+            "(lfx_lastTimePlayed DESC) WHERE lfx_lastTimePlayed > 0";
     private static final String CREATE_VIDEO_IDX_DATE_ADDED =
             "CREATE INDEX IF NOT EXISTS idx_video_date_added ON " + FILES_TABLE_NAME + 
             "(date_added DESC) WHERE date_added IS NOT NULL";
@@ -1532,24 +1532,24 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
     // Core filtering indexes - CRITICAL for all loader performance
     private static final String CREATE_FILES_HIDDEN_BY_USER_IDX =
             "CREATE INDEX IF NOT EXISTS idx_files_hidden_by_user ON " + FILES_TABLE_NAME + 
-            "(Archos_hiddenByUser) WHERE Archos_hiddenByUser = 0";
+            "(lfx_hiddenByUser) WHERE lfx_hiddenByUser = 0";
     private static final String CREATE_FILES_BOOKMARK_IDX =
             "CREATE INDEX IF NOT EXISTS idx_files_bookmark ON " + FILES_TABLE_NAME + 
             "(bookmark) WHERE bookmark IS NOT NULL";
     private static final String CREATE_FILES_TRAKT_SEEN_IDX =
             "CREATE INDEX IF NOT EXISTS idx_files_trakt_seen ON " + FILES_TABLE_NAME + 
-            "(Archos_traktSeen)";
+            "(lfx_traktSeen)";
     
     // Composite indexes for common query patterns - HIGH PRIORITY
     private static final String CREATE_FILES_HIDDEN_BOOKMARK_IDX =
             "CREATE INDEX IF NOT EXISTS idx_files_hidden_bookmark ON " + FILES_TABLE_NAME + 
-            "(Archos_hiddenByUser, bookmark, Archos_traktSeen)";
+            "(lfx_hiddenByUser, bookmark, lfx_traktSeen)";
     private static final String CREATE_FILES_DATE_ADDED_FILTERED_IDX =
             "CREATE INDEX IF NOT EXISTS idx_files_date_added_filtered ON " + FILES_TABLE_NAME + 
-            "(date_added DESC, Archos_hiddenByUser, bookmark) WHERE date_added IS NOT NULL";
+            "(date_added DESC, lfx_hiddenByUser, bookmark) WHERE date_added IS NOT NULL";
     private static final String CREATE_FILES_LAST_PLAYED_FILTERED_IDX =
             "CREATE INDEX IF NOT EXISTS idx_files_last_played_filtered ON " + FILES_TABLE_NAME + 
-            "(Archos_lastTimePlayed DESC, Archos_hiddenByUser, bookmark) WHERE Archos_lastTimePlayed > 0";
+            "(lfx_lastTimePlayed DESC, lfx_hiddenByUser, bookmark) WHERE lfx_lastTimePlayed > 0";
     
     // Search performance indexes
     private static final String CREATE_FILES_TITLE_SEARCH_IDX =
@@ -1632,7 +1632,7 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
         "audio_genres_map_noid",
         "audio_meta",
         "search",
-        "search_archos",
+        "search_leeroyflix",
         "searchhelpertitle",
     };
     public static void dropOldStuff(SQLiteDatabase db) {
@@ -1876,74 +1876,9 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
         if (oldVersion < 50) { // add subtitle language column for subtitle track validation
             if (log.isDebugEnabled()) log.debug("onUpgrade: {} - adding subtitle language column for subtitle track validation", 50);
             db.execSQL("ALTER TABLE " + FILES_TABLE_NAME +
-                    " ADD COLUMN Archos_subtitleLanguage TEXT DEFAULT (NULL)");
+                    " ADD COLUMN lfx_subtitleLanguage TEXT DEFAULT (NULL)");
             SQLiteUtils.dropView(db, VIDEO_VIEW_NAME);
             db.execSQL(CREATE_VIDEO_VIEW_V50);
-        }
-        if (oldVersion < 51) { // add UNIQUE constraints to movie poster/backdrop tables
-            if (log.isDebugEnabled()) log.debug("onUpgrade: {} - adding UNIQUE constraints to movie poster/backdrop tables to prevent duplicates", 51);
-            ScraperTables.upgradeTo(db, 51);
-        }
-        if (oldVersion < 52) { // migrate UPNP/HTTP unique_id to new hash format
-            if (log.isDebugEnabled()) log.debug("onUpgrade: {} - migrating UPNP/HTTP unique_id to new hash format", 52);
-            migrateUniqueIdHashFormat(db);
-        }
-        if (oldVersion < 53) { // reset stale mini-thumb magic to allow regeneration
-            if (log.isDebugEnabled()) log.debug("onUpgrade: {} - resetting stale mini_thumb_magic to regenerate missing thumbnails", 53);
-            db.execSQL("UPDATE " + FILES_TABLE_NAME + " " +
-                    "SET mini_thumb_magic = 0, Archos_thumbTry = 0 " +
-                    "WHERE mini_thumb_magic IS NOT NULL AND mini_thumb_magic <> 0 " +
-                    "AND _id NOT IN (SELECT video_id FROM " + VIDEOTHUMBNAIL_TABLE_NAME + " WHERE _data IS NOT NULL AND trim(_data) != '')");
-        }
-    }
-
-    /**
-     * Migrates UPNP/HTTP unique_id hash format from old algorithm to new algorithm.
-     * Old format: String.format("%016x", getUri().getHost().hashCode()+length() +getName().hashCode())
-     * New format: "H" + String.format("%018x", Math.abs(getUri().hashCode()) + length() * Math.abs(getName().hashCode()))
-     * This ensures existing files don't need to be rescanned.
-     */
-    private void migrateUniqueIdHashFormat(SQLiteDatabase db) {
-        Cursor cursor = null;
-        try {
-            cursor = db.query(FILES_TABLE_NAME,
-                new String[] {BaseColumns._ID, MediaColumns.DATA, MediaColumns.SIZE},
-                MediaColumns.DATA + " LIKE 'upnp://%' OR " +
-                MediaColumns.DATA + " LIKE 'http://%' OR " +
-                MediaColumns.DATA + " LIKE 'https://%'",
-                null, null, null, null);
-
-            int count = 0;
-            while (cursor.moveToNext()) {
-                long id = cursor.getLong(0);
-                String uriString = cursor.getString(1);
-                long length = cursor.getLong(2);
-
-                // Extract name from URI path
-                String name = "";
-                int lastSlash = uriString.lastIndexOf('/');
-                if (lastSlash >= 0 && lastSlash < uriString.length() - 1) {
-                    name = uriString.substring(lastSlash + 1);
-                }
-
-                // Compute new hash using the new algorithm
-                // New format: "H" + String.format("%018x", Math.abs(uri.hashCode()) + length * Math.abs(name.hashCode()))
-                long hashValue = Math.abs((long)uriString.hashCode()) + length * Math.abs((long)name.hashCode());
-                String newHash = "H" + String.format("%018x", hashValue);
-
-                ContentValues cv = new ContentValues();
-                cv.put(VideoColumns.ARCHOS_UNIQUE_ID, newHash);
-                db.update(FILES_TABLE_NAME, cv, BaseColumns._ID + "=?",
-                    new String[] {String.valueOf(id)});
-                count++;
-            }
-            if (log.isDebugEnabled()) log.debug("migrateUniqueIdHashFormat: migrated {} UPNP/HTTP files to new hash format", count);
-        } catch (Exception e) {
-            log.error("migrateUniqueIdHashFormat: error migrating unique_id hash format", e);
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
         }
     }
 
@@ -2043,7 +1978,7 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                 Integer storage_id = 1;
                 if (m.matches()) {
                     storage_id = m.group(1).hashCode();
-                    if (log.isTraceEnabled()) log.trace("processStorageIdInDB: path={} -> {} storage_id={}", path, m.group(1), storage_id);
+                     if (log.isTraceEnabled()) log.trace("processStorageIdInDB: path={} -> {} storage_id={}", path, m.group(1), storage_id);
                 }
                 ContentValues update = new ContentValues();
                 update.put("storage_id", Long.valueOf(storage_id));
