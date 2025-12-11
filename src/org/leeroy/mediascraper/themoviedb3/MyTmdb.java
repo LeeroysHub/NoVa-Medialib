@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediascraper.themoviedb3;
+package org.leeroy.mediascraper.themoviedb3;
 
-import com.archos.mediascraper.ScraperCache;
+import org.leeroy.mediascraper.ScraperCache;
 import com.uwetrottmann.tmdb2.Tmdb;
 
 import org.slf4j.Logger;

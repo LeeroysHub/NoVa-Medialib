@@ -13,15 +13,15 @@
 // limitations under the License.
 
 
-package com.archos.mediascraper.themoviedb3;
+package org.leeroy.mediascraper.themoviedb3;
 
 import android.content.Context;
 import android.util.Log;
 
-import com.archos.mediascraper.BaseTags;
-import com.archos.mediascraper.CollectionTags;
-import com.archos.mediascraper.MovieTags;
-import com.archos.mediascraper.ScraperImage;
+import org.leeroy.mediascraper.BaseTags;
+import org.leeroy.mediascraper.CollectionTags;
+import org.leeroy.mediascraper.MovieTags;
+import org.leeroy.mediascraper.ScraperImage;
 
 // Get movie collection images (posters and backdrops) for a specific movie id and language (ISO 939-1 code)
 public class MovieCollectionImages {

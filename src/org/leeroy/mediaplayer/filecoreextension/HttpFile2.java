@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediacenter.filecoreextension;
+package org.leeroy.mediaplayer.filecoreextension;
 
 import android.content.Context;
 import android.net.Uri;
 
-import com.archos.filecorelibrary.FileEditor;
-import com.archos.filecorelibrary.FileUtils;
-import com.archos.filecorelibrary.MetaFile2;
-import com.archos.filecorelibrary.MimeUtils;
-import com.archos.filecorelibrary.RawLister;
-import com.archos.mediacenter.filecoreextension.upnp2.UpnpRawLister;
+import org.leeroy.filecorelibrary.FileEditor;
+import org.leeroy.filecorelibrary.FileUtils;
+import org.leeroy.filecorelibrary.MetaFile2;
+import org.leeroy.filecorelibrary.MimeUtils;
+import org.leeroy.filecorelibrary.RawLister;
+import org.leeroy.mediaplayer.filecoreextension.upnp2.UpnpRawLister;
 
 public class HttpFile2 extends MetaFile2 {
 

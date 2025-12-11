@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediascraper;
+package org.leeroy.mediascraper;
 
 import android.app.IntentService;
 import android.app.NotificationChannel;
@@ -29,12 +29,12 @@ import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ProcessLifecycleOwner;
 
-import com.archos.medialib.R;
-import com.archos.mediaprovider.video.ScraperStore;
-import com.archos.mediascraper.themoviedb3.CollectionInfo;
-import com.archos.mediascraper.themoviedb3.CollectionResult;
-import com.archos.mediascraper.themoviedb3.MovieCollection;
-import com.archos.mediascraper.themoviedb3.MyTmdb;
+import org.leeroy.medialib.R;
+import org.leeroy.mediaprovider.video.ScraperStore;
+import org.leeroy.mediascraper.themoviedb3.CollectionInfo;
+import org.leeroy.mediascraper.themoviedb3.CollectionResult;
+import org.leeroy.mediascraper.themoviedb3.MovieCollection;
+import org.leeroy.mediascraper.themoviedb3.MyTmdb;
 import com.uwetrottmann.tmdb2.services.CollectionsService;
 
 import org.slf4j.Logger;
@@ -49,9 +49,9 @@ public class AllCollectionScrapeService extends IntentService implements Default
 
     private static final Logger log = LoggerFactory.getLogger(AllCollectionScrapeService.class);
 
-    public static final String INTENT_RESCRAPE_COLLECTION = "archos.mediascraper.intent.action.RESCRAPE_COLLECTION";
-    public static final String INTENT_RESCRAPE_NOIMAGE_COLLECTIONS = "archos.mediascraper.intent.action.RESCRAPE_NOIMAGE_COLLECTIONS";
-    public static final String INTENT_RESCRAPE_ALL_COLLECTIONS = "archos.mediascraper.intent.action.RESCRAPE_ALL_COLLECTIONS";
+    public static final String INTENT_RESCRAPE_COLLECTION = "leeroy.mediascraper.intent.action.RESCRAPE_COLLECTION";
+    public static final String INTENT_RESCRAPE_NOIMAGE_COLLECTIONS = "leeroy.mediascraper.intent.action.RESCRAPE_NOIMAGE_COLLECTIONS";
+    public static final String INTENT_RESCRAPE_ALL_COLLECTIONS = "leeroy.mediascraper.intent.action.RESCRAPE_ALL_COLLECTIONS";
     private static final String EXPORT_ALL_KEY = "all://";
     private static final String EXPORT_NOIMAGE_KEY = "noimage://";
     private static final Intent VOID_INTENT = new Intent("void");

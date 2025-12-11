@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediascraper.receiver;
+package org.leeroy.mediascraper.receiver;
 
-import com.archos.environment.ArchosIntents;
-import com.archos.mediascraper.MediaScraper;
-import com.archos.mediascraper.Scraper;
+import org.leeroy.environment.LeeroyFlixIntents;
+import org.leeroy.mediascraper.MediaScraper;
+import org.leeroy.mediascraper.Scraper;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -33,10 +33,10 @@ public class ScraperReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         final String action = intent.getAction();
 
-        if (action.equals(ArchosIntents.MEDIA_LIBRARY_FLUSH)) {
+        if (action.equals(LeeroyFlixIntents.MEDIA_LIBRARY_FLUSH)) {
             deleteDatabases(context);
             deleteAllExternalFiles(context);
-        } else if (ArchosIntents.MEDIASCANNER_MEDIASCRAPER_RESET.equals(action)) {
+        } else if (LeeroyFlixIntents.MEDIASCANNER_MEDIASCRAPER_RESET.equals(action)) {
             resetDefaultScraperData(context);
         }
     }

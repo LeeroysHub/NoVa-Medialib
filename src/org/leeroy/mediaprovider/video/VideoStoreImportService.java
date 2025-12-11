@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediaprovider.video;
+package org.leeroy.mediaprovider.video;
 
-import static com.archos.filecorelibrary.FileUtils.canReadExternalStorage;
+import static org.leeroy.filecorelibrary.FileUtils.canReadExternalStorage;
 
 import android.app.ForegroundServiceStartNotAllowedException;
 import android.app.Notification;
@@ -48,17 +48,17 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ProcessLifecycleOwner;
 
-import com.archos.environment.ArchosUtils;
-import com.archos.medialib.R;
-import com.archos.mediaprovider.ArchosMediaIntent;
-import com.archos.mediaprovider.DeleteFileCallback;
-import com.archos.mediaprovider.ImportState;
-import com.archos.mediaprovider.MediaRetrieverService;
-import com.archos.mediaprovider.VideoDb;
-import com.archos.mediaprovider.VolumeState;
-import com.archos.mediaprovider.ImportState.State;
-import com.archos.mediaprovider.VolumeState.Volume;
-import com.archos.mediascraper.Scraper;
+import org.leeroy.environment.LeeroyFlixUtils;
+import org.leeroy.medialib.R;
+import org.leeroy.mediaprovider.LeeroyFlixMediaIntent;
+import org.leeroy.mediaprovider.DeleteFileCallback;
+import org.leeroy.mediaprovider.ImportState;
+import org.leeroy.mediaprovider.MediaRetrieverService;
+import org.leeroy.mediaprovider.VideoDb;
+import org.leeroy.mediaprovider.VolumeState;
+import org.leeroy.mediaprovider.ImportState.State;
+import org.leeroy.mediaprovider.VolumeState.Volume;
+import org.leeroy.mediascraper.Scraper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -126,13 +126,13 @@ public class VideoStoreImportService extends Service implements Handler.Callback
         }
         mContext = context;
         if (Intent.ACTION_MEDIA_SCANNER_FINISHED.equals(action)
-                || ArchosMediaIntent.ACTION_VIDEO_SCANNER_STORAGE_PERMISSION_GRANTED.equals(action)
+                || LeeroyFlixMediaIntent.ACTION_VIDEO_SCANNER_STORAGE_PERMISSION_GRANTED.equals(action)
                 || Intent.ACTION_MEDIA_SCANNER_STARTED.equals(action)
                 || Intent.ACTION_MEDIA_SCANNER_SCAN_FILE.equals(action)
-                || ArchosMediaIntent.ACTION_VIDEO_SCANNER_METADATA_UPDATE.equals(action)
-                || ArchosMediaIntent.isVideoRemoveIntent(action)
+                || LeeroyFlixMediaIntent.ACTION_VIDEO_SCANNER_METADATA_UPDATE.equals(action)
+                || LeeroyFlixMediaIntent.isVideoRemoveIntent(action)
                 || Intent.ACTION_SHUTDOWN.equals(action)
-                || ArchosMediaIntent.ACTION_VIDEO_SCANNER_IMPORT_INCR.equals(action)) {
+                || LeeroyFlixMediaIntent.ACTION_VIDEO_SCANNER_IMPORT_INCR.equals(action)) {
             if (log.isDebugEnabled()) log.debug("startIfHandles is true: sending intent to VideoStoreImportService");
             Intent serviceIntent = new Intent(context, VideoStoreImportService.class);
             serviceIntent.setAction(action);
@@ -140,7 +140,7 @@ public class VideoStoreImportService extends Service implements Handler.Callback
             if(broadcast.getExtras()!=null)
                 serviceIntent.putExtras(broadcast.getExtras()); //in case we have an extra... such as "recordLogExtra"
             if (log.isDebugEnabled()) log.debug("startIfHandles: apps is foreground startService and pass intent to self");
-            ArchosUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.startIfHandles", "apps is foreground mContext.startService and pass intent to self");
+            LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.startIfHandles", "apps is foreground mContext.startService and pass intent to self");
             context.startService(serviceIntent);
             return true;
         }
@@ -174,7 +174,7 @@ public class VideoStoreImportService extends Service implements Handler.Callback
         // executed on each startService
         n = createNotification();
         if (log.isDebugEnabled()) log.debug("onCreate: create notification + startService {}", NOTIFICATION_ID);
-        ArchosUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onCreate", "created notification + startService " + NOTIFICATION_ID + " notification null? " + (n == null));
+        LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onCreate", "created notification + startService " + NOTIFICATION_ID + " notification null? " + (n == null));
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
         // importer logic
         mImporter = new VideoStoreImportImpl(this);
@@ -250,7 +250,7 @@ public class VideoStoreImportService extends Service implements Handler.Callback
     public int onStartCommand(Intent intent, int flags, int startId) {
         // intents are delivered here.
         if (log.isDebugEnabled()) log.debug("onStartCommand:{} flags:{} startId:{} getAction {}", intent, flags, startId, ((intent != null) ? intent.getAction() : "null"));
-        ArchosUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStartCommand", "created notification + startService " + NOTIFICATION_ID + " notification null? " + (n == null));
+        LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStartCommand", "created notification + startService " + NOTIFICATION_ID + " notification null? " + (n == null));
         if (intent == null || intent.getAction() == null) {
             removeAllMessages(mHandler);
             Message m;
@@ -258,19 +258,19 @@ public class VideoStoreImportService extends Service implements Handler.Callback
                 // Post-Android P: Use incremental import since our enhanced volume management handles external storage properly
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
                     if (log.isDebugEnabled()) log.debug("onStartCommand: intent == null || intent.getAction() == null, sActive == true, do MESSAGE_IMPORT_INCR (post-Android P)");
-                    ArchosUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStartCommand", "intent null, sActive true do MESSAGE_IMPORT_INCR (post-Android P)");
+                    LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStartCommand", "intent null, sActive true do MESSAGE_IMPORT_INCR (post-Android P)");
                     m = mHandler.obtainMessage(MESSAGE_IMPORT_INCR, DONT_KILL_SELF, 0);
                 } else {
                     // Pre-Android P: Keep full import for external USB storage compatibility
                     if (log.isDebugEnabled()) log.debug("onStartCommand: intent == null || intent.getAction() == null, sActive == true, do MESSAGE_IMPORT_FULL (pre-Android P)");
-                    ArchosUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStartCommand", "intent null, sActive true do MESSAGE_IMPORT_FULL (pre-Android P)");
+                    LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStartCommand", "intent null, sActive true do MESSAGE_IMPORT_FULL (pre-Android P)");
                     m = mHandler.obtainMessage(MESSAGE_IMPORT_FULL, DONT_KILL_SELF, 0);
                 }
                 ImportState.VIDEO.setState(State.REGULAR_IMPORT);
             } else {
                 // do a full import here to make sure that we have initial data
                 if (log.isDebugEnabled()) log.debug("onStartCommand: intent == null || intent.getAction() == null, sActive == false, do MESSAGE_IMPORT_FULL");
-                ArchosUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStartCommand", "intent null, sActive false do MESSAGE_IMPORT_FULL");
+                LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStartCommand", "intent null, sActive false do MESSAGE_IMPORT_FULL");
                 m = mHandler.obtainMessage(MESSAGE_IMPORT_FULL, DONT_KILL_SELF, 0);
                 sActive = true;
                 ImportState.VIDEO.setState(State.INITIAL_IMPORT);
@@ -284,9 +284,9 @@ public class VideoStoreImportService extends Service implements Handler.Callback
             // /!\ if an action is added CHECK in startIfHandles if action is listed /!\
             String action = intent.getAction();
             // stopForeground needs to be called at each action finished when service gets idle: this is taken care by handleMessage
-            if (Intent.ACTION_MEDIA_SCANNER_FINISHED.equals(action) || ArchosMediaIntent.ACTION_VIDEO_SCANNER_STORAGE_PERMISSION_GRANTED.equals(action)) {
+            if (Intent.ACTION_MEDIA_SCANNER_FINISHED.equals(action) || LeeroyFlixMediaIntent.ACTION_VIDEO_SCANNER_STORAGE_PERMISSION_GRANTED.equals(action)) {
                 if (log.isDebugEnabled()) log.debug("ACTION_MEDIA_SCANNER_FINISHED {}", intent.getData());
-                ArchosUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStartCommand", "ACTION_MEDIA_SCANNER_FINISHED" + intent.getData());
+                LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStartCommand", "ACTION_MEDIA_SCANNER_FINISHED" + intent.getData());
                 // happens rarely, on boot and when inserting / ejecting sd cards
                 removeAllMessages(mHandler);
                 Message m = mHandler.obtainMessage(MESSAGE_IMPORT_FULL, startId, flags);
@@ -296,40 +296,40 @@ public class VideoStoreImportService extends Service implements Handler.Callback
                 ImportState.VIDEO.setAndroidScanning(false);
             } else if (Intent.ACTION_MEDIA_SCANNER_STARTED.equals(action)) {
                 if (log.isDebugEnabled()) log.debug("ACTION_MEDIA_SCANNER_STARTED {}", intent.getData());
-                ArchosUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStartCommand", "ACTION_MEDIA_SCANNER_STARTED " + intent.getData());
+                LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStartCommand", "ACTION_MEDIA_SCANNER_STARTED " + intent.getData());
                 removeAllMessages(mHandler);
                 if (log.isTraceEnabled()) log.trace("onStartCommand: ImportState.VIDEO.setAndroidScanning(true)");
                 ImportState.VIDEO.setAndroidScanning(true);
-            } else if (ArchosMediaIntent.ACTION_VIDEO_SCANNER_METADATA_UPDATE.equals(action)) {
+            } else if (LeeroyFlixMediaIntent.ACTION_VIDEO_SCANNER_METADATA_UPDATE.equals(action)) {
                 if (log.isDebugEnabled()) log.debug("onStartCommand: ACTION_VIDEO_SCANNER_METADATA_UPDATE {}", intent.getData());
-                ArchosUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStartCommand", "ACTION_MEDIA_SCANNER_STARTED " + intent.getData());
+                LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStartCommand", "ACTION_MEDIA_SCANNER_STARTED " + intent.getData());
                 // requests to update metadata are processed directly and don't impact importing
                 if (log.isDebugEnabled()) log.debug("onStartCommand: SCAN STARTED {}", intent.getData());
                 Message m = mHandler.obtainMessage(MESSAGE_UPDATE_METADATA, startId, flags, intent.getData());
                 m.sendToTarget();
-            } else if (ArchosMediaIntent.isVideoRemoveIntent(action)) {
-                ArchosUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStartCommand", "removeIntent " + intent.getData());
+            } else if (LeeroyFlixMediaIntent.isVideoRemoveIntent(action)) {
+                LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStartCommand", "removeIntent " + intent.getData());
                 // requests to remove files are processed directly and don't impact importing
                 Message m = mHandler.obtainMessage(MESSAGE_REMOVE_FILE, startId, flags, intent.getData());
                 m.sendToTarget();
             } else if (Intent.ACTION_SHUTDOWN.equals(action)) {
                 if (log.isDebugEnabled()) log.debug("onStartCommand: Import disabled due to shutdown");
-                ArchosUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStartCommand", "ACTION_SHUTDOWN");
+                LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStartCommand", "ACTION_SHUTDOWN");
                 Message m = mHandler.obtainMessage(MESSAGE_KILL, startId, flags);
                 mHandler.sendMessageDelayed(m, 1000);
-            } else if (ArchosMediaIntent.ACTION_VIDEO_SCANNER_IMPORT_INCR.equals(action)) {
+            } else if (LeeroyFlixMediaIntent.ACTION_VIDEO_SCANNER_IMPORT_INCR.equals(action)) {
                 if (log.isDebugEnabled()) log.debug("onStartCommand: ACTION_VIDEO_SCANNER_IMPORT_INCR {}", intent.getData());
-                ArchosUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStartCommand", "ACTION_VIDEO_SCANNER_IMPORT_INCR " + intent.getData());
+                LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStartCommand", "ACTION_VIDEO_SCANNER_IMPORT_INCR " + intent.getData());
                 removeAllMessages(mHandler);
                 Message m = mHandler.obtainMessage(MESSAGE_IMPORT_INCR, startId, flags);
                 mHandler.sendMessageDelayed(m, 1000);
             } else if (Intent.ACTION_MEDIA_SCANNER_SCAN_FILE.equals(action)) {
                 if (log.isDebugEnabled()) log.debug("onStartCommand: ACTION_MEDIA_SCANNER_SCAN_FILE {}", intent.getData());
-                ArchosUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStartCommand", "ACTION_MEDIA_SCANNER_SCAN_FILE " + intent.getData());
+                LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStartCommand", "ACTION_MEDIA_SCANNER_SCAN_FILE " + intent.getData());
                 Message m = mHandler.obtainMessage(MESSAGE_UPDATE_METADATA, startId, flags, intent.getData());
                 m.sendToTarget();
             } else {
-                ArchosUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStartCommand", "intent not treated, stopForeground");
+                LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStartCommand", "intent not treated, stopForeground");
                 log.warn("onStartCommand: intent not treated, stopForeground");
                 // not calling handleMessage thus stopForeground
                 stopSelf();
@@ -354,14 +354,14 @@ public class VideoStoreImportService extends Service implements Handler.Callback
         
         mContext = context;
         Intent intent = new Intent(context, VideoStoreImportService.class);
-        ArchosUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.startService", "app in foreground calling startService");
+        LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.startService", "app in foreground calling startService");
         if (log.isDebugEnabled()) log.debug("startService: app in foreground, starting service");
         context.startService(intent); // triggers an initial video import on local storage because files might have been created meanwhile
     }
 
     public static void stopService(Context context) {
         if (log.isDebugEnabled()) log.debug("stopService");
-        ArchosUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.stopService", "stopping service");
+        LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.stopService", "stopping service");
         Intent intent = new Intent(context, VideoStoreImportService.class);
         intent.setAction(Intent.ACTION_SHUTDOWN);
         context.stopService(intent);
@@ -407,11 +407,11 @@ public class VideoStoreImportService extends Service implements Handler.Callback
                 stopForeground(true);
                 if (msg.arg1 != DONT_KILL_SELF){
                     if (log.isDebugEnabled()) log.debug("handleMessage: stopSelf");
-                    ArchosUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.handleMessage", "MESSAGE_KILL: stopSelf");
+                    LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.handleMessage", "MESSAGE_KILL: stopSelf");
                     sActive = false;
                     stopSelf(msg.arg1);
                 } else {
-                    ArchosUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.handleMessage", "MESSAGE_KILL: do not stopSelf");
+                    LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.handleMessage", "MESSAGE_KILL: do not stopSelf");
                     if (log.isDebugEnabled()) log.debug("handleMessage: MESSAGE_KILL: do not stopSelf");
                 }
                 break;
@@ -486,15 +486,15 @@ public class VideoStoreImportService extends Service implements Handler.Callback
         ImportState.VIDEO.setDirty(false);
         if (log.isDebugEnabled()) log.debug("doImport: not dirty anymore");
         // notify all that we have new stuff
-        Intent intent = new Intent(ArchosMediaIntent.ACTION_VIDEO_SCANNER_SCAN_FINISHED, null);
-        intent.setPackage(ArchosUtils.getGlobalContext().getPackageName());
+        Intent intent = new Intent(LeeroyFlixMediaIntent.ACTION_VIDEO_SCANNER_SCAN_FINISHED, null);
+        intent.setPackage(LeeroyFlixUtils.getGlobalContext().getPackageName());
         sendBroadcast(intent);
 
         // Explicitly start AutoScrapeService after scan completes to ensure scraping happens
         // This is needed because the ContentObserver may not reliably trigger during batch inserts
-        if (com.archos.mediascraper.AutoScrapeService.isEnable(this)) {
+        if (org.leeroy.mediascraper.AutoScrapeService.isEnable(this)) {
             if (log.isDebugEnabled()) log.debug("doImport: starting AutoScrapeService after scan completion");
-            com.archos.mediascraper.AutoScrapeService.startService(this);
+            org.leeroy.mediascraper.AutoScrapeService.startService(this);
         }
     }
 
@@ -627,7 +627,7 @@ public class VideoStoreImportService extends Service implements Handler.Callback
                     }
                 }
             } catch (RuntimeException e) {
-                ArchosUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.processDeleteFileAndVobCallback", "crash " + e.getMessage());
+                LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.processDeleteFileAndVobCallback", "crash " + e.getMessage());
                 log.error("processDeleteFileAndVobCallback: SQLException or IllegalStateException",e);
                 if (CRASH_ON_ERROR) throw new RuntimeException(e);
                 break;
@@ -736,7 +736,7 @@ public class VideoStoreImportService extends Service implements Handler.Callback
         // App in background
         isForeground = false;
         if (log.isDebugEnabled()) log.debug("onStop: LifecycleOwner app in background, stopSelf");
-        ArchosUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStop (lifecycle)", "app is in background stopSelf");
+        LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStop (lifecycle)", "app is in background stopSelf");
         cleanup();
         stopSelf();
     }
@@ -825,7 +825,7 @@ public class VideoStoreImportService extends Service implements Handler.Callback
         // (checkDatabaseForUnmountedVolumes() is called during import via updateVolumeHiddenStatesByPath())
         if (ImportState.VIDEO.isDirty()) {
             if (log.isDebugEnabled()) log.debug("onStart: onForeGround && ImportState.isDirty MESSAGE_IMPORT_FULL");
-            ArchosUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStart", "app is foreground ImportState.isDirty MESSAGE_IMPORT_FULL");
+            LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "VideoStoreImportService.onStart", "app is foreground ImportState.isDirty MESSAGE_IMPORT_FULL");
             mHandler.obtainMessage(MESSAGE_IMPORT_FULL, DONT_KILL_SELF, 0).sendToTarget();
         }
     }

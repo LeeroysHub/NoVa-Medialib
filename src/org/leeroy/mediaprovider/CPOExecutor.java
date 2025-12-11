@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediaprovider;
+package org.leeroy.mediaprovider;
 
 import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
@@ -24,7 +24,7 @@ import java.util.ArrayList;
 
 /** ContentProviderOperation bulk executor */
 public class CPOExecutor {
-    private static final String TAG = ArchosMediaCommon.TAG_PREFIX + CPOExecutor.class.getSimpleName();
+    private static final String TAG = LeeroyFlixMediaCommon.TAG_PREFIX + CPOExecutor.class.getSimpleName();
     private static final boolean DBG = false;
 
     private final ContentResolver mCr;

@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package com.archos.mediaprovider;
+package org.leeroy.mediaprovider;
 
-import com.archos.filecorelibrary.MetaFile2;
+import org.leeroy.filecorelibrary.MetaFile2;
 
 import java.util.HashMap;
 
 /**
- * MediaScanner helper class. Archos Specific version of
+ * MediaScanner helper class. LeeroyFlix Specific version of
  * MediaFile.java in Framework.
  */
-public class ArchosMediaFile {
+public class LeeroyFlixMediaFile {
 
     // Audio file types
     public static final int FILE_TYPE_MP3     = 1;
@@ -103,7 +103,7 @@ public class ArchosMediaFile {
     public static final int FILE_TYPE_MS_POWERPOINT = 106;
     public static final int FILE_TYPE_ZIP           = 107;
 
-    // Archos file types
+    // LeeroyFlix file types
     public static final int FILE_TYPE_WAVPACK       = 1001;
     public static final int FILE_TYPE_TTA           = 1002;
     public static final int FILE_TYPE_3GPPA         = 1003;
@@ -133,7 +133,7 @@ public class ArchosMediaFile {
     public static final int FILE_TYPE_MPL           = 1208;
     public static final int FILE_TYPE_TXT           = 1209;
 
-    // keep in sync with com.archos.mediacenter.video.utils.VideoUtils.SUBTITLES_ARRAY
+    // keep in sync with org.leeroy.mediaplayer.video.utils.VideoUtils.SUBTITLES_ARRAY
     private static final int FIRST_SUBTITLE_FILE_TYPE = FILE_TYPE_SRT;
     private static final int LAST_SUBTITLE_FILE_TYPE = FILE_TYPE_TXT;
 

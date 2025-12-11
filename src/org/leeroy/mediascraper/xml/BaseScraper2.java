@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,22 +13,22 @@
 // limitations under the License.
 
 
-package com.archos.mediascraper.xml;
+package org.leeroy.mediascraper.xml;
 
 import android.content.Context;
 import android.os.Bundle;
 
 import androidx.preference.PreferenceManager;
 
-import com.archos.mediascraper.BaseTags;
-import com.archos.mediascraper.ScrapeDetailResult;
-import com.archos.mediascraper.ScrapeSearchResult;
-import com.archos.mediascraper.ScrapeStatus;
-import com.archos.mediascraper.Scraper;
-import com.archos.mediascraper.SearchResult;
-import com.archos.mediascraper.preprocess.SearchInfo;
-import com.archos.mediascraper.preprocess.SearchPreprocessor;
-import com.archos.mediascraper.preprocess.TvShowSearchInfo;
+import org.leeroy.mediascraper.BaseTags;
+import org.leeroy.mediascraper.ScrapeDetailResult;
+import org.leeroy.mediascraper.ScrapeSearchResult;
+import org.leeroy.mediascraper.ScrapeStatus;
+import org.leeroy.mediascraper.Scraper;
+import org.leeroy.mediascraper.SearchResult;
+import org.leeroy.mediascraper.preprocess.SearchInfo;
+import org.leeroy.mediascraper.preprocess.SearchPreprocessor;
+import org.leeroy.mediascraper.preprocess.TvShowSearchInfo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

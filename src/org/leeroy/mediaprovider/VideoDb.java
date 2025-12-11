@@ -1,9 +1,9 @@
-package com.archos.mediaprovider;
+package org.leeroy.mediaprovider;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.archos.mediaprovider.video.VideoOpenHelper;
+import org.leeroy.mediaprovider.video.VideoOpenHelper;
 
 public class VideoDb {
     private static volatile DbHolder instance;

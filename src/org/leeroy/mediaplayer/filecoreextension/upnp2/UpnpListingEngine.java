@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediacenter.filecoreextension.upnp2;
+package org.leeroy.mediaplayer.filecoreextension.upnp2;
 
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
-import com.archos.filecorelibrary.FileUtils;
-import com.archos.filecorelibrary.ListingEngine;
-import com.archos.filecorelibrary.MimeUtils;
+import org.leeroy.filecorelibrary.FileUtils;
+import org.leeroy.filecorelibrary.ListingEngine;
+import org.leeroy.filecorelibrary.MimeUtils;
 
 import org.jupnp.model.action.ActionInvocation;
 import org.jupnp.model.message.UpnpResponse;

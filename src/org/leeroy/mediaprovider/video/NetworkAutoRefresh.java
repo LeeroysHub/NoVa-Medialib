@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediaprovider.video;
+package org.leeroy.mediaprovider.video;
 
 import android.app.Application;
 import android.content.BroadcastReceiver;
@@ -31,17 +31,17 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ProcessLifecycleOwner;
 import androidx.preference.PreferenceManager;
 
-import com.archos.environment.ArchosUtils;
-import com.archos.filecorelibrary.FileUtils;
-import com.archos.filecorelibrary.ftp.Session;
-import com.archos.filecorelibrary.sftp.SFTPSession;
-import com.archos.mediacenter.filecoreextension.upnp2.UpnpServiceManager;
-import com.archos.mediacenter.utils.ShortcutDbAdapter;
-import com.archos.mediaprovider.ArchosMediaIntent;
-import com.archos.mediaprovider.video.VideoStore;
-import com.archos.mediaprovider.video.VideoStore.MediaColumns;
-import com.archos.mediascraper.AutoScrapeService;
-import com.archos.environment.NetworkState;
+import org.leeroy.environment.LeeroyFlixUtils;
+import org.leeroy.filecorelibrary.FileUtils;
+import org.leeroy.filecorelibrary.ftp.Session;
+import org.leeroy.filecorelibrary.sftp.SFTPSession;
+import org.leeroy.mediaplayer.filecoreextension.upnp2.UpnpServiceManager;
+import org.leeroy.mediaplayer.utils.ShortcutDbAdapter;
+import org.leeroy.mediaprovider.LeeroyFlixMediaIntent;
+import org.leeroy.mediaprovider.video.VideoStore;
+import org.leeroy.mediaprovider.video.VideoStore.MediaColumns;
+import org.leeroy.mediascraper.AutoScrapeService;
+import org.leeroy.environment.NetworkState;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,8 +61,8 @@ public class NetworkAutoRefresh extends BroadcastReceiver implements DefaultLife
     private static volatile boolean isForeground = true;
     private static Application mApplication;
 
-    public static final String ACTION_RESCAN_INDEXED_FOLDERS = "com.archos.mediaprovider.video.NetworkAutoRefresh";
-    public static final String ACTION_FORCE_RESCAN_INDEXED_FOLDERS = "com.archos.mediaprovider.video.NetworkAutoRefresh_force";
+    public static final String ACTION_RESCAN_INDEXED_FOLDERS = "org.leeroy.mediaprovider.video.NetworkAutoRefresh";
+    public static final String ACTION_FORCE_RESCAN_INDEXED_FOLDERS = "org.leeroy.mediaprovider.video.NetworkAutoRefresh_force";
 
     private static final String AUTO_RESCAN_ON_APP_RESTART = "auto_rescan_on_app_restart";
 
@@ -93,12 +93,12 @@ public class NetworkAutoRefresh extends BroadcastReceiver implements DefaultLife
              */
             if(((pref.getInt(AUTO_RESCAN_PERIOD,0)<=0)
                     &&!intent.getAction().equals(ACTION_FORCE_RESCAN_INDEXED_FOLDERS))
-                    || com.archos.mediaprovider.video.NetworkScannerServiceVideo.isScannerAlive()
+                    || org.leeroy.mediaprovider.video.NetworkScannerServiceVideo.isScannerAlive()
                     ) {
                 SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS");
                 Date dt = new Date();
                 String S = sdf.format(dt);
-                if (log.isDebugEnabled()) log.debug("onReceive: skipping rescan : {} period = {} is scanning ? {}", S, pref.getInt(AUTO_RESCAN_PERIOD, 0), String.valueOf(com.archos.mediaprovider.video.NetworkScannerReceiver.isScannerWorking()));
+                if (log.isDebugEnabled()) log.debug("onReceive: skipping rescan : {} period = {} is scanning ? {}", S, pref.getInt(AUTO_RESCAN_PERIOD, 0), String.valueOf(org.leeroy.mediaprovider.video.NetworkScannerReceiver.isScannerWorking()));
                 return;
             }
             pref.edit().putLong(AUTO_RESCAN_LAST_SCAN, System.currentTimeMillis()).commit();
@@ -155,10 +155,10 @@ public class NetworkAutoRefresh extends BroadcastReceiver implements DefaultLife
                     //This is about the best I can do to get it working. The 2000 time could probably be lowered, but if it aint broke..
                     Handler handler = new Handler(Looper.getMainLooper());
                     handler.postDelayed(() -> {
-                        Intent refreshIntent = new Intent(ArchosMediaIntent.ACTION_VIDEO_SCANNER_SCAN_FILE, uri);
+                        Intent refreshIntent = new Intent(LeeroyFlixMediaIntent.ACTION_VIDEO_SCANNER_SCAN_FILE, uri);
                         refreshIntent.putExtra(NetworkScannerServiceVideo.RECORD_ON_FAIL_PREFERENCE, AUTO_RESCAN_ERROR);
                         refreshIntent.putExtra(NetworkScannerServiceVideo.RECORD_END_OF_SCAN_PREFERENCE, AUTO_RESCAN_LAST_SCAN);
-                        refreshIntent.setPackage(ArchosUtils.getGlobalContext().getPackageName());
+                        refreshIntent.setPackage(LeeroyFlixUtils.getGlobalContext().getPackageName());
                         context.sendBroadcast(refreshIntent);
                     }, (int) 100 + (scanCount * 2000L));
                 }
@@ -243,7 +243,7 @@ public class NetworkAutoRefresh extends BroadcastReceiver implements DefaultLife
     public static void forceRescan(Context context){
         Intent intent = new Intent(context, NetworkAutoRefresh.class);
         intent.setAction(ACTION_FORCE_RESCAN_INDEXED_FOLDERS);
-        intent.setPackage(ArchosUtils.getGlobalContext().getPackageName());
+        intent.setPackage(LeeroyFlixUtils.getGlobalContext().getPackageName());
         context.sendBroadcast(intent);
     }
 

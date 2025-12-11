@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediascraper.themoviedb3;
+package org.leeroy.mediascraper.themoviedb3;
 
 import android.util.Pair;
 
-import com.archos.mediascraper.ScrapeStatus;
-import com.archos.mediascraper.SearchResult;
-import com.archos.mediascraper.xml.MovieScraper3;
+import org.leeroy.mediascraper.ScrapeStatus;
+import org.leeroy.mediascraper.SearchResult;
+import org.leeroy.mediascraper.xml.MovieScraper3;
 import com.uwetrottmann.tmdb2.entities.MovieResultsPage;
 import com.uwetrottmann.tmdb2.services.SearchService;
 
@@ -30,7 +30,7 @@ import java.util.List;
 
 import retrofit2.Response;
 
-import static com.archos.mediascraper.preprocess.ParseUtils.yearExtractor;
+import static org.leeroy.mediascraper.preprocess.ParseUtils.yearExtractor;
 
 // Search Movie for name query for year in language (ISO 639-1 code)
 // does not include_adult (Toggle the inclusion of adult titles)

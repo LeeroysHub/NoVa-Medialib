@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediacenter.cover;
+package org.leeroy.mediaplayer.cover;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -24,7 +24,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnKeyListener;
 
-import com.archos.environment.ArchosFeatures;
+import org.leeroy.environment.LeeroyFlixFeatures;
 
 
 public abstract class CoverRoll3D extends CoverGLSurfaceView implements OnKeyListener {
@@ -384,7 +384,7 @@ public abstract class CoverRoll3D extends CoverGLSurfaceView implements OnKeyLis
 	    if(DBG) Log.d(TAG, "getEyeDistance: w="+w+" h="+h+"h/w="+h/(float)w);
 	    float multiply =1;
 	    // Convert width and height to density-independent values
-	    if(ArchosFeatures.isAndroidTV(getContext()))
+	    if(LeeroyFlixFeatures.isAndroidTV(getContext()))
 	    	return -5.8f;
 	    final float width = w / getResources().getDisplayMetrics().density;
 	    final float height = h / getResources().getDisplayMetrics().density;

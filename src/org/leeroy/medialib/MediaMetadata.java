@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.archos.medialib;
+package org.leeroy.medialib;
 
 import android.os.Parcel;
 import android.os.Parcelable;

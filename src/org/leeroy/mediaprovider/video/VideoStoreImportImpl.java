@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediaprovider.video;
+package org.leeroy.mediaprovider.video;
 
 import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
@@ -34,23 +34,23 @@ import android.provider.MediaStore.Images.ImageColumns;
 import android.provider.MediaStore.MediaColumns;
 import android.text.TextUtils;
 
-import com.archos.filecorelibrary.ExtStorageManager;
-import com.archos.filecorelibrary.FileEditor;
-import com.archos.mediacenter.filecoreextension.upnp2.FileEditorFactoryWithUpnp;
-import com.archos.mediacenter.utils.trakt.TraktService;
-import com.archos.medialib.IMediaMetadataRetriever;
-import com.archos.medialib.MediaMetadata;
-import com.archos.mediaprovider.ArchosMediaFile;
-import com.archos.mediaprovider.ArchosMediaFile.MediaFileType;
-import com.archos.mediaprovider.BulkInserter;
-import com.archos.mediaprovider.CustomCursorFactory.CustomCursor;
-import com.archos.mediaprovider.ImportState;
-import com.archos.mediaprovider.ImportState.State;
-import com.archos.mediaprovider.MediaRetrieverServiceClient;
-import com.archos.mediaprovider.VolumeState;
-import com.archos.mediaprovider.video.VideoStore.Video.VideoColumns;
-import com.archos.mediascraper.BaseTags;
-import com.archos.mediascraper.NfoParser;
+import org.leeroy.filecorelibrary.ExtStorageManager;
+import org.leeroy.filecorelibrary.FileEditor;
+import org.leeroy.mediaplayer.filecoreextension.upnp2.FileEditorFactoryWithUpnp;
+import org.leeroy.mediaplayer.utils.trakt.TraktService;
+import org.leeroy.medialib.IMediaMetadataRetriever;
+import org.leeroy.medialib.MediaMetadata;
+import org.leeroy.mediaprovider.LeeroyFlixMediaFile;
+import org.leeroy.mediaprovider.LeeroyFlixMediaFile.MediaFileType;
+import org.leeroy.mediaprovider.BulkInserter;
+import org.leeroy.mediaprovider.CustomCursorFactory.CustomCursor;
+import org.leeroy.mediaprovider.ImportState;
+import org.leeroy.mediaprovider.ImportState.State;
+import org.leeroy.mediaprovider.MediaRetrieverServiceClient;
+import org.leeroy.mediaprovider.VolumeState;
+import org.leeroy.mediaprovider.video.VideoStore.Video.VideoColumns;
+import org.leeroy.mediascraper.BaseTags;
+import org.leeroy.mediascraper.NfoParser;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,8 +61,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.archos.filecorelibrary.FileUtils.isNetworkShare;
-import static com.archos.filecorelibrary.FileUtils.isSlowRemote;
+import static org.leeroy.filecorelibrary.FileUtils.isNetworkShare;
+import static org.leeroy.filecorelibrary.FileUtils.isSlowRemote;
 
 /**
  * The media db import logic
@@ -174,7 +174,7 @@ public class VideoStoreImportImpl {
     private static final String[] ID_DATA_PROJ = new String[] {
             BaseColumns._ID,
             MediaColumnsDATA,
-            VideoColumns.ARCHOS_MEDIA_SCRAPER_ID
+            VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_ID
     };
     private static final String UPDATE_WHERE = "remote_id=?";
     /** scans every file in cursor and update database, also closes cursor */
@@ -299,7 +299,7 @@ public class VideoStoreImportImpl {
         public Job(String path, String id, Blacklist blacklist) {
             mPath = Uri.parse(path);
             mId = id;
-            mMft = ArchosMediaFile.getFileType(path);
+            mMft = LeeroyFlixMediaFile.getFileType(path);
             // default mime type / media type
             int mediaType = FileColumns.MEDIA_TYPE_NONE;
             String mimeType = "application/octet-stream";
@@ -308,14 +308,14 @@ public class VideoStoreImportImpl {
                 mimeType = mMft.mimeType;
                 if (!isNoMediaPath(path) && !blacklist.isBlacklistedManual(mPath)) {
                 //if (!isNoMediaPath(path) && !blacklist.isBlacklisted(mPath)) {
-                    if (ArchosMediaFile.isAudioFileType(mMft.fileType)) {
+                    if (LeeroyFlixMediaFile.isAudioFileType(mMft.fileType)) {
                         mediaType = FileColumns.MEDIA_TYPE_AUDIO;
-                    } else if (ArchosMediaFile.isVideoFileType(mMft.fileType)) {
+                    } else if (LeeroyFlixMediaFile.isVideoFileType(mMft.fileType)) {
                         mediaType = FileColumns.MEDIA_TYPE_VIDEO;
                         retrieve = true;
-                    }  else if (ArchosMediaFile.isImageFileType(mMft.fileType)) {
+                    }  else if (LeeroyFlixMediaFile.isImageFileType(mMft.fileType)) {
                         mediaType = FileColumns.MEDIA_TYPE_IMAGE;
-                    } else if (ArchosMediaFile.isPlayListFileType(mMft.fileType)) {
+                    } else if (LeeroyFlixMediaFile.isPlayListFileType(mMft.fileType)) {
                         mediaType = FileColumns.MEDIA_TYPE_PLAYLIST;
                     }
                 }
@@ -475,19 +475,19 @@ public class VideoStoreImportImpl {
         if (log.isDebugEnabled()) log.debug("fromRetrieverService: Scanning metadata of: {}", path);
         switch (job.mMediaType) {
             case FileColumns.MEDIA_TYPE_VIDEO:
-                extract(cv, metadata, VideoColumns.ARCHOS_ENCODING_PROFILE, IMediaMetadataRetriever.METADATA_KEY_ENCODING_PROFILE, "0");
-                extract(cv, metadata, VideoColumns.ARCHOS_FRAMES_PER_THOUSAND_SECONDS, IMediaMetadataRetriever.METADATA_KEY_FRAMES_PER_THOUSAND_SECONDS, "0");
-                extract(cv, metadata, VideoColumns.ARCHOS_NUMBER_OF_AUDIO_TRACKS, IMediaMetadataRetriever.METADATA_KEY_NB_AUDIO_TRACK, "-1");
-                extract(cv, metadata, VideoColumns.ARCHOS_NUMBER_OF_SUBTITLE_TRACKS, IMediaMetadataRetriever.METADATA_KEY_NB_SUBTITLE_TRACK, "-1");
-                extract(cv, metadata, VideoColumns.ARCHOS_VIDEO_BITRATE, IMediaMetadataRetriever.METADATA_KEY_VIDEO_BITRATE, "0");
-                extract(cv, metadata, VideoColumns.ARCHOS_VIDEO_FOURCC_CODEC, IMediaMetadataRetriever.METADATA_KEY_VIDEO_FOURCC_CODEC, "0");
+                extract(cv, metadata, VideoColumns.LEEROYFLIX_ENCODING_PROFILE, IMediaMetadataRetriever.METADATA_KEY_ENCODING_PROFILE, "0");
+                extract(cv, metadata, VideoColumns.LEEROYFLIX_FRAMES_PER_THOUSAND_SECONDS, IMediaMetadataRetriever.METADATA_KEY_FRAMES_PER_THOUSAND_SECONDS, "0");
+                extract(cv, metadata, VideoColumns.LEEROYFLIX_NUMBER_OF_AUDIO_TRACKS, IMediaMetadataRetriever.METADATA_KEY_NB_AUDIO_TRACK, "-1");
+                extract(cv, metadata, VideoColumns.LEEROYFLIX_NUMBER_OF_SUBTITLE_TRACKS, IMediaMetadataRetriever.METADATA_KEY_NB_SUBTITLE_TRACK, "-1");
+                extract(cv, metadata, VideoColumns.LEEROYFLIX_VIDEO_BITRATE, IMediaMetadataRetriever.METADATA_KEY_VIDEO_BITRATE, "0");
+                extract(cv, metadata, VideoColumns.LEEROYFLIX_VIDEO_FOURCC_CODEC, IMediaMetadataRetriever.METADATA_KEY_VIDEO_FOURCC_CODEC, "0");
                 extract(cv, metadata, MediaColumns.HEIGHT, IMediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT, "0");
                 extract(cv, metadata, MediaColumns.WIDTH, IMediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH, "0");
                 extract(cv, metadata, VideoColumns.DURATION, IMediaMetadataRetriever.METADATA_KEY_DURATION, "0");
-                extract(cv, metadata, VideoColumns.ARCHOS_SAMPLERATE, IMediaMetadataRetriever.METADATA_KEY_SAMPLE_RATE, "0");
-                extract(cv, metadata, VideoColumns.ARCHOS_NUMBER_OF_CHANNELS, IMediaMetadataRetriever.METADATA_KEY_NUMBER_OF_CHANNELS, "0");
-                extract(cv, metadata, VideoColumns.ARCHOS_AUDIO_WAVE_CODEC, IMediaMetadataRetriever.METADATA_KEY_AUDIO_WAVE_CODEC, "0");
-                extract(cv, metadata, VideoColumns.ARCHOS_AUDIO_BITRATE, IMediaMetadataRetriever.METADATA_KEY_AUDIO_BITRATE, "0");
+                extract(cv, metadata, VideoColumns.LEEROYFLIX_SAMPLERATE, IMediaMetadataRetriever.METADATA_KEY_SAMPLE_RATE, "0");
+                extract(cv, metadata, VideoColumns.LEEROYFLIX_NUMBER_OF_CHANNELS, IMediaMetadataRetriever.METADATA_KEY_NUMBER_OF_CHANNELS, "0");
+                extract(cv, metadata, VideoColumns.LEEROYFLIX_AUDIO_WAVE_CODEC, IMediaMetadataRetriever.METADATA_KEY_AUDIO_WAVE_CODEC, "0");
+                extract(cv, metadata, VideoColumns.LEEROYFLIX_AUDIO_BITRATE, IMediaMetadataRetriever.METADATA_KEY_AUDIO_BITRATE, "0");
                 extract(cv, metadata, FileColumns.TITLE, IMediaMetadataRetriever.METADATA_KEY_TITLE, defaultTitle);
                 break;
         }
@@ -1362,7 +1362,7 @@ public class VideoStoreImportImpl {
 
         while (offset >= 0) {
             int slashIndex = path.indexOf('/', offset);
-            // Archos NOTE: here must be >= instead of >
+            // LeeroyFlix NOTE: here must be >= instead of >
             if (slashIndex >= offset) {
                 slashIndex++; // move past slash
                 Uri file = Uri.parse(path.substring(0, slashIndex) + ".nomedia");
@@ -1398,7 +1398,7 @@ public class VideoStoreImportImpl {
         int offset = 1;
         while (offset >= 0) {
             int slashIndex = path.indexOf('/', offset);
-            // Archos NOTE: here must be >= instead of >
+            // LeeroyFlix NOTE: here must be >= instead of >
             if (slashIndex >= offset) {
                 slashIndex++; // move past slash
                 File file = new File(path.substring(0, slashIndex) + ".nomedia");
@@ -1426,7 +1426,7 @@ public class VideoStoreImportImpl {
                 return true;
             }
 
-            /* Archos: No need to check for images
+            /* LeeroyFlix: No need to check for images
             // ignore album art files created by Windows Media Player:
             // Folder.jpg, AlbumArtSmall.jpg, AlbumArt_{...}_Large.jpg
             // and AlbumArt_{...}_Small.jpg
@@ -1445,7 +1445,7 @@ public class VideoStoreImportImpl {
             }
             */
         }
-        /* Archos: No need to check for images
+        /* LeeroyFlix: No need to check for images
         // ignores images inside Music directory (in order to don't spam gallery with music cover)
         if (path.startsWith(MUSIC_STORAGE_PATH)) {
             MediaFileType type = MediaFile.getFileType(path);

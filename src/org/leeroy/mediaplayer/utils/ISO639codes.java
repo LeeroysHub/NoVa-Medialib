@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediacenter.utils;
+package org.leeroy.mediaplayer.utils;
 
 import static androidx.core.content.res.TypedArrayUtils.getText;
-import static com.archos.mediascraper.StringUtils.capitalizeFirstLetter;
+import static org.leeroy.mediascraper.StringUtils.capitalizeFirstLetter;
 
 import android.content.Context;
 import android.content.res.Resources;

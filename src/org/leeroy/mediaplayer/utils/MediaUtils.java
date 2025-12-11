@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
 // limitations under the License.
 
 
-package com.archos.mediacenter.utils;
+package org.leeroy.mediaplayer.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -40,8 +40,8 @@ import android.widget.AbsListView;
 import android.widget.GridView;
 import android.widget.ListView;
 
-import com.archos.filecorelibrary.FileEditorFactory;
-import com.archos.medialib.R;
+import org.leeroy.filecorelibrary.FileEditorFactory;
+import org.leeroy.medialib.R;
 
 import java.io.Closeable;
 import java.io.File;

@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,12 +13,12 @@
 // limitations under the License.
 
 
-package com.archos.mediascraper.preprocess;
+package org.leeroy.mediascraper.preprocess;
 
 import android.net.Uri;
 import android.util.Pair;
 
-import com.archos.mediascraper.StringUtils;
+import org.leeroy.mediascraper.StringUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,10 +26,10 @@ import org.slf4j.LoggerFactory;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.archos.mediascraper.ShowUtils.cleanUpName;
-import static com.archos.mediascraper.preprocess.ParseUtils.getCountryOfOrigin;
-import static com.archos.mediascraper.preprocess.ParseUtils.parenthesisYearExtractor;
-import static com.archos.mediascraper.preprocess.ParseUtils.yearExtractorEndString;
+import static org.leeroy.mediascraper.ShowUtils.cleanUpName;
+import static org.leeroy.mediascraper.preprocess.ParseUtils.getCountryOfOrigin;
+import static org.leeroy.mediascraper.preprocess.ParseUtils.parenthesisYearExtractor;
+import static org.leeroy.mediascraper.preprocess.ParseUtils.yearExtractorEndString;
 
 /**
  * Matches Tv Shows in folders like

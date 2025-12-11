@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediacenter.utils.videodb;
+package org.leeroy.mediaplayer.utils.videodb;
 
 import androidx.loader.app.LoaderManager;
 
@@ -28,19 +28,19 @@ import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
 
-import com.archos.filecorelibrary.FileUtils;
-import com.archos.mediacenter.filecoreextension.UriUtils;
-import com.archos.mediaprovider.video.LoaderUtils;
-import com.archos.mediaprovider.video.VideoStore;
-import com.archos.mediaprovider.video.VideoStore.MediaColumns;
-import com.archos.mediascraper.BaseTags;
-import com.archos.mediascraper.MovieTags;
-import com.archos.mediascraper.NfoParser;
-import com.archos.mediascraper.ScrapeDetailResult;
-import com.archos.mediascraper.ScrapeStatus;
-import com.archos.mediascraper.Scraper;
-import com.archos.mediascraper.preprocess.SearchInfo;
-import com.archos.mediascraper.preprocess.SearchPreprocessor;
+import org.leeroy.filecorelibrary.FileUtils;
+import org.leeroy.mediaplayer.filecoreextension.UriUtils;
+import org.leeroy.mediaprovider.video.LoaderUtils;
+import org.leeroy.mediaprovider.video.VideoStore;
+import org.leeroy.mediaprovider.video.VideoStore.MediaColumns;
+import org.leeroy.mediascraper.BaseTags;
+import org.leeroy.mediascraper.MovieTags;
+import org.leeroy.mediascraper.NfoParser;
+import org.leeroy.mediascraper.ScrapeDetailResult;
+import org.leeroy.mediascraper.ScrapeStatus;
+import org.leeroy.mediascraper.Scraper;
+import org.leeroy.mediascraper.preprocess.SearchInfo;
+import org.leeroy.mediascraper.preprocess.SearchPreprocessor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -162,14 +162,14 @@ public class IndexHelper implements LoaderManager.LoaderCallbacks<Cursor>, Loade
                 final String where = VideoStore.Video.VideoColumns._ID + " = " + mVideoInfo.id;
                 ContentResolver resolver = mContext.getContentResolver();
                 ContentValues values = new ContentValues(8);
-                values.put(VideoStore.Video.VideoColumns.ARCHOS_BOOKMARK, mVideoInfo.bookmark);
+                values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_BOOKMARK, mVideoInfo.bookmark);
                 values.put(VideoStore.Video.VideoColumns.BOOKMARK, mVideoInfo.resume);
                 values.put(VideoStore.Video.VideoColumns.DURATION, mVideoInfo.duration);
-                values.put(VideoStore.Video.VideoColumns.ARCHOS_PLAYER_PARAMS, playerParams);
-                values.put(VideoStore.Video.VideoColumns.ARCHOS_PLAYER_SUBTITLE_DELAY, mVideoInfo.subtitleDelay);
-                values.put(VideoStore.Video.VideoColumns.ARCHOS_PLAYER_SUBTITLE_RATIO, mVideoInfo.subtitleRatio);
-                values.put(VideoStore.Video.VideoColumns.ARCHOS_LAST_TIME_PLAYED, mVideoInfo.lastTimePlayed);
-                values.put(VideoStore.Video.VideoColumns.ARCHOS_TRAKT_RESUME, mVideoInfo.traktResume);
+                values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_PLAYER_PARAMS, playerParams);
+                values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_PLAYER_SUBTITLE_DELAY, mVideoInfo.subtitleDelay);
+                values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_PLAYER_SUBTITLE_RATIO, mVideoInfo.subtitleRatio);
+                values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_LAST_TIME_PLAYED, mVideoInfo.lastTimePlayed);
+                values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_RESUME, mVideoInfo.traktResume);
                 resolver.update(VideoStore.Video.Media.EXTERNAL_CONTENT_URI,
                                 values, where, null);
             }

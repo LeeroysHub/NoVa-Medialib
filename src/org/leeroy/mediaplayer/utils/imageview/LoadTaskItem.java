@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediacenter.utils.imageview;
+package org.leeroy.mediaplayer.utils.imageview;
 
 import android.os.Message;
 import android.util.Log;
 import android.widget.ImageView;
 
-import com.archos.mediascraper.MultiLock;
+import org.leeroy.mediascraper.MultiLock;
 
 import java.lang.ref.WeakReference;
 import java.util.Map;

@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediaprovider.video;
+package org.leeroy.mediaprovider.video;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -20,10 +20,10 @@ import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 
-import com.archos.filecorelibrary.ExtStorageManager;
+import org.leeroy.filecorelibrary.ExtStorageManager;
 
-import com.archos.filecorelibrary.FileUtils;
-import com.archos.mediacenter.utils.BlacklistedDbAdapter;
+import org.leeroy.filecorelibrary.FileUtils;
+import org.leeroy.mediaplayer.utils.BlacklistedDbAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,7 +68,7 @@ public class Blacklist {
     private static final String[] BLACKLISTED_CAM_DIRS = {
             "/com.whatsapp", "/WhatsApp", "/Android/media/com.whatsapp",
             "/Android/data",
-            //"/Android/data/org.courville.nova",
+            //"/Android/data/org.leeroy.media",
             "/DCIM", "/Camera",
             "/GooglePlus",
             "/Allo", "/Pictures",

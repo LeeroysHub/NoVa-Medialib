@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
 // limitations under the License.
 
 
-package com.archos.mediacenter.utils.imageview;
+package org.leeroy.mediaplayer.utils.imageview;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
@@ -21,8 +21,8 @@ import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 
-import com.archos.mediacenter.utils.imageview.LoadResult.Status;
-import com.archos.mediascraper.ScraperImage;
+import org.leeroy.mediaplayer.utils.imageview.LoadResult.Status;
+import org.leeroy.mediascraper.ScraperImage;
 
 public class ScraperImageProcessor extends ImageProcessor {
     private final Context mContext;

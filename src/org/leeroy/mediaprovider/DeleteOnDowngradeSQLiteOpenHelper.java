@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediaprovider;
+package org.leeroy.mediaprovider;
 
 import android.content.Context;
 import android.database.DatabaseErrorHandler;
@@ -25,9 +25,9 @@ import android.util.Log;
 import java.io.File;
 
 public abstract class DeleteOnDowngradeSQLiteOpenHelper extends SQLiteOpenHelper {
-    private static final String TAG =  ArchosMediaCommon.TAG_PREFIX + "DeleteOnDowngradeSQLiteOpenHelper";
+    private static final String TAG =  LeeroyFlixMediaCommon.TAG_PREFIX + "DeleteOnDowngradeSQLiteOpenHelper";
     private static final boolean LOCAL_DBG = false;
-    private static final boolean DBG = ArchosMediaCommon.PACKAGE_DBG & LOCAL_DBG;
+    private static final boolean DBG = LeeroyFlixMediaCommon.PACKAGE_DBG & LOCAL_DBG;
 
     private final File mDatabaseFile;
 

@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediascraper;
+package org.leeroy.mediascraper;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -21,10 +21,10 @@ import android.os.Environment;
 import android.provider.BaseColumns;
 import android.util.Log;
 
-import com.archos.filecorelibrary.FileUtils;
-import com.archos.mediaprovider.video.VideoStore;
-import com.archos.mediascraper.preprocess.SearchInfo;
-import com.archos.mediascraper.preprocess.SearchPreprocessor;
+import org.leeroy.filecorelibrary.FileUtils;
+import org.leeroy.mediaprovider.video.VideoStore;
+import org.leeroy.mediascraper.preprocess.SearchInfo;
+import org.leeroy.mediascraper.preprocess.SearchPreprocessor;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -212,8 +212,8 @@ public class ScraperDebug extends Thread{
     }
 
     private static final String WHERE_ALL_MODE =
-            VideoStore.Video.VideoColumns.ARCHOS_MEDIA_SCRAPER_ID + ">0 AND " +
-                    VideoStore.Video.VideoColumns.ARCHOS_HIDE_FILE + "=0 AND " +
+            VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_ID + ">0 AND " +
+                    VideoStore.Video.VideoColumns.LEEROYFLIX_HIDE_FILE + "=0 AND " +
                     VideoStore.MediaColumns.DATA + " NOT LIKE ?";
 
     private final static String[] SCRAPER_ACTIVITY_COLS = {

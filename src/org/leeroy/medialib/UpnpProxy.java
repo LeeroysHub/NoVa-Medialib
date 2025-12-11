@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.medialib;
+package org.leeroy.medialib;
 
 import android.net.Uri;
 import android.os.Looper;
 
-import com.archos.filecorelibrary.StreamOverHttp;
-import com.archos.mediacenter.filecoreextension.upnp2.StreamUriFinder;
+import org.leeroy.filecorelibrary.StreamOverHttp;
+import org.leeroy.mediaplayer.filecoreextension.upnp2.StreamUriFinder;
 
 import java.io.IOException;
 import java.util.Map;

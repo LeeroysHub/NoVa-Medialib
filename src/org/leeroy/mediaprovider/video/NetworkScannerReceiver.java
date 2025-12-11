@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
 // limitations under the License.
 
 
-package com.archos.mediaprovider.video;
+package org.leeroy.mediaprovider.video;
 
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
@@ -24,8 +24,8 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.util.Log;
 
-import com.archos.mediaprovider.ArchosMediaIntent;
-import com.archos.mediaprovider.video.VideoStore.MediaColumns;
+import org.leeroy.mediaprovider.LeeroyFlixMediaIntent;
+import org.leeroy.mediaprovider.video.VideoStore.MediaColumns;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,9 +45,9 @@ public class NetworkScannerReceiver extends BroadcastReceiver {
         // we need uri telling us what is scanned
         if (uri == null)
             return;
-        if (ArchosMediaIntent.ACTION_VIDEO_SCANNER_SCAN_STARTED.equals(action)) {
+        if (LeeroyFlixMediaIntent.ACTION_VIDEO_SCANNER_SCAN_STARTED.equals(action)) {
             add(uri);
-        } else if (ArchosMediaIntent.ACTION_VIDEO_SCANNER_SCAN_FINISHED.equals(action)) {
+        } else if (LeeroyFlixMediaIntent.ACTION_VIDEO_SCANNER_SCAN_FINISHED.equals(action)) {
             remove(uri);
         }
         if (log.isDebugEnabled()) dump();

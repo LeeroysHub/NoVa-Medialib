@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediascraper;
+package org.leeroy.mediascraper;
 
 import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
 
-import com.archos.filecorelibrary.FileEditor;
-import com.archos.filecorelibrary.FileUtils;
-import com.archos.mediacenter.filecoreextension.upnp2.FileEditorFactoryWithUpnp;
+import org.leeroy.filecorelibrary.FileEditor;
+import org.leeroy.filecorelibrary.FileUtils;
+import org.leeroy.mediaplayer.filecoreextension.upnp2.FileEditorFactoryWithUpnp;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -178,7 +178,7 @@ public class LocalImages {
             return null;
 
         // relocate uri for local files to writeable location to comply with API30
-        Uri parent = com.archos.filecorelibrary.FileUtils.getParentUrl(FileUtils.relocateNfoAppPublicDir(video));
+        Uri parent = org.leeroy.filecorelibrary.FileUtils.getParentUrl(FileUtils.relocateNfoAppPublicDir(video));
         boolean testShowTitle = !TextUtils.isEmpty(showTitle);
         // we create "show name-poster.jpg" files
         String showTitleFile = testShowTitle ? NfoParser.getCustomShowPosterName(showTitle) : "";

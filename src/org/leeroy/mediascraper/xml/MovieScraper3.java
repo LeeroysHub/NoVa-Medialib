@@ -13,32 +13,32 @@
 // limitations under the License.
 
 
-package com.archos.mediascraper.xml;
+package org.leeroy.mediascraper.xml;
 
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.archos.medialib.R;
-import com.archos.mediascraper.MovieTags;
-import com.archos.mediascraper.ScrapeDetailResult;
-import com.archos.mediascraper.ScrapeSearchResult;
-import com.archos.mediascraper.ScrapeStatus;
-import com.archos.mediascraper.Scraper;
-import com.archos.mediascraper.ScraperCache;
-import com.archos.mediascraper.SearchResult;
-import com.archos.mediascraper.preprocess.MovieSearchInfo;
-import com.archos.mediascraper.preprocess.SearchInfo;
-import com.archos.mediascraper.themoviedb3.CollectionInfo;
-import com.archos.mediascraper.themoviedb3.CollectionResult;
-import com.archos.mediascraper.themoviedb3.ImageConfiguration;
-import com.archos.mediascraper.themoviedb3.MovieCollection;
-import com.archos.mediascraper.themoviedb3.MovieId2;
-import com.archos.mediascraper.themoviedb3.MovieIdDescription2;
-import com.archos.mediascraper.themoviedb3.MovieIdResult;
-import com.archos.mediascraper.themoviedb3.MyTmdb;
-import com.archos.mediascraper.themoviedb3.SearchMovie2;
-import com.archos.mediascraper.themoviedb3.SearchMovieResult;
+import org.leeroy.medialib.R;
+import org.leeroy.mediascraper.MovieTags;
+import org.leeroy.mediascraper.ScrapeDetailResult;
+import org.leeroy.mediascraper.ScrapeSearchResult;
+import org.leeroy.mediascraper.ScrapeStatus;
+import org.leeroy.mediascraper.Scraper;
+import org.leeroy.mediascraper.ScraperCache;
+import org.leeroy.mediascraper.SearchResult;
+import org.leeroy.mediascraper.preprocess.MovieSearchInfo;
+import org.leeroy.mediascraper.preprocess.SearchInfo;
+import org.leeroy.mediascraper.themoviedb3.CollectionInfo;
+import org.leeroy.mediascraper.themoviedb3.CollectionResult;
+import org.leeroy.mediascraper.themoviedb3.ImageConfiguration;
+import org.leeroy.mediascraper.themoviedb3.MovieCollection;
+import org.leeroy.mediascraper.themoviedb3.MovieId2;
+import org.leeroy.mediascraper.themoviedb3.MovieIdDescription2;
+import org.leeroy.mediascraper.themoviedb3.MovieIdResult;
+import org.leeroy.mediascraper.themoviedb3.MyTmdb;
+import org.leeroy.mediascraper.themoviedb3.SearchMovie2;
+import org.leeroy.mediascraper.themoviedb3.SearchMovieResult;
 import com.uwetrottmann.tmdb2.services.CollectionsService;
 import com.uwetrottmann.tmdb2.services.MoviesService;
 import com.uwetrottmann.tmdb2.services.SearchService;
@@ -54,8 +54,8 @@ import java.util.Calendar;
 
 import okhttp3.Cache;
 
-import static com.archos.mediascraper.MovieTags.isCollectionAlreadyKnown;
-import static com.archos.mediascraper.themoviedb3.MovieCollectionImages.downloadCollectionImage;
+import static org.leeroy.mediascraper.MovieTags.isCollectionAlreadyKnown;
+import static org.leeroy.mediascraper.themoviedb3.MovieCollectionImages.downloadCollectionImage;
 
 import androidx.preference.PreferenceManager;
 

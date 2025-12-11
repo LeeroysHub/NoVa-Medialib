@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediacenter.utils.trakt;
+package org.leeroy.mediaplayer.utils.trakt;
 
 
 import android.content.Context;
@@ -21,15 +21,15 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import androidx.preference.PreferenceManager;
 
-import com.archos.environment.ArchosUtils;
-import com.archos.mediacenter.utils.trakt.Trakt.Result.ObjectType;
-import com.archos.mediacenter.utils.trakt.TraktAPI.AuthParam;
-import com.archos.mediacenter.utils.trakt.TraktAPI.MovieWatchingParam;
-import com.archos.mediacenter.utils.trakt.TraktAPI.ShowWatchingParam;
-import com.archos.mediacenter.utils.videodb.VideoDbInfo;
-import com.archos.medialib.R;
-import com.archos.mediaprovider.video.VideoStore;
-import com.archos.mediascraper.AutoScrapeService;
+import org.leeroy.environment.LeeroyFlixUtils;
+import org.leeroy.mediaplayer.utils.trakt.Trakt.Result.ObjectType;
+import org.leeroy.mediaplayer.utils.trakt.TraktAPI.AuthParam;
+import org.leeroy.mediaplayer.utils.trakt.TraktAPI.MovieWatchingParam;
+import org.leeroy.mediaplayer.utils.trakt.TraktAPI.ShowWatchingParam;
+import org.leeroy.mediaplayer.utils.videodb.VideoDbInfo;
+import org.leeroy.medialib.R;
+import org.leeroy.mediaprovider.video.VideoStore;
+import org.leeroy.mediascraper.AutoScrapeService;
 import com.uwetrottmann.trakt5.TraktV2;
 import com.uwetrottmann.trakt5.entities.AccessToken;
 import com.uwetrottmann.trakt5.entities.BaseMovie;
@@ -620,7 +620,7 @@ public class Trakt {
         String refreshToken = getRefreshTokenFromPreferences(pref);
         if(refreshToken==null|| refreshToken.isEmpty()){
             Intent intent = new Intent(TRAKT_ISSUE_REFRESH_TOKEN);
-            intent.setPackage(ArchosUtils.getGlobalContext().getPackageName());
+            intent.setPackage(LeeroyFlixUtils.getGlobalContext().getPackageName());
             mContext.sendBroadcast(intent);
         }
         else {
@@ -629,7 +629,7 @@ public class Trakt {
                 if (!token.isSuccessful()) {
                     if (log.isDebugEnabled()) log.debug("Failed refreshing token {}", token.toString());
                     Intent intent = new Intent(TRAKT_ISSUE_REFRESH_TOKEN);
-                    intent.setPackage(ArchosUtils.getGlobalContext().getPackageName());
+                    intent.setPackage(LeeroyFlixUtils.getGlobalContext().getPackageName());
                     mContext.sendBroadcast(intent);
                 }
                 mTraktV2.accessToken(token.body().access_token);

@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediacenter.cover;
+package org.leeroy.mediaplayer.cover;
 
 import android.app.Activity;
 import android.content.Context;
@@ -40,9 +40,9 @@ import android.view.WindowManager;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.loader.app.LoaderManager;
 
-import com.archos.environment.ArchosFeatures;
-import com.archos.mediacenter.utils.InfoDialog;
-import com.archos.medialib.R;
+import org.leeroy.environment.LeeroyFlixFeatures;
+import org.leeroy.mediaplayer.utils.InfoDialog;
+import org.leeroy.medialib.R;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -168,7 +168,7 @@ SensorEventListener, OnTouchModeChangeListener, OnFocusChangeListener {
 
 		// Setup the texture provider and the attached listener
 		int textureSize = 256; // Default
-		if(ArchosFeatures.isAndroidTV(getContext()) || ArchosFeatures.isLUDO())
+		if(LeeroyFlixFeatures.isAndroidTV(getContext()) || LeeroyFlixFeatures.isLUDO())
 			textureSize = 512;
 		/*if (mDensity < 0.8f) {	// A28/A32 are 0.75 ; A35 is 0.95
 			textureSize = 128; // 128 enough for A28 & A32 (small 3' ldpi screens)

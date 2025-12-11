@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediascraper;
+package org.leeroy.mediascraper;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -41,19 +41,19 @@ import androidx.preference.PreferenceManager;
 import android.os.Looper;
 import android.provider.BaseColumns;
 
-import com.archos.mediacenter.utils.trakt.TraktService;
-import com.archos.medialib.R;
-import com.archos.mediaprovider.DeleteFileCallback;
-import com.archos.environment.NetworkState;
-import com.archos.mediaprovider.video.LoaderUtils;
-import com.archos.mediaprovider.video.VideoStore;
-import com.archos.mediaprovider.video.VideoProvider;
-import com.archos.mediaprovider.video.WrapperChannelManager;
-import com.archos.mediascraper.ShowUtils;
-import com.archos.mediascraper.preprocess.SearchInfo;
-import com.archos.mediascraper.preprocess.SearchPreprocessor;
-import com.archos.mediascraper.xml.MovieScraper3;
-import com.archos.mediascraper.xml.ShowScraper4;
+import org.leeroy.mediaplayer.utils.trakt.TraktService;
+import org.leeroy.medialib.R;
+import org.leeroy.mediaprovider.DeleteFileCallback;
+import org.leeroy.environment.NetworkState;
+import org.leeroy.mediaprovider.video.LoaderUtils;
+import org.leeroy.mediaprovider.video.VideoStore;
+import org.leeroy.mediaprovider.video.VideoProvider;
+import org.leeroy.mediaprovider.video.WrapperChannelManager;
+import org.leeroy.mediascraper.ShowUtils;
+import org.leeroy.mediascraper.preprocess.SearchInfo;
+import org.leeroy.mediascraper.preprocess.SearchPreprocessor;
+import org.leeroy.mediascraper.xml.MovieScraper3;
+import org.leeroy.mediascraper.xml.ShowScraper4;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,7 +93,7 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
             VideoStore.MediaColumns.TITLE,
             VideoStore.Video.VideoColumns.SCRAPER_MOVIE_ID,
             VideoStore.Video.VideoColumns.SCRAPER_EPISODE_ID,
-            VideoStore.Video.VideoColumns.ARCHOS_MEDIA_SCRAPER_TYPE,
+            VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_TYPE,
             VideoStore.Video.VideoColumns.SCRAPER_VIDEO_ONLINE_ID,
             VideoStore.Video.VideoColumns.SCRAPER_E_SEASON
     };
@@ -355,7 +355,7 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                             Uri fileUri = Uri.parse(cursor.getString(cursor.getColumnIndex(VideoStore.MediaColumns.DATA)));
                             long movieID = cursor.getLong(cursor.getColumnIndex(VideoStore.Video.VideoColumns.SCRAPER_MOVIE_ID));
                             long episodeID = cursor.getLong(cursor.getColumnIndex(VideoStore.Video.VideoColumns.SCRAPER_EPISODE_ID));
-                            final int scraperType = cursor.getInt(cursor.getColumnIndex(VideoStore.Video.VideoColumns.ARCHOS_MEDIA_SCRAPER_TYPE));
+                            final int scraperType = cursor.getInt(cursor.getColumnIndex(VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_TYPE));
                             String title = cursor.getString(cursor.getColumnIndex(VideoStore.MediaColumns.TITLE));
                             BaseTags baseTags = null;
                             if (sTotalNumberOfFilesRemainingToProcess > 0)
@@ -493,7 +493,7 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                         sNumberOfFilesRemainingToProcess = 0;
                         sNumberOfFilesNotScraped = 0;
                         restartOnNextRound = false;
-                        // find all videos not scraped yet looking at VideoStore.Video.VideoColumns.ARCHOS_MEDIA_SCRAPER_ID
+                        // find all videos not scraped yet looking at VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_ID
                         // and get the final count (it could change while scrape is in progress)
                         Cursor cursor = getFileListCursor(shouldRescrapAll&&onlyNotFound ?PARAM_SCRAPED_NOT_FOUND:shouldRescrapAll?PARAM_ALL:PARAM_NOT_SCRAPED, null, null, null);
                         int numberOfRows = cursor.getCount(); // total number of files to be processed
@@ -607,7 +607,7 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                                     boolean searchOnline = true;
                                     //log.trace("startScraping: rescraping all");
                                     long videoID = cursor.getLong(cursor.getColumnIndex(VideoStore.Video.VideoColumns.SCRAPER_VIDEO_ONLINE_ID));
-                                    final int scraperType = cursor.getInt(cursor.getColumnIndex(VideoStore.Video.VideoColumns.ARCHOS_MEDIA_SCRAPER_TYPE));
+                                    final int scraperType = cursor.getInt(cursor.getColumnIndex(VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_TYPE));
 
                                     if (scraperType == BaseTags.TV_SHOW) {
                                         // get the whole season
@@ -703,8 +703,8 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                                     // to skip this file when launching the automated process again
                                     //log.trace("startScraping: file {} not scraped without error -> mark it as not to be scraped again", fileUri);
                                     ContentValues cv = new ContentValues(2);
-                                    cv.put(VideoStore.Video.VideoColumns.ARCHOS_MEDIA_SCRAPER_ID, String.valueOf(-1));
-                                    cv.put(VideoStore.Video.VideoColumns.ARCHOS_MEDIA_SCRAPER_TYPE, String.valueOf(-1));
+                                    cv.put(VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_ID, String.valueOf(-1));
+                                    cv.put(VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_TYPE, String.valueOf(-1));
                                     getContentResolver().update(VideoStore.Video.Media.EXTERNAL_CONTENT_URI, cv, BaseColumns._ID + "=?", new String[]{Long.toString(ID)});
                                 } else if (!noScrapeError) { // condition is scrapedOrError
                                     //log.trace("startScraping: file {} scraped but with error -> increase mNetworkOrScrapErrors", fileUri);
@@ -765,22 +765,22 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
     }
 
     private static final String WHERE_BASE =
-            VideoStore.Video.VideoColumns.ARCHOS_HIDE_FILE + "=0 AND " +
+            VideoStore.Video.VideoColumns.LEEROYFLIX_HIDE_FILE + "=0 AND " +
                     VideoStore.MediaColumns.DATA + " NOT LIKE ?";
     private static final String WHERE_NOT_SCRAPED =
-            VideoStore.Video.VideoColumns.ARCHOS_MEDIA_SCRAPER_ID + "=0 AND "+ WHERE_BASE;
+            VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_ID + "=0 AND "+ WHERE_BASE;
 
     private static final String WHERE_SCRAPED_NOT_FOUND =
-            VideoStore.Video.VideoColumns.ARCHOS_MEDIA_SCRAPER_ID + "=-1 AND "+ WHERE_BASE;
+            VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_ID + "=-1 AND "+ WHERE_BASE;
 
     private static final String WHERE_SCRAPED =
-            VideoStore.Video.VideoColumns.ARCHOS_MEDIA_SCRAPER_ID + ">0 AND " + WHERE_BASE;
+            VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_ID + ">0 AND " + WHERE_BASE;
 
     private static final String WHERE_SCRAPED_ALL =
-            VideoStore.Video.VideoColumns.ARCHOS_MEDIA_SCRAPER_ID + ">=0 AND " + WHERE_BASE;
+            VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_ID + ">=0 AND " + WHERE_BASE;
 
     private static final String WHERE_MOVIES =
-            VideoStore.Video.VideoColumns.ARCHOS_MEDIA_SCRAPER_ID + ">=0 AND " +
+            VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_ID + ">=0 AND " +
                     VideoStore.Video.VideoColumns.SCRAPER_MOVIE_ID + " IS NOT NULL AND " + WHERE_BASE;
 
     private Cursor getFileListCursor(int scrapStatusParam, String sortOrder, Integer offset, Integer limit) {

@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediaprovider;
+package org.leeroy.mediaprovider;
 
 import android.app.Service;
 import android.content.ComponentName;
@@ -26,9 +26,9 @@ import android.os.Looper;
 import android.os.Message;
 import android.widget.Toast;
 
-import com.archos.environment.ArchosUtils;
-import com.archos.medialib.IMediaMetadataRetriever;
-import com.archos.medialib.MediaFactory;
+import org.leeroy.environment.LeeroyFlixUtils;
+import org.leeroy.medialib.IMediaMetadataRetriever;
+import org.leeroy.medialib.MediaFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -125,14 +125,14 @@ public class MediaThumbnailService extends Service {
                     if (log.isDebugEnabled()) log.debug("sMediaThumbnailService == null");
                     sLock.wait(3000);
                     if(sMediaThumbnailService == null&&sFirst) {
-                        Toast.makeText(ArchosUtils.getGlobalContext(), "timeout: sMediaThumbnailService == null", Toast.LENGTH_LONG).show();
+                        Toast.makeText(LeeroyFlixUtils.getGlobalContext(), "timeout: sMediaThumbnailService == null", Toast.LENGTH_LONG).show();
                         sFirst = false;
                     }
                     if (log.isDebugEnabled()) log.debug("bind_sync end of wait : sMediaThumbnailService == null {}", (sMediaThumbnailService == null));
 
                 } catch (InterruptedException e) {
                     if(sFirst)
-                        Toast.makeText(ArchosUtils.getGlobalContext(), "bind_sync interrupted", Toast.LENGTH_LONG).show();
+                        Toast.makeText(LeeroyFlixUtils.getGlobalContext(), "bind_sync interrupted", Toast.LENGTH_LONG).show();
                     sFirst = false;
                     log.error("bind_sync interrupted", e);
                 }

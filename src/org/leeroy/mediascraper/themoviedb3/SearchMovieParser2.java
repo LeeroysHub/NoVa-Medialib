@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediascraper.themoviedb3;
+package org.leeroy.mediascraper.themoviedb3;
 
 
-import com.archos.mediascraper.ScraperImage;
-import com.archos.mediascraper.SearchResult;
+import org.leeroy.mediascraper.ScraperImage;
+import org.leeroy.mediascraper.SearchResult;
 import com.uwetrottmann.tmdb2.entities.BaseMovie;
 import com.uwetrottmann.tmdb2.entities.MovieResultsPage;
 

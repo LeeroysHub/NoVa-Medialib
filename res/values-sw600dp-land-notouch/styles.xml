@@ -92,8 +92,8 @@
         <item name="android:paddingLeft">15dip</item>
     </style>
 
-     <!-- Archos GridView theme for the browser -->
-     <style name="ArchosGridView">
+     <!-- LeeroyFlix GridView theme for the browser -->
+     <style name="LeeroyFlixGridView">
        <item name="android:id">@id/browser_items</item>
        <item name="android:layout_width">match_parent</item>
        <item name="android:layout_height">match_parent</item>
@@ -144,8 +144,8 @@
         <item name="android:paddingLeft">10dip</item>
     </style>
 
-    <!-- ArchosProgressSlider -->
-	<style name="ArchosProgressSliderHorizontalBlue">
+    <!-- LeeroyFlixProgressSlider -->
+	<style name="LeeroyFlixProgressSliderHorizontalBlue">
 		<item name="android:progressDrawable">@drawable/progress_slider_horizontal_blue</item>
 		<item name="android:orientation">horizontal</item>
 		<item name="android:minHeight">6dip</item>
@@ -156,7 +156,7 @@
 		<item name="android:thumb">@null</item>
 	</style>
 
-	<style name="ArchosProgressSliderVerticalBlue">
+	<style name="LeeroyFlixProgressSliderVerticalBlue">
 		<item name="android:progressDrawable">@drawable/progress_slider_vertical_blue</item>
 		<item name="android:orientation">vertical</item>
 		<item name="android:minWidth">6dip</item>

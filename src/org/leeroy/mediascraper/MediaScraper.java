@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediascraper;
+package org.leeroy.mediascraper;
 
-import static com.archos.mediacenter.utils.MediaUtils.getExternalCacheDir;
+import static org.leeroy.mediaplayer.utils.MediaUtils.getExternalCacheDir;
 
 import android.content.Context;
 import android.os.Environment;
@@ -30,7 +30,7 @@ public final class MediaScraper {
 
     /**
      * returns the poster storage directory in context private dir, e.g.<p>
-     * <code>/data/data/com.archos.mediacenter.video/app_scraper_posters</code>
+     * <code>/data/data/org.leeroy.mediaplayer.video/app_scraper_posters</code>
      */
     public static File getPosterDirectory(Context context) {
         return context.getDir("scraper_posters", Context.MODE_PRIVATE);
@@ -38,7 +38,7 @@ public final class MediaScraper {
 
     /**
      * returns the picture storage directory in context private dir, e.g.<p>
-     * <code>/data/data/com.archos.mediacenter.video/app_scraper_pictures</code>
+     * <code>/data/data/org.leeroy.mediaplayer.video/app_scraper_pictures</code>
      */
     public static File getPictureDirectory(Context context) {
         return context.getDir("scraper_pictures", Context.MODE_PRIVATE);
@@ -46,7 +46,7 @@ public final class MediaScraper {
 
     /**
      * returns the backdrop download cache directory in external context dir, e.g.<p>
-     * <code>/mnt/storage/Android/data/com.archos.mediacenter.video/cache/pictures</code><p>
+     * <code>/mnt/storage/Android/data/org.leeroy.mediaplayer.video/cache/pictures</code><p>
      * External cache is NOT cleared when using the clear cache button in system settings > apps
      */
     public static File getPictureCacheDirectory(Context context) {
@@ -55,7 +55,7 @@ public final class MediaScraper {
 
     /**
      * returns the xml downloads cache directory in context private dir, e.g.<p>
-     * <code>/data/data/com.archos.mediacenter.video/cache/xml</code><p>
+     * <code>/data/data/org.leeroy.mediaplayer.video/cache/xml</code><p>
      * Internal cache is cleared when using the clear cache button in system settings > apps
      */
     public static File getXmlCacheDirectory(Context context) {
@@ -63,7 +63,7 @@ public final class MediaScraper {
     }
     /**
      * returns the image downloads cache directory in context private dir, e.g.<p>
-     * <code>/data/data/com.archos.mediacenter.video/cache/images</code><p>
+     * <code>/data/data/org.leeroy.mediaplayer.video/cache/images</code><p>
      * Internal cache is cleared when using the clear cache button in system settings > apps
      */
     public static File getImageCacheDirectory(Context context) {
@@ -73,7 +73,7 @@ public final class MediaScraper {
     // Backdrops stored on external storage = hdd for H devices.
     /**
      * returns the backdrop storage directory in external context dir, e.g.<p>
-     * <code>/mnt/storage/Android/data/com.archos.mediacenter.video/files/backdrops</code><p>
+     * <code>/mnt/storage/Android/data/org.leeroy.mediaplayer.video/files/backdrops</code><p>
      * External cache is NOT cleared when using the clear cache button in system settings > apps
      */
     public static File getBackdropDirectory(Context context) {
@@ -81,7 +81,7 @@ public final class MediaScraper {
     }
     /**
      * returns the backdrop download cache directory in external context dir, e.g.<p>
-     * <code>/mnt/storage/Android/data/com.archos.mediacenter.video/cache/backdrops</code><p>
+     * <code>/mnt/storage/Android/data/org.leeroy.mediaplayer.video/cache/backdrops</code><p>
      * External cache is NOT cleared when using the clear cache button in system settings > apps
      */
     public static File getBackdropCacheDirectory(Context context) {

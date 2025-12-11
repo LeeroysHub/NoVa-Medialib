@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediacenter.utils.videodb;
+package org.leeroy.mediaplayer.utils.videodb;
 
 import java.io.File;
 
@@ -24,12 +24,12 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.BaseColumns;
 
-import com.archos.mediaprovider.video.VideoStore;
-import com.archos.mediascraper.BaseTags;
-import com.archos.mediascraper.EpisodeTags;
-import com.archos.mediascraper.ScrapeDetailResult;
-import com.archos.mediascraper.ScrapeStatus;
-import com.archos.mediascraper.ShowTags;
+import org.leeroy.mediaprovider.video.VideoStore;
+import org.leeroy.mediascraper.BaseTags;
+import org.leeroy.mediascraper.EpisodeTags;
+import org.leeroy.mediascraper.ScrapeDetailResult;
+import org.leeroy.mediascraper.ScrapeStatus;
+import org.leeroy.mediascraper.ShowTags;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,20 +98,20 @@ public class VideoDbInfo implements Parcelable {
             VideoStore.MediaColumns.TITLE,                              //  2
             VideoStore.Video.VideoColumns.DURATION,                     //  3
             VideoStore.Video.VideoColumns.BOOKMARK,                     //  4
-            VideoStore.Video.VideoColumns.ARCHOS_BOOKMARK,              //  5
-            VideoStore.Video.VideoColumns.ARCHOS_PLAYER_PARAMS,         //  6
-            VideoStore.Video.VideoColumns.ARCHOS_PLAYER_SUBTITLE_DELAY, //  7
-            VideoStore.Video.VideoColumns.ARCHOS_PLAYER_SUBTITLE_RATIO, //  8
-            VideoStore.Video.VideoColumns.ARCHOS_NUMBER_OF_SUBTITLE_TRACKS, // 9
-            VideoStore.Video.VideoColumns.ARCHOS_LAST_TIME_PLAYED,      //  10
-            VideoStore.Video.VideoColumns.ARCHOS_TRAKT_SEEN,            //  11
-            VideoStore.Video.VideoColumns.ARCHOS_TRAKT_LIBRARY,         //  12
-            VideoStore.Video.VideoColumns.ARCHOS_TRAKT_RESUME,            //	13
-            VideoStore.Video.VideoColumns.ARCHOS_VIDEO_STEREO,          //  14
-            VideoStore.Video.VideoColumns.ARCHOS_VIDEO_DEFINITION,      //  15
-            VideoStore.Video.VideoColumns.ARCHOS_SUBTITLE_LANGUAGE,     //  16
+            VideoStore.Video.VideoColumns.LEEROYFLIX_BOOKMARK,              //  5
+            VideoStore.Video.VideoColumns.LEEROYFLIX_PLAYER_PARAMS,         //  6
+            VideoStore.Video.VideoColumns.LEEROYFLIX_PLAYER_SUBTITLE_DELAY, //  7
+            VideoStore.Video.VideoColumns.LEEROYFLIX_PLAYER_SUBTITLE_RATIO, //  8
+            VideoStore.Video.VideoColumns.LEEROYFLIX_NUMBER_OF_SUBTITLE_TRACKS, // 9
+            VideoStore.Video.VideoColumns.LEEROYFLIX_LAST_TIME_PLAYED,      //  10
+            VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_SEEN,            //  11
+            VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_LIBRARY,         //  12
+            VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_RESUME,            //	13
+            VideoStore.Video.VideoColumns.LEEROYFLIX_VIDEO_STEREO,          //  14
+            VideoStore.Video.VideoColumns.LEEROYFLIX_VIDEO_DEFINITION,      //  15
+            VideoStore.Video.VideoColumns.LEEROYFLIX_SUBTITLE_LANGUAGE,     //  16
             // scraper infos
-            VideoStore.Video.VideoColumns.ARCHOS_MEDIA_SCRAPER_TYPE,    // 17
+            VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_TYPE,    // 17
             VideoStore.Video.VideoColumns.SCRAPER_TITLE,                // 18
             VideoStore.Video.VideoColumns.SCRAPER_COVER,                // 19
             VideoStore.Video.VideoColumns.SCRAPER_E_EPISODE,            // 20
@@ -120,7 +120,7 @@ public class VideoDbInfo implements Parcelable {
             VideoStore.Video.VideoColumns.SCRAPER_M_ONLINE_ID,          // 23
             VideoStore.Video.VideoColumns.SCRAPER_S_ONLINE_ID,          // 24
             VideoStore.Video.VideoColumns.SCRAPER_E_ONLINE_ID,          // 25
-            VideoStore.Video.VideoColumns.ARCHOS_MEDIA_SCRAPER_ID,      // 26
+            VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_ID,      // 26
             VideoStore.Video.VideoColumns.SCRAPER_C_ID,                 // 27
     };
 
@@ -129,7 +129,7 @@ public class VideoDbInfo implements Parcelable {
     public static final int IDX_TITLE =                  2;
     public static final int IDX_DURATION =               3;
     public static final int IDX_BOOKMARK =               4;
-    public static final int IDX_ARCHOS_BOOKMARK =        5;
+    public static final int IDX_LEEROYFLIX_BOOKMARK =        5;
     public static final int IDX_PLAYER_PARAMS =          6;
     public static final int IDX_SUBTITLE_DELAY =         7;
     public static final int IDX_SUBTITLE_RATIO =         8;
@@ -204,7 +204,7 @@ public class VideoDbInfo implements Parcelable {
             result.title = c.getString(IDX_TITLE);
             result.duration = c.getInt(IDX_DURATION);
             result.resume = c.getInt(IDX_BOOKMARK);
-            result.bookmark = c.getInt(IDX_ARCHOS_BOOKMARK);
+            result.bookmark = c.getInt(IDX_LEEROYFLIX_BOOKMARK);
             result.lastTimePlayed = c.getLong(IDX_LAST_TIME_PLAYED);
             int playerParams = c.getInt(IDX_PLAYER_PARAMS);
             // ensure that audioTrack is -1 if not played before (playParams is 0 if not played before but 0 could be a valid audioTrack if played before)
@@ -276,7 +276,7 @@ public class VideoDbInfo implements Parcelable {
         ContentValues values = new ContentValues();
 
         if (bookmark != 1)
-            values.put(VideoStore.Video.VideoColumns.ARCHOS_BOOKMARK, bookmark);
+            values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_BOOKMARK, bookmark);
 
         if (resume != 1)
             values.put(VideoStore.Video.VideoColumns.BOOKMARK, resume);
@@ -284,39 +284,39 @@ public class VideoDbInfo implements Parcelable {
         if (duration > 0)
             values.put(VideoStore.Video.VideoColumns.DURATION, duration);
         if (lastTimePlayed > 0)
-            values.put(VideoStore.Video.VideoColumns.ARCHOS_LAST_TIME_PLAYED, lastTimePlayed);
+            values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_LAST_TIME_PLAYED, lastTimePlayed);
 
         if (subtitleTrack >= 0 && audioTrack >= 0) {
             int archosParams = VideoStore.paramsFromTracks(audioTrack, subtitleTrack);
-            values.put(VideoStore.Video.VideoColumns.ARCHOS_PLAYER_PARAMS, archosParams);
+            values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_PLAYER_PARAMS, archosParams);
         }
 
         if (subtitleDelay >= 0)
-            values.put(VideoStore.Video.VideoColumns.ARCHOS_PLAYER_SUBTITLE_DELAY, subtitleDelay);
+            values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_PLAYER_SUBTITLE_DELAY, subtitleDelay);
 
         if (subtitleRatio >= 0)
-            values.put(VideoStore.Video.VideoColumns.ARCHOS_PLAYER_SUBTITLE_RATIO, subtitleRatio);
+            values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_PLAYER_SUBTITLE_RATIO, subtitleRatio);
 
         // Always write subtitleLanguage, even if null, to keep DB in sync with in-memory state
         if (subtitleLanguage != null && !subtitleLanguage.isEmpty())
-            values.put(VideoStore.Video.VideoColumns.ARCHOS_SUBTITLE_LANGUAGE, subtitleLanguage);
+            values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_SUBTITLE_LANGUAGE, subtitleLanguage);
         else
-            values.putNull(VideoStore.Video.VideoColumns.ARCHOS_SUBTITLE_LANGUAGE);
+            values.putNull(VideoStore.Video.VideoColumns.LEEROYFLIX_SUBTITLE_LANGUAGE);
 
         if (nbSubtitles > 0)
-            values.put(VideoStore.Video.VideoColumns.ARCHOS_NUMBER_OF_SUBTITLE_TRACKS, nbSubtitles);
+            values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_NUMBER_OF_SUBTITLE_TRACKS, nbSubtitles);
         if (traktSeen != -1)
-            values.put(VideoStore.Video.VideoColumns.ARCHOS_TRAKT_SEEN, traktSeen);
+            values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_SEEN, traktSeen);
         if (traktLibrary != -1)
-            values.put(VideoStore.Video.VideoColumns.ARCHOS_TRAKT_LIBRARY, traktLibrary);
+            values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_LIBRARY, traktLibrary);
         if (traktResume != -1)
-            values.put(VideoStore.Video.VideoColumns.ARCHOS_TRAKT_RESUME, traktResume);
+            values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_RESUME, traktResume);
 
         if (videoStereo != -1)
-            values.put(VideoStore.Video.VideoColumns.ARCHOS_VIDEO_STEREO, videoStereo);
+            values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_VIDEO_STEREO, videoStereo);
 
         if (videoDefinition != -1)
-            values.put(VideoStore.Video.VideoColumns.ARCHOS_VIDEO_DEFINITION, videoDefinition);
+            values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_VIDEO_DEFINITION, videoDefinition);
 
         return values;
     }

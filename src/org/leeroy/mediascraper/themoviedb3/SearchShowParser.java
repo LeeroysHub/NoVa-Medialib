@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediascraper.themoviedb3;
+package org.leeroy.mediascraper.themoviedb3;
 
 import android.os.Bundle;
 
-import com.archos.mediascraper.ScraperImage;
-import com.archos.mediascraper.SearchResult;
-import com.archos.mediascraper.ShowUtils;
-import com.archos.mediascraper.preprocess.TvShowSearchInfo;
-import com.archos.mediascraper.xml.ShowScraper4;
+import org.leeroy.mediascraper.ScraperImage;
+import org.leeroy.mediascraper.SearchResult;
+import org.leeroy.mediascraper.ShowUtils;
+import org.leeroy.mediascraper.preprocess.TvShowSearchInfo;
+import org.leeroy.mediascraper.xml.ShowScraper4;
 import com.uwetrottmann.tmdb2.entities.BaseTvShow;
 import com.uwetrottmann.tmdb2.entities.TvShowResultsPage;
 

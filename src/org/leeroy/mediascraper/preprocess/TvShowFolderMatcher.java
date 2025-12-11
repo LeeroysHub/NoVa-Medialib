@@ -1,19 +1,19 @@
 
-package com.archos.mediascraper.preprocess;
+package org.leeroy.mediascraper.preprocess;
 
 import android.net.Uri;
 
-import com.archos.filecorelibrary.FileUtils;
-import com.archos.mediascraper.ShowUtils;
-import com.archos.mediascraper.StringUtils;
+import org.leeroy.filecorelibrary.FileUtils;
+import org.leeroy.mediascraper.ShowUtils;
+import org.leeroy.mediascraper.StringUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-import static com.archos.filecorelibrary.FileUtils.getName;
-import static com.archos.mediascraper.StringUtils.removeTrailingSlash;
+import static org.leeroy.filecorelibrary.FileUtils.getName;
+import static org.leeroy.mediascraper.StringUtils.removeTrailingSlash;
 
 /**
  * Matches all sorts of "Tv Show title S01E01/randomgarbage.mkv" and similar things

@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,10 +13,10 @@
 // limitations under the License.
 
 
-package com.archos.mediascraper;
+package org.leeroy.mediascraper;
 
-import static com.archos.filecorelibrary.FileUtils.relocateNfoAppPublicDir;
-import static com.archos.filecorelibrary.FileUtils.relocateNfoAppPublicDirForNfoJpgFiles;
+import static org.leeroy.filecorelibrary.FileUtils.relocateNfoAppPublicDir;
+import static org.leeroy.filecorelibrary.FileUtils.relocateNfoAppPublicDirForNfoJpgFiles;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -26,10 +26,10 @@ import androidx.preference.PreferenceManager;
 import android.util.LruCache;
 import android.util.Xml;
 
-import com.archos.filecorelibrary.FileEditor;
-import com.archos.mediacenter.filecoreextension.upnp2.FileEditorFactoryWithUpnp;
-import com.archos.filecorelibrary.FileUtils;
-import com.archos.medialib.R;
+import org.leeroy.filecorelibrary.FileEditor;
+import org.leeroy.mediaplayer.filecoreextension.upnp2.FileEditorFactoryWithUpnp;
+import org.leeroy.filecorelibrary.FileUtils;
+import org.leeroy.medialib.R;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

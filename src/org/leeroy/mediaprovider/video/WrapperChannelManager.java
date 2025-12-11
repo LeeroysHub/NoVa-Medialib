@@ -1,4 +1,4 @@
-package com.archos.mediaprovider.video;
+package org.leeroy.mediaprovider.video;
 
 import android.content.Context;
 import android.util.Log;
@@ -10,7 +10,7 @@ public class WrapperChannelManager {
     public static void refreshChannels(Context context){
         try
         {
-            Class c = Class.forName("com.archos.mediacenter.video.leanback.channels.ChannelManager");
+            Class c = Class.forName("org.leeroy.mediaplayer.video.leanback.channels.ChannelManager");
             Method m = c.getDeclaredMethod("refreshChannels", Context.class);
             m.invoke(null, context);
         }

@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,23 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediacenter.utils.seekbar;
+package org.leeroy.mediaplayer.utils.seekbar;
 
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
-import com.archos.medialib.R;
+import org.leeroy.medialib.R;
 
 /**
  * @author developer
  *
  * @hide
  */
-public class ArchosProgressSlider extends OrientableSeekBar {
+public class LeeroyFlixProgressSlider extends OrientableSeekBar {
 	
-	static final String TAG = "ArchosProgressSlider";
+	static final String TAG = "LeeroyFlixProgressSlider";
 	
     private final static boolean DEBUG = false;
 
@@ -44,26 +44,26 @@ public class ArchosProgressSlider extends OrientableSeekBar {
 
     private static final int DEFAULT_ORIENTATION = HORIZONTAL;
 
-    private static final int ORIENTATION = R.styleable.ArchosProgressSlider_android_orientation;
+    private static final int ORIENTATION = R.styleable.LeeroyFlixProgressSlider_android_orientation;
 
 	private int mOrientation;
 
-	public ArchosProgressSlider(Context context) {
+	public LeeroyFlixProgressSlider(Context context) {
 		this(context, null);
 	}
 	
-	public ArchosProgressSlider(Context context, AttributeSet attrs) {
+	public LeeroyFlixProgressSlider(Context context, AttributeSet attrs) {
 		this(context, attrs, android.R.attr.progressBarStyle);
 	}
 	
-	public ArchosProgressSlider(Context context, AttributeSet attrs, int defStyle) {
+	public LeeroyFlixProgressSlider(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 
 		/**
 		 * get orientation in the attributes.
 		 * hack: we're using the "orientation" keyword from LinearLayout instead of adding our own...
 		 */
-		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ArchosProgressSlider);
+		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.LeeroyFlixProgressSlider);
 		try {
 			mOrientation = a.getInt(ORIENTATION, DEFAULT_ORIENTATION);
             isVertical = mOrientation == VERTICAL;

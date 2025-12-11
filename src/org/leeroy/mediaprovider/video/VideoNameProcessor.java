@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediaprovider.video;
+package org.leeroy.mediaprovider.video;
 
 import android.content.ContentValues;
 
-import com.archos.mediaprovider.video.VideoStore.Video.VideoColumns;
-import com.archos.mediascraper.preprocess.ParseUtils;
+import org.leeroy.mediaprovider.video.VideoStore.Video.VideoColumns;
+import org.leeroy.mediascraper.preprocess.ParseUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -155,10 +155,10 @@ public class VideoNameProcessor {
 
         ExtractedInfo info = extractInfoFromPath(path);
 
-        values.put(VideoColumns.ARCHOS_VIDEO_STEREO, Integer.toString(info.stereoType));
-        values.put(VideoColumns.ARCHOS_VIDEO_DEFINITION, Integer.toString(info.definition));
-        values.put(VideoColumns.ARCHOS_GUESSED_AUDIO_FORMAT, info.audioFormat);
-        values.put(VideoColumns.ARCHOS_GUESSED_VIDEO_FORMAT, info.videoFormat);
+        values.put(VideoColumns.LEEROYFLIX_VIDEO_STEREO, Integer.toString(info.stereoType));
+        values.put(VideoColumns.LEEROYFLIX_VIDEO_DEFINITION, Integer.toString(info.definition));
+        values.put(VideoColumns.LEEROYFLIX_GUESSED_AUDIO_FORMAT, info.audioFormat);
+        values.put(VideoColumns.LEEROYFLIX_GUESSED_VIDEO_FORMAT, info.videoFormat);
 
         return values;
     }
@@ -173,35 +173,35 @@ public class VideoNameProcessor {
 
         /* Find out if it is a 3D video (TB first, then SBS, then anaglyph, then 3D) */
         if (stringContainsOneOf(name, STRING_LIST_3D_TB)) {
-            info.stereoType = VideoColumns.ARCHOS_STEREO_3D_TB;
+            info.stereoType = VideoColumns.LEEROYFLIX_STEREO_3D_TB;
         } else if (stringContainsOneOf(name, STRING_LIST_3D_SBS)) {
-            info.stereoType = VideoColumns.ARCHOS_STEREO_3D_SBS;
+            info.stereoType = VideoColumns.LEEROYFLIX_STEREO_3D_SBS;
         } else if (stringContainsOneOf(name, STRING_LIST_3D_ANAGLYPH)) {
-            info.stereoType = VideoColumns.ARCHOS_STEREO_3D_ANAGLYPH;
+            info.stereoType = VideoColumns.LEEROYFLIX_STEREO_3D_ANAGLYPH;
         } else if (stringContainsOneOf(name, STRING_LIST_3D)) {
-            info.stereoType = VideoColumns.ARCHOS_STEREO_3D_UNKNOWN;
+            info.stereoType = VideoColumns.LEEROYFLIX_STEREO_3D_UNKNOWN;
         } else {
-            info.stereoType = VideoColumns.ARCHOS_STEREO_2D;
+            info.stereoType = VideoColumns.LEEROYFLIX_STEREO_2D;
         }
 
         /* Determine the video definition (checking for 1080p first) */
         if (stringContainsOneOf(name, STRING_LIST_1080P)) {
-            info.definition = VideoColumns.ARCHOS_DEFINITION_1080P;
+            info.definition = VideoColumns.LEEROYFLIX_DEFINITION_1080P;
         } else if (stringContainsOneOf(name, STRING_LIST_720P)) {
-            info.definition = VideoColumns.ARCHOS_DEFINITION_720P;
+            info.definition = VideoColumns.LEEROYFLIX_DEFINITION_720P;
         }
         // Checking 4K after 1080p/720p because a lot of videos are like "...Remastered.in.4K.1080p.x264..."
         else if (stringContainsOneOf(name, STRING_LIST_4K)) {
-            info.definition = VideoColumns.ARCHOS_DEFINITION_4K;
+            info.definition = VideoColumns.LEEROYFLIX_DEFINITION_4K;
         }
         // Not checking SD because the SD tag is not frequent in filenames
         else {
-            info.definition = VideoColumns.ARCHOS_DEFINITION_UNKNOWN;
+            info.definition = VideoColumns.LEEROYFLIX_DEFINITION_UNKNOWN;
         }
 
         //try to detect video format (hevc, h264, etc)
         if (stringContainsOneOf(name, STRING_LIST_1080P)) {
-            info.definition = VideoColumns.ARCHOS_DEFINITION_1080P;
+            info.definition = VideoColumns.LEEROYFLIX_DEFINITION_1080P;
         }
         for(Map.Entry<String[], String> entry :VIDEO_FORMAT_MAP.entrySet()){
             if (stringContainsOneOf(name, entry.getKey())) {

@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.medialib;
+package org.leeroy.medialib;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Locale;
 
-import com.archos.mediacenter.utils.MediaUtils;
+import org.leeroy.mediaplayer.utils.MediaUtils;
 
 import android.content.Context;
 import android.content.SharedPreferences;

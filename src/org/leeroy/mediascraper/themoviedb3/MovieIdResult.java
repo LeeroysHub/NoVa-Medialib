@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediascraper.themoviedb3;
+package org.leeroy.mediascraper.themoviedb3;
 
-import com.archos.mediascraper.MovieTags;
-import com.archos.mediascraper.ScrapeStatus;
+import org.leeroy.mediascraper.MovieTags;
+import org.leeroy.mediascraper.ScrapeStatus;
 
 public class MovieIdResult {
     public MovieTags tag;

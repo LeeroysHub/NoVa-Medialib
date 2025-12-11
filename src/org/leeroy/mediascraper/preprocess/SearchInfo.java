@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,10 +13,10 @@
 // limitations under the License.
 
 
-package com.archos.mediascraper.preprocess;
+package org.leeroy.mediascraper.preprocess;
 
 import android.net.Uri;
-import com.archos.mediascraper.Scraper;
+import org.leeroy.mediascraper.Scraper;
 import java.text.Normalizer;
 
 /**

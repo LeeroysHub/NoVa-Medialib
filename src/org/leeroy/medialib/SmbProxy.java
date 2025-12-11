@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.medialib;
+package org.leeroy.medialib;
 
-import static com.archos.filecorelibrary.FileUtils.encodeUri;
+import static org.leeroy.filecorelibrary.FileUtils.encodeUri;
 
 import android.net.Uri;
 
-import com.archos.filecorelibrary.MetaFile2;
-import com.archos.filecorelibrary.MetaFile2Factory;
-import com.archos.filecorelibrary.MimeUtils;
-import com.archos.filecorelibrary.StreamOverHttp;
-import com.archos.mediacenter.filecoreextension.UriUtils;
+import org.leeroy.filecorelibrary.MetaFile2;
+import org.leeroy.filecorelibrary.MetaFile2Factory;
+import org.leeroy.filecorelibrary.MimeUtils;
+import org.leeroy.filecorelibrary.StreamOverHttp;
+import org.leeroy.mediaplayer.filecoreextension.UriUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

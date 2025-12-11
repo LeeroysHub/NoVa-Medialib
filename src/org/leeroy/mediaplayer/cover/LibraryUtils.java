@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediacenter.cover;
+package org.leeroy.mediaplayer.cover;
 
-import com.archos.mediaprovider.video.VideoStore;
+import org.leeroy.mediaprovider.video.VideoStore;
 
 import android.content.AsyncQueryHandler;
 import android.content.ContentResolver;
@@ -43,9 +43,9 @@ public class LibraryUtils {
 		VideoStore.Video.VideoColumns.MIME_TYPE,
 		VideoStore.Video.VideoColumns.DURATION,
 		VideoStore.Video.VideoColumns.BOOKMARK,
-		VideoStore.Video.VideoColumns.ARCHOS_BOOKMARK,
-		VideoStore.Video.VideoColumns.ARCHOS_MEDIA_SCRAPER_TYPE,
-		VideoStore.Video.VideoColumns.ARCHOS_MEDIA_SCRAPER_ID
+		VideoStore.Video.VideoColumns.LEEROYFLIX_BOOKMARK,
+		VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_TYPE,
+		VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_ID
 	};
 
     public static final String TVSHOW_EPISODE_COUNT_COLUMN = "episode_count";
@@ -60,7 +60,7 @@ public class LibraryUtils {
         "count(DISTINCT " + VideoStore.Video.VideoColumns.SCRAPER_E_SEASON +
             ") AS " + TVSHOW_SEASON_COUNT_COLUMN, // number of seasons
     };
-    private final static String SELECTION_NON_HIDDEN = VideoStore.Video.VideoColumns.ARCHOS_HIDE_FILE + "=0";
+    private final static String SELECTION_NON_HIDDEN = VideoStore.Video.VideoColumns.LEEROYFLIX_HIDE_FILE + "=0";
 
     private static final String TVSHOW_SELECT = VideoStore.Video.VideoColumns.SCRAPER_SHOW_ID +
             " NOT NULL AND " + SELECTION_NON_HIDDEN + ") GROUP BY ( " + VideoStore.Video.VideoColumns.SCRAPER_SHOW_ID;
@@ -82,8 +82,8 @@ public class LibraryUtils {
 	public static CursorLoader getAllMoviesCursorLoader(Context context, int max) {
         String sortOrder = VideoStore.MediaColumns.DATE_ADDED + DESC + LIMIT + max;
         StringBuilder where = new StringBuilder();
-        where.append(VideoStore.Video.VideoColumns.ARCHOS_MEDIA_SCRAPER_ID).append(" > '0'"); // valid scraper IDs are >0
-        where.append(AND).append(VideoStore.Video.VideoColumns.ARCHOS_MEDIA_SCRAPER_TYPE).append(" = ").append(com.archos.mediascraper.BaseTags.MOVIE ); // movies only, no tv shows
+        where.append(VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_ID).append(" > '0'"); // valid scraper IDs are >0
+        where.append(AND).append(VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_TYPE).append(" = ").append(org.leeroy.mediascraper.BaseTags.MOVIE ); // movies only, no tv shows
         return new CursorLoader(context,VideoStore.Video.Media.EXTERNAL_CONTENT_URI, VIDEO_COLS, where.toString(), null, sortOrder);
     }
 
@@ -109,7 +109,7 @@ public class LibraryUtils {
     public static Cursor getScraperCursorFromPath(ContentResolver resolver, String filePath) {
         StringBuilder where = new StringBuilder();
         where.append(VideoStore.Video.VideoColumns.DATA).append("= ?");
-        where.append(" AND ").append(VideoStore.Video.VideoColumns.ARCHOS_MEDIA_SCRAPER_ID).append(" > '0'");
+        where.append(" AND ").append(VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_ID).append(" > '0'");
         String[] selectionArgs = new String[1];
         selectionArgs[0] = filePath;
         return resolver.query(VideoStore.Video.Media.EXTERNAL_CONTENT_URI, VIDEO_COLS, where.toString(), selectionArgs, null);
@@ -128,7 +128,7 @@ public class LibraryUtils {
     	if ((c!=null) && (c.getCount()==1)) {
     		c.moveToFirst();
     		resumeAndBookmark[0] = c.getInt(c.getColumnIndexOrThrow(VideoStore.Video.VideoColumns.BOOKMARK));
-    		resumeAndBookmark[1] = c.getInt(c.getColumnIndexOrThrow(VideoStore.Video.VideoColumns.ARCHOS_BOOKMARK));
+    		resumeAndBookmark[1] = c.getInt(c.getColumnIndexOrThrow(VideoStore.Video.VideoColumns.LEEROYFLIX_BOOKMARK));
     	}
     	else {
     		resumeAndBookmark[0] = resumeAndBookmark[1] = 0;

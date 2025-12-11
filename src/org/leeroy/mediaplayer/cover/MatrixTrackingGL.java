@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.archos.mediacenter.cover;
+package org.leeroy.mediaplayer.cover;
 
 import android.util.Log;
 

@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediaprovider.video;
+package org.leeroy.mediaprovider.video;
 
 import android.net.Uri;
 
-import com.archos.mediaprovider.ArchosMediaCommon;
-import com.archos.mediascraper.BaseTags;
+import org.leeroy.mediaprovider.LeeroyFlixMediaCommon;
+import org.leeroy.mediascraper.BaseTags;
 
 
 public final class ScraperStore {
-    public static final String AUTHORITY = ArchosMediaCommon.AUTHORITY_SCRAPER;
+    public static final String AUTHORITY = LeeroyFlixMediaCommon.AUTHORITY_SCRAPER;
     public static final Uri ALL_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
     public static final int SCRAPER_TYPE_MOVIE = BaseTags.MOVIE;
     public static final int SCRAPER_TYPE_SHOW = BaseTags.TV_SHOW;

@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediacenter;
+package org.leeroy.mediaplayer;
 
-import com.archos.medialib.IMediaMetadataRetriever;
-import com.archos.medialib.LibAvos;
-import com.archos.medialib.MediaFactory;
-import com.archos.medialib.MediaMetadata;
+import org.leeroy.medialib.IMediaMetadataRetriever;
+import org.leeroy.medialib.LibAvos;
+import org.leeroy.medialib.MediaFactory;
+import org.leeroy.medialib.MediaMetadata;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -38,16 +38,16 @@ public class LibAvosReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
 
-        if (action.equals("com.archos.mediacenter.NEW_PLUGINS")) {
+        if (action.equals("org.leeroy.mediaplayer.NEW_PLUGINS")) {
             Log.d("LibAvosReceiver", "NEW_PLUGINS: relaunching");
             System.exit(0);
-        } else if (action.equals("com.archos.mediacenter.DEBUG")) {
+        } else if (action.equals("org.leeroy.mediaplayer.DEBUG")) {
             LibAvos.init(context);
             LibAvos.debugInit();
-        } else if (action.equals("com.archos.mediacenter.AVSH")) {
+        } else if (action.equals("org.leeroy.mediaplayer.AVSH")) {
             LibAvos.init(context);
             LibAvos.avsh(intent.getStringExtra("cmd"));
-        } else if (action.equals("com.archos.mediacenter.DEBUG_SCAN")) {
+        } else if (action.equals("org.leeroy.mediaplayer.DEBUG_SCAN")) {
             if (intent.getData() != null) Log.d("IMetadataRetriever", intent.getData().getPath());
             final IMediaMetadataRetriever retriever = MediaFactory.createMetadataRetriever(context);
             try {

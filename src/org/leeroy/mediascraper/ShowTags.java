@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediascraper;
+package org.leeroy.mediascraper;
 
 import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
@@ -29,8 +29,8 @@ import android.os.Parcelable;
 import android.os.RemoteException;
 import android.text.TextUtils;
 
-import com.archos.mediaprovider.video.ScraperStore;
-import com.archos.mediascraper.ScraperImage.Type;
+import org.leeroy.mediaprovider.video.ScraperStore;
+import org.leeroy.mediascraper.ScraperImage.Type;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

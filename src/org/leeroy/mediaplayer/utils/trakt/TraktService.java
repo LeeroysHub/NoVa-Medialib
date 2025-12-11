@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediacenter.utils.trakt;
+package org.leeroy.mediaplayer.utils.trakt;
 
 import android.app.Service;
 import android.content.ContentResolver;
@@ -39,13 +39,13 @@ import androidx.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.widget.Toast;
 
-import com.archos.mediacenter.utils.trakt.Trakt.Status;
-import com.archos.mediacenter.utils.videodb.VideoDbInfo;
-import com.archos.medialib.R;
-import com.archos.environment.NetworkState;
-import com.archos.mediaprovider.video.VideoStore;
-import com.archos.mediascraper.BaseTags;
-import com.archos.mediascraper.ScrapeStatus;
+import org.leeroy.mediaplayer.utils.trakt.Trakt.Status;
+import org.leeroy.mediaplayer.utils.videodb.VideoDbInfo;
+import org.leeroy.medialib.R;
+import org.leeroy.environment.NetworkState;
+import org.leeroy.mediaprovider.video.VideoStore;
+import org.leeroy.mediascraper.BaseTags;
+import org.leeroy.mediascraper.ScrapeStatus;
 import com.uwetrottmann.trakt5.entities.BaseEpisode;
 import com.uwetrottmann.trakt5.entities.BaseMovie;
 import com.uwetrottmann.trakt5.entities.BaseSeason;
@@ -103,15 +103,15 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
     private static final long NETWORK_NETWORK_ON_DELAY = 600000; // in ms: 10min
     private static final long NOTIFY_DELAY = 5000; // in ms: 5sec
 
-    private static final String INTENT_ACTION_WATCHING = "archos.mediacenter.utils.trakt.action.WATCHING";
-    private static final String INTENT_ACTION_WATCHING_STOP = "archos.mediacenter.utils.trakt.action.WATCHING_STOP";
-    private static final String INTENT_ACTION_WATCHING_PAUSE = "archos.mediacenter.utils.trakt.action.WATCHING_PAUSE";
-    private static final String INTENT_ACTION_MARK_AS = "archos.mediacenter.utils.trakt.action.MARK_AS";
-    private static final String INTENT_ACTION_WIPE = "archos.mediacenter.utils.trakt.action.WIPE";
-    private static final String INTENT_ACTION_WIPE_COLLECTION = "archos.mediacenter.utils.trakt.action.WIPE_COLLECTION";
-    private static final String INTENT_ACTION_SYNC = "archos.mediacenter.utils.trakt.action.SYNC";
-    private static final String INTENT_ACTION_FORCE_PUSH = "archos.mediacenter.utils.trakt.action.FORCE_PUSH";
-    private static final String INTENT_ACTION_FORCE_PULL = "archos.mediacenter.utils.trakt.action.FORCE_PULL";
+    private static final String INTENT_ACTION_WATCHING = "leeroy.mediaplayer.utils.trakt.action.WATCHING";
+    private static final String INTENT_ACTION_WATCHING_STOP = "leeroy.mediaplayer.utils.trakt.action.WATCHING_STOP";
+    private static final String INTENT_ACTION_WATCHING_PAUSE = "leeroy.mediaplayer.utils.trakt.action.WATCHING_PAUSE";
+    private static final String INTENT_ACTION_MARK_AS = "leeroy.mediaplayer.utils.trakt.action.MARK_AS";
+    private static final String INTENT_ACTION_WIPE = "leeroy.mediaplayer.utils.trakt.action.WIPE";
+    private static final String INTENT_ACTION_WIPE_COLLECTION = "leeroy.mediaplayer.utils.trakt.action.WIPE_COLLECTION";
+    private static final String INTENT_ACTION_SYNC = "leeroy.mediaplayer.utils.trakt.action.SYNC";
+    private static final String INTENT_ACTION_FORCE_PUSH = "leeroy.mediaplayer.utils.trakt.action.FORCE_PUSH";
+    private static final String INTENT_ACTION_FORCE_PULL = "leeroy.mediaplayer.utils.trakt.action.FORCE_PULL";
 
     private boolean mForcePush = false;
     private boolean mForcePull = false;
@@ -208,7 +208,7 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
                             if (videoInfo.traktResume < 0 && (result.status == Trakt.Status.SUCCESS || result.status == Trakt.Status.SUCCESS_ALREADY)) {
                                 videoInfo.traktResume = Math.abs(videoInfo.traktResume);
                                 ContentValues values = new ContentValues();
-                                values.put(VideoStore.Video.VideoColumns.ARCHOS_TRAKT_RESUME, videoInfo.traktResume);
+                                values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_RESUME, videoInfo.traktResume);
                                 getContentResolver().update(VideoStore.Video.Media.EXTERNAL_CONTENT_URI,
                                         values, VideoStore.Video.VideoColumns._ID + " = " + videoInfo.id, null);
 
@@ -239,7 +239,7 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
                                     // videoinf.traktresume can be negative, positive value means sync ok
                                     videoInfo.traktResume = Math.abs(videoInfo.traktResume);
                                     ContentValues values = new ContentValues();
-                                    values.put(VideoStore.Video.VideoColumns.ARCHOS_TRAKT_RESUME, videoInfo.traktResume);
+                                    values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_RESUME, videoInfo.traktResume);
                                     getContentResolver().update(VideoStore.Video.Media.EXTERNAL_CONTENT_URI,
                                             values, VideoStore.Video.VideoColumns._ID + " = " + videoInfo.id, null);
 
@@ -268,7 +268,7 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
                                     //  videoinf.traktresume can be negative, positive value means sync ok
                                     videoInfo.traktResume = Math.abs(videoInfo.traktResume);
                                     ContentValues values = new ContentValues();
-                                    values.put(VideoStore.Video.VideoColumns.ARCHOS_TRAKT_RESUME, videoInfo.traktResume);
+                                    values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_RESUME, videoInfo.traktResume);
                                     getContentResolver().update(VideoStore.Video.Media.EXTERNAL_CONTENT_URI,
                                             values, VideoStore.Video.VideoColumns._ID + " = " + videoInfo.id, null);
 
@@ -411,23 +411,23 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
             ContentResolver resolver = getContentResolver();
             ContentValues values = new ContentValues(1);
             if (markSeen)
-                values.put(VideoStore.Video.VideoColumns.ARCHOS_TRAKT_SEEN, videoInfo.traktSeen);
+                values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_SEEN, videoInfo.traktSeen);
             else
-                values.put(VideoStore.Video.VideoColumns.ARCHOS_TRAKT_LIBRARY, videoInfo.traktLibrary);
+                values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_LIBRARY, videoInfo.traktLibrary);
             resolver.update(VideoStore.Video.Media.EXTERNAL_CONTENT_URI,
                     values, where, null);
         }
     }
 
-    private static final String WIPE_SELECTION = VideoStore.Video.VideoColumns.ARCHOS_TRAKT_SEEN + " = 1 OR " +
-            VideoStore.Video.VideoColumns.ARCHOS_TRAKT_LIBRARY + " = 1";
+    private static final String WIPE_SELECTION = VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_SEEN + " = 1 OR " +
+            VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_LIBRARY + " = 1";
 
-    private static final String WIPE_COLLECTION_SELECTION = VideoStore.Video.VideoColumns.ARCHOS_TRAKT_LIBRARY + " = 1";
+    private static final String WIPE_COLLECTION_SELECTION = VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_LIBRARY + " = 1";
 
     private static final String MOVIE_ONLINE_ID_PROJECTION[] = new String[] {
             BaseColumns._ID,
             VideoStore.Video.VideoColumns.SCRAPER_M_ONLINE_ID,
-            VideoStore.Video.VideoColumns.ARCHOS_LAST_TIME_PLAYED
+            VideoStore.Video.VideoColumns.LEEROYFLIX_LAST_TIME_PLAYED
     };
 
     private static final String SHOW_ONLINE_ID_PROJECTION[] = new String[] {
@@ -436,7 +436,7 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
             VideoStore.Video.VideoColumns.SCRAPER_E_SEASON,
             VideoStore.Video.VideoColumns.SCRAPER_E_EPISODE,
             VideoStore.Video.VideoColumns.SCRAPER_E_ONLINE_ID,
-            VideoStore.Video.VideoColumns.ARCHOS_LAST_TIME_PLAYED
+            VideoStore.Video.VideoColumns.LEEROYFLIX_LAST_TIME_PLAYED
     };
 
     private static final String SYNC_PROGRESS_PROJECTION[] = new String[] {
@@ -447,18 +447,18 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
         if (library.equals(Trakt.LIBRARY_WATCHED)) {
             if (toMark)
                 return "(" + VideoStore.Video.VideoColumns.BOOKMARK + " = -2 AND " +
-                        VideoStore.Video.VideoColumns.ARCHOS_MEDIA_SCRAPER_TYPE + " = " + scraperType + " AND " +
-                        VideoStore.Video.VideoColumns.ARCHOS_TRAKT_SEEN + " = 0)";
+                        VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_TYPE + " = " + scraperType + " AND " +
+                        VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_SEEN + " = 0)";
             else
-                return "(" + VideoStore.Video.VideoColumns.ARCHOS_MEDIA_SCRAPER_TYPE + " = " + scraperType + " AND " +
-                        VideoStore.Video.VideoColumns.ARCHOS_TRAKT_SEEN + " = " + Trakt.TRAKT_DB_UNMARK + ")";
+                return "(" + VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_TYPE + " = " + scraperType + " AND " +
+                        VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_SEEN + " = " + Trakt.TRAKT_DB_UNMARK + ")";
         } else {
             if (toMark)
-                return "(" + VideoStore.Video.VideoColumns.ARCHOS_MEDIA_SCRAPER_TYPE + " = " + scraperType + " AND " +
-                        VideoStore.Video.VideoColumns.ARCHOS_TRAKT_LIBRARY + " = 0)";
+                return "(" + VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_TYPE + " = " + scraperType + " AND " +
+                        VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_LIBRARY + " = 0)";
             else
-                return "(" + VideoStore.Video.VideoColumns.ARCHOS_MEDIA_SCRAPER_TYPE + " = " + scraperType + " AND " +
-                        VideoStore.Video.VideoColumns.ARCHOS_TRAKT_LIBRARY + " = " + Trakt.TRAKT_DB_UNMARK + ")";
+                return "(" + VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_TYPE + " = " + scraperType + " AND " +
+                        VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_LIBRARY + " = " + Trakt.TRAKT_DB_UNMARK + ")";
         }
     }
 
@@ -495,8 +495,8 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
         // wipe trakt* from db
         final ContentResolver cr = getContentResolver();
         ContentValues values = new ContentValues(2);
-        values.put(VideoStore.Video.VideoColumns.ARCHOS_TRAKT_SEEN, 0);
-        values.put(VideoStore.Video.VideoColumns.ARCHOS_TRAKT_LIBRARY, 0);
+        values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_SEEN, 0);
+        values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_LIBRARY, 0);
         cr.update(VideoStore.Video.Media.EXTERNAL_CONTENT_URI, values, WIPE_SELECTION, null);
         return Trakt.Result.getSuccess();
     }
@@ -504,7 +504,7 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
     private Trakt.Result wipeCollection() {
         final ContentResolver cr = getContentResolver();
         ContentValues values = new ContentValues(1);
-        values.put(VideoStore.Video.VideoColumns.ARCHOS_TRAKT_LIBRARY, 0);
+        values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_LIBRARY, 0);
         cr.update(VideoStore.Video.Media.EXTERNAL_CONTENT_URI, values, WIPE_COLLECTION_SELECTION, null);
         return Trakt.Result.getSuccess();
     }
@@ -514,15 +514,15 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
         if (library.equals(Trakt.LIBRARY_WATCHED)) {
             values = new ContentValues(2);
             if (mark) {
-                values.put(VideoStore.Video.VideoColumns.ARCHOS_TRAKT_SEEN, 1);
+                values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_SEEN, 1);
                 values.put(VideoStore.Video.VideoColumns.BOOKMARK, -2);
             } else {
-                values.put(VideoStore.Video.VideoColumns.ARCHOS_TRAKT_SEEN, 0);
+                values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_SEEN, 0);
                 values.put(VideoStore.Video.VideoColumns.BOOKMARK, -1);
             }
         } else {
             values = new ContentValues(1);
-            values.put(VideoStore.Video.VideoColumns.ARCHOS_TRAKT_LIBRARY, mark ? 1 : 0);
+            values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_LIBRARY, mark ? 1 : 0);
         }
         return values;
     }
@@ -534,7 +534,7 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
     private int seedLocalWatchedAsSynced() {
         final ContentResolver cr = getContentResolver();
         final ContentValues values = new ContentValues(1);
-        values.put(VideoStore.Video.VideoColumns.ARCHOS_TRAKT_SEEN, 1);
+        values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_SEEN, 1);
         final String watchedMovies = getVideoToMarkSelection(Trakt.LIBRARY_WATCHED, BaseTags.MOVIE, true);
         final String watchedShows = getVideoToMarkSelection(Trakt.LIBRARY_WATCHED, BaseTags.TV_SHOW, true);
         final String selection = watchedMovies + " OR " + watchedShows;
@@ -602,9 +602,9 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
         //from db to trakt
         // get all videos watched on device not yet synced to trakt (traktResume < 0: negative traktResume means set but not yet synced)
         // filter videos that are scraped and that have been played and not synced yet
-        // SELECT _data, Archos_lastTimePlayed, Archos_traktSeen, Archos_traktLibrary, Archos_traktResume from video WHERE ArchosMediaScraper_id > 0 AND Archos_lastTimePlayed > 0 AND Archos_traktResume < 0
+        // SELECT _data, LeeroyFlix_lastTimePlayed, LeeroyFlix_traktSeen, LeeroyFlix_traktLibrary, LeeroyFlix_traktResume from video WHERE LeeroyFlixMediaScraper_id > 0 AND LeeroyFlix_lastTimePlayed > 0 AND LeeroyFlix_traktResume < 0
         Cursor c1= cr.query(VideoStore.Video.Media.EXTERNAL_CONTENT_URI, VideoDbInfo.COLUMNS,
-                VideoStore.Video.VideoColumns.ARCHOS_MEDIA_SCRAPER_ID + " > 0 AND " + VideoStore.Video.VideoColumns.ARCHOS_TRAKT_RESUME + " < 0 AND " + VideoStore.Video.VideoColumns.ARCHOS_LAST_TIME_PLAYED + " > 0",
+                VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_ID + " > 0 AND " + VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_RESUME + " < 0 AND " + VideoStore.Video.VideoColumns.LEEROYFLIX_LAST_TIME_PLAYED + " > 0",
                 null, null);
         if (c1 != null) {
             if (c1.getCount() > 0) {
@@ -653,8 +653,8 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
                                 if (gprog != null)
                                     gprog.progress = Double.valueOf(Math.abs(videoInfo.traktResume));
                                 videoInfo.traktResume = Math.abs(videoInfo.traktResume);
-                                values.put(VideoStore.Video.VideoColumns.ARCHOS_TRAKT_RESUME, videoInfo.traktResume);
-                                values.put(VideoStore.Video.VideoColumns.ARCHOS_TRAKT_SEEN, videoInfo.traktSeen);
+                                values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_RESUME, videoInfo.traktResume);
+                                values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_SEEN, videoInfo.traktSeen);
                                 getContentResolver().update(VideoStore.Video.Media.EXTERNAL_CONTENT_URI,
                                         values, VideoStore.Video.VideoColumns._ID + " = " + videoInfo.id, null);
                             }
@@ -706,9 +706,9 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
                                 if (i.lastTimePlayed < lastWatched && newResumePercent > 0) {
                                     // trakt lastTimePlayed > db lastTimePlayed: in this case update archos last time played since trakt was the latest compared to db
                                     // exclude null newResumePercent since some other players use this to store library (e.g. infuse) and avoid pollution
-                                    if (log.isDebugEnabled()) log.debug("syncPlaybackStatus: trakt->db update Archos last time played by trakt which is the latest {}", lastPlayedDateString);
+                                    if (log.isDebugEnabled()) log.debug("syncPlaybackStatus: trakt->db update LeeroyFlix last time played by trakt which is the latest {}", lastPlayedDateString);
                                     toConsider = true;
-                                    values.put(VideoStore.Video.VideoColumns.ARCHOS_LAST_TIME_PLAYED, lastWatched);
+                                    values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_LAST_TIME_PLAYED, lastWatched);
                                 }
                                 if (Math.abs(i.traktResume) != newResumePercent && // trakt resume % != db resume %
                                                 i.traktSeen != 1 && // marked not watched on trakt (even if replayed)
@@ -717,13 +717,13 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
                                     // trakt resume time is ahead of device one: only update device one in this case
                                     if (log.isDebugEnabled()) log.debug("syncPlaybackStatus: trakt->db trakt has the latest bookmark {}% for {}{}, use this one", newResumePercent, i.scraperTitle, i.isShow ? "-s" + i.scraperSeasonNr + "e" + i.scraperEpisodeNr : "");
                                     toConsider = true;
-                                    values.put(VideoStore.Video.VideoColumns.ARCHOS_TRAKT_RESUME, newResumePercent);
+                                    values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_RESUME, newResumePercent);
                                     values.put(VideoStore.Video.VideoColumns.BOOKMARK, newResume);
                                     if (newResumePercent > Trakt.SCROBBLE_THRESHOLD) { // we are at end of file
                                         if (log.isDebugEnabled()) log.debug("syncPlaybackStatus: trakt->db trakt {}{} has been completed on trakt, mark it viewed", i.scraperTitle, i.isShow ? "-s" + i.scraperSeasonNr + "e" + i.scraperEpisodeNr : "");
-                                        values.put(VideoStore.Video.VideoColumns.ARCHOS_TRAKT_RESUME, 99); // resume%
+                                        values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_RESUME, 99); // resume%
                                         values.put(VideoStore.Video.VideoColumns.BOOKMARK, -2); // file end
-                                        values.put(VideoStore.Video.VideoColumns.ARCHOS_TRAKT_SEEN, 1); // align watched state immediately
+                                        values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_SEEN, 1); // align watched state immediately
                                     }
                                 }
                                 if (toConsider) {
@@ -829,9 +829,9 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
         // Get all videos watched on device not yet synced to trakt (traktResume < 0: negative traktResume means set but not yet synced)
         // This is the EXACT same query from the original method
         Cursor c1= cr.query(VideoStore.Video.Media.EXTERNAL_CONTENT_URI, VideoDbInfo.COLUMNS,
-                VideoStore.Video.VideoColumns.ARCHOS_MEDIA_SCRAPER_ID + " > 0 AND " + 
-                VideoStore.Video.VideoColumns.ARCHOS_TRAKT_RESUME + " < 0 AND " + 
-                VideoStore.Video.VideoColumns.ARCHOS_LAST_TIME_PLAYED + " > 0",
+                VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_ID + " > 0 AND " + 
+                VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_RESUME + " < 0 AND " + 
+                VideoStore.Video.VideoColumns.LEEROYFLIX_LAST_TIME_PLAYED + " > 0",
                 null, null);
         
         if (c1 != null) {
@@ -887,8 +887,8 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
                                 if (gprog != null)
                                     gprog.progress = Double.valueOf(Math.abs(videoInfo.traktResume));
                                 videoInfo.traktResume = Math.abs(videoInfo.traktResume);
-                                values.put(VideoStore.Video.VideoColumns.ARCHOS_TRAKT_RESUME, videoInfo.traktResume);
-                                values.put(VideoStore.Video.VideoColumns.ARCHOS_TRAKT_SEEN, videoInfo.traktSeen);
+                                values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_RESUME, videoInfo.traktResume);
+                                values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_SEEN, videoInfo.traktSeen);
                                 cr.update(VideoStore.Video.Media.EXTERNAL_CONTENT_URI,
                                         values, VideoStore.Video.VideoColumns._ID + " = " + videoInfo.id, null);
                             } else if (result.status == Trakt.Status.ERROR_NETWORK || result.status == Trakt.Status.ERROR_ACCOUNT_LOCKED) {
@@ -957,17 +957,17 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
                                     // This implements Rule 3: Videos marked as watched on any device must disappear from "Recently Played" on all devices
                                     if (log.isDebugEnabled()) log.debug("syncWatchedStatusToDb: trakt->db {} completed on another device, updating local state to hide from Recently Played", 
                                               i.scraperTitle + (i.isShow ? "-s" + i.scraperSeasonNr + "e" + i.scraperEpisodeNr : ""));
-                                    values.put(VideoStore.Video.VideoColumns.ARCHOS_LAST_TIME_PLAYED, lastWatched);
-                                    values.put(VideoStore.Video.VideoColumns.ARCHOS_TRAKT_SEEN, 1); 
-                                    values.put(VideoStore.Video.VideoColumns.ARCHOS_TRAKT_RESUME, 99); 
+                                    values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_LAST_TIME_PLAYED, lastWatched);
+                                    values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_SEEN, 1); 
+                                    values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_RESUME, 99); 
                                     values.put(VideoStore.Video.VideoColumns.BOOKMARK, -2); // This will hide from "Recently Played"
                                 } else {
                                     // Device was played more recently, just mark as seen on Trakt to prevent re-sync
                                     // Keep existing resume and timestamp - don't override newer local data
                                     if (log.isDebugEnabled()) log.debug("syncWatchedStatusToDb: trakt->db {} marked as watched on Trakt but played more recently on device, keeping device state", 
                                               i.scraperTitle + (i.isShow ? "-s" + i.scraperSeasonNr + "e" + i.scraperEpisodeNr : ""));
-                                    values.put(VideoStore.Video.VideoColumns.ARCHOS_TRAKT_SEEN, 1); // Mark as seen to prevent re-sync
-                                    // Don't change ARCHOS_LAST_TIME_PLAYED, BOOKMARK, or ARCHOS_TRAKT_RESUME
+                                    values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_SEEN, 1); // Mark as seen to prevent re-sync
+                                    // Don't change LEEROYFLIX_LAST_TIME_PLAYED, BOOKMARK, or LEEROYFLIX_TRAKT_RESUME
                                 }
                                 cr.update(VideoStore.Video.Media.EXTERNAL_CONTENT_URI, values, VideoStore.Video.VideoColumns._ID + " = '" + i.id + "'", null);
                             }
@@ -1036,17 +1036,17 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
                                     // This implements Rule 3: Videos marked as watched on any device must disappear from "Recently Played" on all devices
                                     if (log.isDebugEnabled()) log.debug("syncWatchedStatusToDb: trakt->db {} completed on another device, updating local state to hide from Recently Played", 
                                               i.scraperTitle + (i.isShow ? "-s" + i.scraperSeasonNr + "e" + i.scraperEpisodeNr : ""));
-                                    values.put(VideoStore.Video.VideoColumns.ARCHOS_LAST_TIME_PLAYED, lastWatched);
-                                    values.put(VideoStore.Video.VideoColumns.ARCHOS_TRAKT_SEEN, 1); 
-                                    values.put(VideoStore.Video.VideoColumns.ARCHOS_TRAKT_RESUME, 99); 
+                                    values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_LAST_TIME_PLAYED, lastWatched);
+                                    values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_SEEN, 1); 
+                                    values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_RESUME, 99); 
                                     values.put(VideoStore.Video.VideoColumns.BOOKMARK, -2); // This will hide from "Recently Played"
                                 } else {
                                     // Device was played more recently, just mark as seen on Trakt to prevent re-sync
                                     // Keep existing resume and timestamp - don't override newer local data
                                     if (log.isDebugEnabled()) log.debug("syncWatchedStatusToDb: trakt->db {} marked as watched on Trakt but played more recently on device, keeping device state", 
                                               i.scraperTitle + (i.isShow ? "-s" + i.scraperSeasonNr + "e" + i.scraperEpisodeNr : ""));
-                                    values.put(VideoStore.Video.VideoColumns.ARCHOS_TRAKT_SEEN, 1); // Mark as seen to prevent re-sync
-                                    // Don't change ARCHOS_LAST_TIME_PLAYED, BOOKMARK, or ARCHOS_TRAKT_RESUME
+                                    values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_SEEN, 1); // Mark as seen to prevent re-sync
+                                    // Don't change LEEROYFLIX_LAST_TIME_PLAYED, BOOKMARK, or LEEROYFLIX_TRAKT_RESUME
                                 }
                                 cr.update(VideoStore.Video.Media.EXTERNAL_CONTENT_URI, values, VideoStore.Video.VideoColumns._ID + " = '" + i.id + "'", null);
                             }
@@ -1105,10 +1105,10 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
                                 ContentValues values = new ContentValues();
                                 if (i.lastTimePlayed < lastWatched && newResumePercent > 0) {
                                     // Trakt has more recent progress update - this implements Rule 2: Cross-Device Resume Point Consistency
-                                    // Update ARCHOS_LAST_TIME_PLAYED so video appears in "Recently Played" with correct timestamp order
+                                    // Update LEEROYFLIX_LAST_TIME_PLAYED so video appears in "Recently Played" with correct timestamp order
                                     if (log.isDebugEnabled()) log.debug("syncResumePointsToDb: trakt->db updating timestamp to most recent playback time {}", lastPlayedDateString);
                                     toConsider = true;
-                                    values.put(VideoStore.Video.VideoColumns.ARCHOS_LAST_TIME_PLAYED, lastWatched);
+                                    values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_LAST_TIME_PLAYED, lastWatched);
                                 }
                                 if (Math.abs(i.traktResume) != newResumePercent && // trakt resume % != db resume %
                                         i.traktSeen != 1 && // marked not watched on trakt (even if replayed)
@@ -1117,13 +1117,13 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
                                     // trakt resume time is ahead of device one: only update device one in this case
                                     if (log.isDebugEnabled()) log.debug("syncResumePointsToDb: trakt->db trakt has the latest bookmark {}% for {}{}, use this one", newResumePercent, i.scraperTitle, i.isShow ? "-s" + i.scraperSeasonNr + "e" + i.scraperEpisodeNr : "");
                                     toConsider = true;
-                                    values.put(VideoStore.Video.VideoColumns.ARCHOS_TRAKT_RESUME, newResumePercent);
+                                    values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_RESUME, newResumePercent);
                                     values.put(VideoStore.Video.VideoColumns.BOOKMARK, newResume);
                                     if (newResumePercent > Trakt.SCROBBLE_THRESHOLD) { // we are at end of file
                                         if (log.isDebugEnabled()) log.debug("syncResumePointsToDb: trakt->db trakt {}{} has been completed on trakt, mark it viewed and hide from Recently Played", i.scraperTitle, i.isShow ? "-s" + i.scraperSeasonNr + "e" + i.scraperEpisodeNr : "");
-                                        values.put(VideoStore.Video.VideoColumns.ARCHOS_TRAKT_RESUME, 99); // resume%
+                                        values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_RESUME, 99); // resume%
                                         values.put(VideoStore.Video.VideoColumns.BOOKMARK, -2); // file end - this hides from Recently Played
-                                        values.put(VideoStore.Video.VideoColumns.ARCHOS_TRAKT_SEEN, 1); // mark as seen to match watched status
+                                        values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_SEEN, 1); // mark as seen to match watched status
                                     }
                                 }
                                 if (toConsider) {
@@ -1199,10 +1199,10 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
                                 ContentValues values = new ContentValues();
                                 if (i.lastTimePlayed < lastWatched && newResumePercent > 0) {
                                     // Trakt has more recent progress update - this implements Rule 2: Cross-Device Resume Point Consistency
-                                    // Update ARCHOS_LAST_TIME_PLAYED so video appears in "Recently Played" with correct timestamp order
+                                    // Update LEEROYFLIX_LAST_TIME_PLAYED so video appears in "Recently Played" with correct timestamp order
                                     if (log.isDebugEnabled()) log.debug("syncResumePointsToDb: trakt->db updating timestamp to most recent playback time {}", lastPlayedDateString);
                                     toConsider = true;
-                                    values.put(VideoStore.Video.VideoColumns.ARCHOS_LAST_TIME_PLAYED, lastWatched);
+                                    values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_LAST_TIME_PLAYED, lastWatched);
                                 }
                                 if (Math.abs(i.traktResume) != newResumePercent && // trakt resume % != db resume %
                                         i.traktSeen != 1 && // marked not watched on trakt (even if replayed)
@@ -1211,13 +1211,13 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
                                     // trakt resume time is ahead of device one: only update device one in this case
                                     if (log.isDebugEnabled()) log.debug("syncResumePointsToDb: trakt->db trakt has the latest bookmark {}% for {}{}, use this one", newResumePercent, i.scraperTitle, i.isShow ? "-s" + i.scraperSeasonNr + "e" + i.scraperEpisodeNr : "");
                                     toConsider = true;
-                                    values.put(VideoStore.Video.VideoColumns.ARCHOS_TRAKT_RESUME, newResumePercent);
+                                    values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_RESUME, newResumePercent);
                                     values.put(VideoStore.Video.VideoColumns.BOOKMARK, newResume);
                                     if (newResumePercent > Trakt.SCROBBLE_THRESHOLD) { // we are at end of file
                                         if (log.isDebugEnabled()) log.debug("syncResumePointsToDb: trakt->db trakt {}{} has been completed on trakt, mark it viewed and hide from Recently Played", i.scraperTitle, i.isShow ? "-s" + i.scraperSeasonNr + "e" + i.scraperEpisodeNr : "");
-                                        values.put(VideoStore.Video.VideoColumns.ARCHOS_TRAKT_RESUME, 99); // resume%
+                                        values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_RESUME, 99); // resume%
                                         values.put(VideoStore.Video.VideoColumns.BOOKMARK, -2); // file end - this hides from Recently Played
-                                        values.put(VideoStore.Video.VideoColumns.ARCHOS_TRAKT_SEEN, 1); // mark as seen to match watched status
+                                        values.put(VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_SEEN, 1); // mark as seen to match watched status
                                     }
                                 }
                                 if (toConsider) {
@@ -1306,14 +1306,14 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
 
         Cursor c = cr.query(VideoStore.Video.Media.EXTERNAL_CONTENT_URI,
                 MOVIE_ONLINE_ID_PROJECTION,
-                getVideoToMarkSelection(library, com.archos.mediascraper.BaseTags.MOVIE, toMark)
-                        + " AND " + VideoStore.Video.VideoColumns.ARCHOS_LAST_TIME_PLAYED + " > ?",
+                getVideoToMarkSelection(library, org.leeroy.mediascraper.BaseTags.MOVIE, toMark)
+                        + " AND " + VideoStore.Video.VideoColumns.LEEROYFLIX_LAST_TIME_PLAYED + " > ?",
                 new String[]{String.valueOf(Trakt.getLastTimeWatchedSync(mPreferences) + 1)},
                 null);
                 if (c != null) {
                     if (c.getCount() > 0) {
                         final int mOnlineIdIdx = c.getColumnIndex(VideoStore.Video.VideoColumns.SCRAPER_M_ONLINE_ID);
-                        final int lastPlayedIdx = c.getColumnIndex(VideoStore.Video.VideoColumns.ARCHOS_LAST_TIME_PLAYED);
+                        final int lastPlayedIdx = c.getColumnIndex(VideoStore.Video.VideoColumns.LEEROYFLIX_LAST_TIME_PLAYED);
                         final int idIdx = c.getColumnIndex(BaseColumns._ID);
 
                 TraktAPI.MovieListParam param = new TraktAPI.MovieListParam();
@@ -1377,8 +1377,8 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
 
         Cursor c = cr.query(VideoStore.Video.Media.EXTERNAL_CONTENT_URI,
                 SHOW_ONLINE_ID_PROJECTION,
-                getVideoToMarkSelection(library, com.archos.mediascraper.BaseTags.TV_SHOW, toMark)
-                        + " AND " + VideoStore.Video.VideoColumns.ARCHOS_LAST_TIME_PLAYED + " > ?",
+                getVideoToMarkSelection(library, org.leeroy.mediascraper.BaseTags.TV_SHOW, toMark)
+                        + " AND " + VideoStore.Video.VideoColumns.LEEROYFLIX_LAST_TIME_PLAYED + " > ?",
                 new String[]{String.valueOf(Trakt.getLastTimeWatchedSync(mPreferences) + 1)},
                 VideoStore.Video.VideoColumns.SCRAPER_S_ONLINE_ID);
         if (c != null) {
@@ -1386,7 +1386,7 @@ public class TraktService extends Service implements DefaultLifecycleObserver {
                 final int sOnlineIdIdx = c.getColumnIndex(VideoStore.Video.VideoColumns.SCRAPER_S_ONLINE_ID);
                 final int eSeasonNrIdx = c.getColumnIndex(VideoStore.Video.VideoColumns.SCRAPER_E_SEASON);
                 final int eEpisodeNrIdx = c.getColumnIndex(VideoStore.Video.VideoColumns.SCRAPER_E_EPISODE);
-                final int lastPlayedIdx = c.getColumnIndex(VideoStore.Video.VideoColumns.ARCHOS_LAST_TIME_PLAYED);
+                final int lastPlayedIdx = c.getColumnIndex(VideoStore.Video.VideoColumns.LEEROYFLIX_LAST_TIME_PLAYED);
                 final int tmdbIdx = c.getColumnIndex(VideoStore.Video.VideoColumns.SCRAPER_E_ONLINE_ID);
                 final int idIdx = c.getColumnIndex(BaseColumns._ID);
 

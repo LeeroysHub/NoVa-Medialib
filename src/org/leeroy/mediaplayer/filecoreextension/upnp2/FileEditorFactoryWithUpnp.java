@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediacenter.filecoreextension.upnp2;
+package org.leeroy.mediaplayer.filecoreextension.upnp2;
 
 import android.content.Context;
 import android.net.Uri;
 
-import com.archos.filecorelibrary.FileEditor;
-import com.archos.filecorelibrary.FileEditorFactory;
-import com.archos.mediacenter.filecoreextension.HttpFileEditor;
+import org.leeroy.filecorelibrary.FileEditor;
+import org.leeroy.filecorelibrary.FileEditorFactory;
+import org.leeroy.mediaplayer.filecoreextension.HttpFileEditor;
 
 /**
  * create a file editor

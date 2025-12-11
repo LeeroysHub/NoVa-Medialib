@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediaprovider;
+package org.leeroy.mediaprovider;
 
-import com.archos.medialib.MediaMetadata;
+import org.leeroy.medialib.MediaMetadata;
 
 interface IMediaRetrieverService
 {
-    com.archos.medialib.MediaMetadata getMetadata(String path);
+    org.leeroy.medialib.MediaMetadata getMetadata(String path);
 }

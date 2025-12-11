@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
 // limitations under the License.
 
 
-package com.archos.mediascraper;
+package org.leeroy.mediascraper;
 
 import android.app.IntentService;
 import android.app.NotificationChannel;
@@ -30,12 +30,12 @@ import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ProcessLifecycleOwner;
 
-import com.archos.filecorelibrary.MetaFile2;
-import com.archos.filecorelibrary.MetaFile2Factory;
-import com.archos.medialib.R;
-import com.archos.mediaprovider.video.VideoStore;
-import com.archos.mediaprovider.video.VideoStore.MediaColumns;
-import com.archos.mediaprovider.video.VideoStore.Video.VideoColumns;
+import org.leeroy.filecorelibrary.MetaFile2;
+import org.leeroy.filecorelibrary.MetaFile2Factory;
+import org.leeroy.medialib.R;
+import org.leeroy.mediaprovider.video.VideoStore;
+import org.leeroy.mediaprovider.video.VideoStore.MediaColumns;
+import org.leeroy.mediaprovider.video.VideoStore.Video.VideoColumns;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,8 +47,8 @@ public class NfoExportService extends IntentService implements DefaultLifecycleO
     private static final Logger log = LoggerFactory.getLogger(NfoExportService.class);
     private static final String TAG = "NfoExportService";
 
-    private static final String INTENT_EXPORT_FILE = "archos.mediascraper.intent.action.EXPORT_FILE";
-    private static final String INTENT_EXPORT_ALL = "archos.mediascraper.intent.action.EXPORT_ALL";
+    private static final String INTENT_EXPORT_FILE = "leeroy.mediascraper.intent.action.EXPORT_FILE";
+    private static final String INTENT_EXPORT_ALL = "leeroy.mediascraper.intent.action.EXPORT_ALL";
 
     private static final String EXPORT_ALL_KEY = "all://";
     private static final Intent VOID_INTENT = new Intent("void");
@@ -233,15 +233,15 @@ public class NfoExportService extends IntentService implements DefaultLifecycleO
 
     private static final Uri URI = VideoStore.Video.Media.EXTERNAL_CONTENT_URI;
     private static final String[] PROJECTION = {
-            VideoColumns.ARCHOS_MEDIA_SCRAPER_ID,   // 0
-            VideoColumns.ARCHOS_MEDIA_SCRAPER_TYPE, // 1
+            VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_ID,   // 0
+            VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_TYPE, // 1
     };
     private static final String SELECTION_ALL =
-            VideoColumns.ARCHOS_MEDIA_SCRAPER_ID + " > 0 AND " +
-            VideoColumns.ARCHOS_MEDIA_SCRAPER_TYPE + " > 0";
+            VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_ID + " > 0 AND " +
+            VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_TYPE + " > 0";
     private static final String SELECTION_FOLDER =
-            VideoColumns.ARCHOS_MEDIA_SCRAPER_ID + " > 0 AND " +
-            VideoColumns.ARCHOS_MEDIA_SCRAPER_TYPE + " > 0 AND " +
+            VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_ID + " > 0 AND " +
+            VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_TYPE + " > 0 AND " +
             MediaColumns.DATA + " LIKE ?||'/%'";
     private static final String ORDER = MediaColumns.DATA;
 

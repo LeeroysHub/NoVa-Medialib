@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediascraper.themoviedb3;
+package org.leeroy.mediascraper.themoviedb3;
 
-import com.archos.mediascraper.ScrapeStatus;
-import com.archos.mediascraper.SearchResult;
+import org.leeroy.mediascraper.ScrapeStatus;
+import org.leeroy.mediascraper.SearchResult;
 
 import java.util.Collections;
 import java.util.LinkedList;

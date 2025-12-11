@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediacenter.cover;
+package org.leeroy.mediaplayer.cover;
 
-import com.archos.environment.ArchosFeatures;
-import com.archos.medialib.R;
+import org.leeroy.environment.LeeroyFlixFeatures;
+import org.leeroy.medialib.R;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -118,7 +118,7 @@ public class ArtworkFactory {
 		mCanvas = new Canvas(mShadowBitmap);
 
 		// Decode the shadow bitmap
-		int shadowId = ArchosFeatures.isAndroidTV(mContext)|| ArchosFeatures.isLUDO()?R.drawable.cover_shadow_512:(mWidth==128) ? R.drawable.cover_shadow_128 : R.drawable.cover_shadow_256;
+		int shadowId = LeeroyFlixFeatures.isAndroidTV(mContext)|| LeeroyFlixFeatures.isLUDO()?R.drawable.cover_shadow_512:(mWidth==128) ? R.drawable.cover_shadow_128 : R.drawable.cover_shadow_256;
 		InputStream is = context.getResources().openRawResource(shadowId);
 		mShadow9patchPadding = new Rect();
 
@@ -304,7 +304,7 @@ public class ArtworkFactory {
 
         StaticLayout textLayout = null;
         if (isRtlLabel()) {
-            // Archos hack : when a right-to-left language is selected calling TextView.draw()
+            // LeeroyFlix hack : when a right-to-left language is selected calling TextView.draw()
             // draws the background but not the text, so also call TextLayout.draw() which works
             textLayout = createTextLayout(label, Color.LTGRAY, mContentLabelFontsize, width);
         }

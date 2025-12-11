@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.archos.mediacenter.utils;
+package org.leeroy.mediaplayer.utils;
 
 import android.database.Cursor;
 import android.widget.AlphabetIndexer;

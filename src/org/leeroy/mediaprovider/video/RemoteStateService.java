@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
 // limitations under the License.
 
 
-package com.archos.mediaprovider.video;
+package org.leeroy.mediaprovider.video;
 
 import android.app.Service;
 import android.content.ContentResolver;
@@ -30,13 +30,13 @@ import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ProcessLifecycleOwner;
 
-import com.archos.filecorelibrary.FileEditor;
-import com.archos.filecorelibrary.jcifs.JcifsFileEditor;
-import com.archos.filecorelibrary.samba.SambaDiscovery;
-import com.archos.mediacenter.filecoreextension.upnp2.FileEditorFactoryWithUpnp;
-import com.archos.mediacenter.filecoreextension.upnp2.UpnpServiceManager;
-import com.archos.environment.NetworkState;
-import com.archos.mediaprovider.video.VideoStore.MediaColumns;
+import org.leeroy.filecorelibrary.FileEditor;
+import org.leeroy.filecorelibrary.jcifs.JcifsFileEditor;
+import org.leeroy.filecorelibrary.samba.SambaDiscovery;
+import org.leeroy.mediaplayer.filecoreextension.upnp2.FileEditorFactoryWithUpnp;
+import org.leeroy.mediaplayer.filecoreextension.upnp2.UpnpServiceManager;
+import org.leeroy.environment.NetworkState;
+import org.leeroy.mediaprovider.video.VideoStore.MediaColumns;
 
 import org.jupnp.model.meta.Device;
 import org.slf4j.Logger;
@@ -81,7 +81,7 @@ public class RemoteStateService extends Service implements UpnpServiceManager.Li
                     MediaColumns.DATA + " LIKE 'webdav://%' OR " +
                     MediaColumns.DATA + " LIKE 'webdavs://%'";
     private static final String SELECTION_ALL_NETWORK = SELECTION_LOCAL_REMOTE+" OR "+SELECTION_DISTANT_REMOTE;
-    public static final String ACTION_CHECK_SMB = "archos.intent.action.CHECK_SMB";
+    public static final String ACTION_CHECK_SMB = "leeroy.intent.action.CHECK_SMB";
     private ConcurrentHashMap<String, Pair<Long, Integer>> mUpnpId; //store name, id and active state
     private boolean mUpnpDiscoveryStarted;
     private boolean mServerDbUpdated;

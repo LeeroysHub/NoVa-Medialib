@@ -16,7 +16,7 @@
 
 // taken from package com.android.imageviewer.gallery;
 
-package com.archos.mediacenter.utils;
+package org.leeroy.mediaplayer.utils;
  
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;

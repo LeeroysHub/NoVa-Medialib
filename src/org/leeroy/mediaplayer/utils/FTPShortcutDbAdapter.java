@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediacenter.utils;
+package org.leeroy.mediaplayer.utils;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.archos.environment.ArchosUtils;
+import org.leeroy.environment.LeeroyFlixUtils;
 
 public enum FTPShortcutDbAdapter {
 	
@@ -42,7 +42,7 @@ public enum FTPShortcutDbAdapter {
     // To be incremented each time the architecture of the database is changed
     private static final int DATABASE_VERSION = 4;
 
-    public static final String ACTION_SHORTCUTS_CHANGED = "com.archos.mediacenter.ftp_shortcuts_changed";
+    public static final String ACTION_SHORTCUTS_CHANGED = "org.leeroy.mediaplayer.ftp_shortcuts_changed";
     private static final String KEY_PATH = "path";
     private static final String KEY_HOST = "host";
     private static final String KEY_USERNAME = "username";
@@ -356,7 +356,7 @@ public enum FTPShortcutDbAdapter {
 
             // Tell all instances of browsers to update their display if needed
             Intent intent = new Intent(ACTION_SHORTCUTS_CHANGED);
-            intent.setPackage(ArchosUtils.getGlobalContext().getPackageName());
+            intent.setPackage(LeeroyFlixUtils.getGlobalContext().getPackageName());
             mContext.sendBroadcast(intent);
         }
 
@@ -379,7 +379,7 @@ public enum FTPShortcutDbAdapter {
         protected void onPostExecute(Void args) {
             // Tell all instances of browsers to update their display if needed
             Intent intent = new Intent(ACTION_SHORTCUTS_CHANGED);
-            intent.setPackage(ArchosUtils.getGlobalContext().getPackageName());
+            intent.setPackage(LeeroyFlixUtils.getGlobalContext().getPackageName());
             mContext.sendBroadcast(intent);
         }
     }

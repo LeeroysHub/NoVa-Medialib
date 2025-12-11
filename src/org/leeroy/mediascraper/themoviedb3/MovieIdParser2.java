@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediascraper.themoviedb3;
+package org.leeroy.mediascraper.themoviedb3;
 
 import android.content.Context;
 import android.util.Log;
 import android.util.Pair;
 
-import com.archos.medialib.R;
-import com.archos.mediascraper.MovieTags;
-import com.archos.mediascraper.ScrapeStatus;
-import com.archos.mediascraper.ScraperImage;
-import com.archos.mediascraper.ScraperTrailer;
+import org.leeroy.medialib.R;
+import org.leeroy.mediascraper.MovieTags;
+import org.leeroy.mediascraper.ScrapeStatus;
+import org.leeroy.mediascraper.ScraperImage;
+import org.leeroy.mediascraper.ScraperTrailer;
 import com.uwetrottmann.tmdb2.entities.BaseCompany;
 import com.uwetrottmann.tmdb2.entities.CastMember;
 import com.uwetrottmann.tmdb2.entities.Credits;
@@ -48,8 +48,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static com.archos.mediascraper.MovieTags.isCollectionAlreadyKnown;
-import static com.archos.mediascraper.themoviedb3.MovieCollectionImages.downloadCollectionImage;
+import static org.leeroy.mediascraper.MovieTags.isCollectionAlreadyKnown;
+import static org.leeroy.mediascraper.themoviedb3.MovieCollectionImages.downloadCollectionImage;
 
 public class MovieIdParser2 {
 

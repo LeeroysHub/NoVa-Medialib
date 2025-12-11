@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediacenter.utils.videodb;
+package org.leeroy.mediaplayer.utils.videodb;
 
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -21,13 +21,13 @@ import android.os.Handler.Callback;
 import android.os.Looper;
 import android.os.Message;
 
-import com.archos.filecorelibrary.FileEditor;
-import com.archos.filecorelibrary.MetaFile2;
-import com.archos.filecorelibrary.RawLister;
-import com.archos.filecorelibrary.FileUtils;
-import com.archos.filecorelibrary.AuthenticationException;
-import com.archos.mediacenter.filecoreextension.upnp2.FileEditorFactoryWithUpnp;
-import com.archos.mediacenter.filecoreextension.upnp2.RawListerFactoryWithUpnp;
+import org.leeroy.filecorelibrary.FileEditor;
+import org.leeroy.filecorelibrary.MetaFile2;
+import org.leeroy.filecorelibrary.RawLister;
+import org.leeroy.filecorelibrary.FileUtils;
+import org.leeroy.filecorelibrary.AuthenticationException;
+import org.leeroy.mediaplayer.filecoreextension.upnp2.FileEditorFactoryWithUpnp;
+import org.leeroy.mediaplayer.filecoreextension.upnp2.RawListerFactoryWithUpnp;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.SftpException;
 
@@ -69,7 +69,7 @@ public class XmlDb implements Callback {
     private static final int MSG_PARSE_OK = 1;
     private static final int PARSING_TIMEOUT = 7; // Time in seconds
     public static final String FILE_EXTENSION = "xml";
-    public static final String FILE_NAME = ".archos.resume."+FILE_EXTENSION;
+    public static final String FILE_NAME = ".leeroyflix.resume."+FILE_EXTENSION;
     private final Handler mUiThreadHandler = new Handler(Looper.getMainLooper(), this);
     private static final Map<String, WriteTask> sRemoteWriteTasks = new HashMap<String, WriteTask>();
     private static final Map<String, ParseTask> sRemoteParseTasks = new HashMap<String, ParseTask>();
@@ -466,7 +466,7 @@ public class XmlDb implements Callback {
         deleteAssociatedResumeDatabase(entry.uri);
         final StringWriter writer = new StringWriter(5000);
         writer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-        writer.append("<!-- Archos MediaCenter metadata -->\n");
+        writer.append("<!-- LeeroyFlix MediaCenter metadata -->\n");
         writer.append("<network_database>\n");
         writeXmlEntry(writer, entry);
         writer.append("</network_database>\n");

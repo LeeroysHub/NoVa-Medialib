@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediaprovider.video;
+package org.leeroy.mediaprovider.video;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -28,9 +28,9 @@ import android.os.Message;
 import android.provider.BaseColumns;
 import android.util.Log;
 
-import com.archos.mediaprovider.ArchosMediaCommon;
-import com.archos.mediaprovider.ArchosMediaFile;
-import com.archos.mediaprovider.video.VideoStore.MediaColumns;
+import org.leeroy.mediaprovider.LeeroyFlixMediaCommon;
+import org.leeroy.mediaprovider.LeeroyFlixMediaFile;
+import org.leeroy.mediaprovider.video.VideoStore.MediaColumns;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -48,9 +48,9 @@ import java.util.regex.Pattern;
  * is set based on directory structure if it seems to be a valid and complete DVD.
  */
 public class VobHandler implements Handler.Callback {
-    private static final String TAG =  ArchosMediaCommon.TAG_PREFIX + "VobHandler";
+    private static final String TAG =  LeeroyFlixMediaCommon.TAG_PREFIX + "VobHandler";
     private static final boolean LOCAL_DBG = false;
-    private static final boolean DBG = ArchosMediaCommon.PACKAGE_DBG & LOCAL_DBG;
+    private static final boolean DBG = LeeroyFlixMediaCommon.PACKAGE_DBG & LOCAL_DBG;
 
     /** delay before processing starts */
     // mediascanner processing can take above 500 msec per file so wait a little longer to be sure
@@ -70,7 +70,7 @@ public class VobHandler implements Handler.Callback {
         mInTransaction = false;
         mTransactionQueue = new HashMap<Integer, String>();
         mContext = context;
-        HandlerThread ht = new HandlerThread("ArchosVobHandler");
+        HandlerThread ht = new HandlerThread("LeeroyFlixVobHandler");
         ht.start();
         Looper l = ht.getLooper();
         mHandler = new Handler(l, this);
@@ -153,14 +153,14 @@ public class VobHandler implements Handler.Callback {
         BaseColumns._ID,   // 0
         MediaColumns.DATA,  // 1
         MediaColumns.TITLE, // 2
-        VideoStore.Video.VideoColumns.ARCHOS_HIDE_FILE, // 3
-        VideoStore.Video.VideoColumns.ARCHOS_TITLE // 4
+        VideoStore.Video.VideoColumns.LEEROYFLIX_HIDE_FILE, // 3
+        VideoStore.Video.VideoColumns.LEEROYFLIX_TITLE // 4
     };
     private static final int COLUMN_ID = 0;
     private static final int COLUMN_DATA = 1;
     private static final int COLUMN_TITLE = 2;
     private static final int COLUMN_HIDE_FILE = 3;
-    private static final int COLUMN_ARCHOS_TITLE = 4;
+    private static final int COLUMN_LEEROYFLIX_TITLE = 4;
 
     // where
     private static final String SELECTION = VideoStore.Video.VideoColumns.BUCKET_ID + "=? AND (" +
@@ -189,7 +189,7 @@ public class VobHandler implements Handler.Callback {
                 long id = c.getLong(COLUMN_ID);
                 String file = c.getString(COLUMN_DATA);
                 String title = c.getString(COLUMN_TITLE);
-                String archosTitle = c.getString(COLUMN_ARCHOS_TITLE);
+                String archosTitle = c.getString(COLUMN_LEEROYFLIX_TITLE);
                 int hidden = c.getInt(COLUMN_HIDE_FILE);
                 VobFile vf = new VobFile(id, file, title, hidden, archosTitle);
                 // since the database could return a file named VTS_AB_C.VOB,
@@ -250,7 +250,7 @@ public class VobHandler implements Handler.Callback {
      */
     protected static String defaultTitle(File vob) {
         if (vob == null) return null;
-        return ArchosMediaFile.getFileTitle(vob.getPath());
+        return LeeroyFlixMediaFile.getFileTitle(vob.getPath());
     }
 
     /**
@@ -468,11 +468,11 @@ public class VobHandler implements Handler.Callback {
             if (updateTitle || hidden != newHide) {
                 ContentValues cv = new ContentValues();
                 if (updateTitle) {
-                    cv.put(VideoStore.Video.VideoColumns.ARCHOS_TITLE, newTitle);
+                    cv.put(VideoStore.Video.VideoColumns.LEEROYFLIX_TITLE, newTitle);
                     if (DBG) Log.d(TAG, "update " + file + " title: " + newTitle);
                 }
                 if (hidden != newHide) {
-                    cv.put(VideoStore.Video.VideoColumns.ARCHOS_HIDE_FILE, newHide ? "1" : "0");
+                    cv.put(VideoStore.Video.VideoColumns.LEEROYFLIX_HIDE_FILE, newHide ? "1" : "0");
                     if (DBG) Log.d(TAG, "update " + file + " hide: " + (newHide ? "1" : "0"));
                 }
                 Uri uri = ContentUris.withAppendedId(VideoStore.Video.Media.EXTERNAL_CONTENT_URI, id);

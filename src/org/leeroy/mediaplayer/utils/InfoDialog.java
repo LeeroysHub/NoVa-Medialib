@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediacenter.utils;
+package org.leeroy.mediaplayer.utils;
 
-import com.archos.medialib.R;
+import org.leeroy.medialib.R;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -72,7 +72,7 @@ public class InfoDialog extends Dialog {
 
 
     public InfoDialog(Context context) {
-        super(context, R.style.ArchosInfoDialog);
+        super(context, R.style.LeeroyFlixInfoDialog);
         mC = context;
     }
 
@@ -97,7 +97,7 @@ public class InfoDialog extends Dialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.archos_info_dialog);
+        setContentView(R.layout.leeroyflix_info_dialog);
         setCancelable(true);
         setCanceledOnTouchOutside(true);
 
@@ -109,15 +109,15 @@ public class InfoDialog extends Dialog {
         	root.setMinimumHeight(mMinHeight);
         }
 
-        mTitleView = (TextView) findViewById(R.id.archos_info_title);
+        mTitleView = (TextView) findViewById(R.id.leeroyflix_info_title);
         if (mTitle != null) {
             mTitleView.setText(mTitle);
         }
-        mSubtitleView = (TextView) findViewById(R.id.archos_info_subtitle);
+        mSubtitleView = (TextView) findViewById(R.id.leeroyflix_info_subtitle);
         if (mSubtitle != null) {
             mSubtitleView.setText(mSubtitle);
         }
-        mIconView = (ImageView) findViewById(R.id.archos_info_icon);
+        mIconView = (ImageView) findViewById(R.id.leeroyflix_info_icon);
         if (mIconDrawable != null) {
             mIconView.setImageDrawable(mIconDrawable);
             setIconSize(mIconDrawable);
@@ -239,7 +239,7 @@ public class InfoDialog extends Dialog {
     private void setIconSize(int bitmapWidth, int bitmapHeight) {
         // Compute the size of the icon so that it fills the top bar vertically
         // and maintains the aspect ratio of the source bitmap
-        int iconHeight = mC.getResources().getDimensionPixelSize(R.dimen.archos_info_dialog_header_height);
+        int iconHeight = mC.getResources().getDimensionPixelSize(R.dimen.leeroyflix_info_dialog_header_height);
         float scale = (float)iconHeight / (float)bitmapHeight;
         int iconWidth = (int)(scale * bitmapWidth);
 
@@ -263,7 +263,7 @@ public class InfoDialog extends Dialog {
     }
 
     public void setCommonDetailsVisibility(boolean visibility) {
-        View commonDetails = (View) findViewById(R.id.archos_info_common_details);
+        View commonDetails = (View) findViewById(R.id.leeroyflix_info_common_details);
         commonDetails.setVisibility(visibility ? View.VISIBLE : View.GONE);
     }
 
@@ -334,7 +334,7 @@ public class InfoDialog extends Dialog {
             File file = mFileSelection.get(0);
 
             // filename (short)
-            TextView nameTv = (TextView) findViewById(R.id.archos_info_name);
+            TextView nameTv = (TextView) findViewById(R.id.leeroyflix_info_name);
             nameTv.setMaxLines(2);
             nameTv.setText(file.getName());
 
@@ -343,7 +343,7 @@ public class InfoDialog extends Dialog {
                     : R.string.file_info_label_cannot_read;
             int write = file.canWrite() ? R.string.file_info_label_can_write
                     : R.string.file_info_label_cannot_write;
-            ((TextView) findViewById(R.id.archos_info_permission)).setText(mC.getText(read) + ", "
+            ((TextView) findViewById(R.id.leeroyflix_info_permission)).setText(mC.getText(read) + ", "
                     + mC.getText(write));
 
             // Modification date
@@ -351,15 +351,15 @@ public class InfoDialog extends Dialog {
             Date date = new Date(file.lastModified());
             sdf = new SimpleDateFormat("d MMMM yyyy, HH:mm:ss");
             String res = sdf.format(date);
-            ((TextView) findViewById(R.id.archos_info_last_modified)).setText(res);
+            ((TextView) findViewById(R.id.leeroyflix_info_last_modified)).setText(res);
 
             // Mime type
-            TextView mimeTypeTv = (TextView) findViewById(R.id.archos_info_mime_type);
-            TextView mimeTypeLabelTv = (TextView) findViewById(R.id.archos_info_mime_type_label);
+            TextView mimeTypeTv = (TextView) findViewById(R.id.leeroyflix_info_mime_type);
+            TextView mimeTypeLabelTv = (TextView) findViewById(R.id.leeroyflix_info_mime_type_label);
 
-            TextView sizeTv = (TextView) findViewById(R.id.archos_info_size);
-            ProgressBar pb = (ProgressBar) findViewById(R.id.archos_info_progress);
-            TextView numberFilesTv = (TextView) findViewById(R.id.archos_info_number_files);
+            TextView sizeTv = (TextView) findViewById(R.id.leeroyflix_info_size);
+            ProgressBar pb = (ProgressBar) findViewById(R.id.leeroyflix_info_progress);
+            TextView numberFilesTv = (TextView) findViewById(R.id.leeroyflix_info_number_files);
             if (file.isDirectory()) {
                 // Single folder => start the thread which will compute recursively the total size
                 mimeTypeTv.setVisibility(View.GONE);
@@ -377,7 +377,7 @@ public class InfoDialog extends Dialog {
                 sizeTv.setText(Formatter.formatFileSize(mC, file.length()));
                 mimeTypeTv.setText(InfoDialog.getMimeType(file));
             }
-            TextView fullpath = (TextView) findViewById(R.id.archos_info_fullpath);
+            TextView fullpath = (TextView) findViewById(R.id.leeroyflix_info_fullpath);
             fullpath.setText(file.getAbsolutePath());
         }
         else {
@@ -385,30 +385,30 @@ public class InfoDialog extends Dialog {
             // Infos for a selection containing several files or folders
             //-----------------------------------------------------------
             // Hide the fields which are meaningless for a selection of files/folders
-            ((TextView) findViewById(R.id.archos_info_mime_type)).setVisibility(View.GONE);
-            ((TextView) findViewById(R.id.archos_info_mime_type_label)).setVisibility(View.GONE);
-            ((TextView) findViewById(R.id.archos_info_permission)).setVisibility(View.GONE);
-            ((TextView) findViewById(R.id.archos_info_permission_label)).setVisibility(View.GONE);
-            ((TextView) findViewById(R.id.archos_info_last_modified)).setVisibility(View.GONE);
-            ((TextView) findViewById(R.id.archos_info_last_modified_label)).setVisibility(View.GONE);
+            ((TextView) findViewById(R.id.leeroyflix_info_mime_type)).setVisibility(View.GONE);
+            ((TextView) findViewById(R.id.leeroyflix_info_mime_type_label)).setVisibility(View.GONE);
+            ((TextView) findViewById(R.id.leeroyflix_info_permission)).setVisibility(View.GONE);
+            ((TextView) findViewById(R.id.leeroyflix_info_permission_label)).setVisibility(View.GONE);
+            ((TextView) findViewById(R.id.leeroyflix_info_last_modified)).setVisibility(View.GONE);
+            ((TextView) findViewById(R.id.leeroyflix_info_last_modified_label)).setVisibility(View.GONE);
 
             // Fields to show
-            TextView sizeTv = (TextView) findViewById(R.id.archos_info_size);
+            TextView sizeTv = (TextView) findViewById(R.id.leeroyflix_info_size);
             sizeTv.setVisibility(View.VISIBLE);
-            ProgressBar pb = (ProgressBar) findViewById(R.id.archos_info_progress);
+            ProgressBar pb = (ProgressBar) findViewById(R.id.leeroyflix_info_progress);
             pb.setVisibility(View.VISIBLE);
-            TextView numberFilesTv = (TextView) findViewById(R.id.archos_info_number_files);
+            TextView numberFilesTv = (TextView) findViewById(R.id.leeroyflix_info_number_files);
             numberFilesTv.setVisibility(View.VISIBLE);
 
             if (mName != null) {
-                TextView nameTv = (TextView) findViewById(R.id.archos_info_name);
+                TextView nameTv = (TextView) findViewById(R.id.leeroyflix_info_name);
                 nameTv.setMaxLines(4);
                 nameTv.setText(mName);
             }
 
             // Display the path corresponding to the current folder (we can use the first item 
             // of the selection because all files/folders belong to the same folder anyway)
-            TextView fullpath = (TextView) findViewById(R.id.archos_info_fullpath);
+            TextView fullpath = (TextView) findViewById(R.id.leeroyflix_info_fullpath);
             fullpath.setText(mFileSelection.get(0).getParent());
 
             // Start the thread which will compute recursively the total size

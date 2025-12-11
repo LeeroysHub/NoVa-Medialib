@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.medialib;
+package org.leeroy.medialib;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -44,10 +44,10 @@ public class LibAvos {
         String pluginsPath = extFilesDir.getPath() + "/plugins/11";
 
         /*
-         * replace com.archos.mediacenter.video[aw|ti|rk|free] with com.archos.mediacenter.video
+         * replace org.leeroy.mediaplayer.video[aw|ti|rk|free] with org.leeroy.mediaplayer.video
          * concatenate strings because of the mighty sed.
          */
-        pluginsPath = pluginsPath.replaceAll("/com.archos.mediacenter."+"video[a-zA-Z0-9]*/", "/com.archos.mediacenter.video/");
+        pluginsPath = pluginsPath.replaceAll("/org.leeroy.mediaplayer."+"video[a-zA-Z0-9]*/", "/org.leeroy.mediaplayer.video/");
 
         File extLibsDir = new File(pluginsPath);
         if (DBG) Log.d(TAG, "installExtLibs: check folder: " + extLibsDir);

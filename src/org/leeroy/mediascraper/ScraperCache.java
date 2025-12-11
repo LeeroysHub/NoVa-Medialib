@@ -13,7 +13,7 @@
 // limitations under the License.
 
 
-package com.archos.mediascraper;
+package org.leeroy.mediascraper;
 
 import android.content.Context;
 

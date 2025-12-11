@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediascraper;
+package org.leeroy.mediascraper;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -24,11 +24,11 @@ import android.provider.BaseColumns;
 import android.util.Log;
 import android.util.LongSparseArray;
 
-import com.archos.mediaprovider.video.ScraperStore;
-import com.archos.mediaprovider.video.VideoStore;
-import com.archos.mediaprovider.video.VideoStore.MediaColumns;
-import com.archos.mediaprovider.video.VideoStore.Video.VideoColumns;
-import com.archos.mediascraper.ScraperImage.Type;
+import org.leeroy.mediaprovider.video.ScraperStore;
+import org.leeroy.mediaprovider.video.VideoStore;
+import org.leeroy.mediaprovider.video.VideoStore.MediaColumns;
+import org.leeroy.mediaprovider.video.VideoStore.Video.VideoColumns;
+import org.leeroy.mediascraper.ScraperImage.Type;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -96,8 +96,8 @@ public class TagsFactory {
         public Columns(Cursor c) {
             id = getCol(c, BaseColumns._ID);
             data = getCol(c, MediaColumns.DATA);
-            scraperId = getCol(c, VideoColumns.ARCHOS_MEDIA_SCRAPER_ID);
-            scraperType = getCol(c, VideoColumns.ARCHOS_MEDIA_SCRAPER_TYPE);
+            scraperId = getCol(c, VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_ID);
+            scraperType = getCol(c, VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_TYPE);
             //title = getCol(c, MediaColumns.TITLE);
             titleMS = getCol(c, VideoColumns.SCRAPER_TITLE);
             titleE = getCol(c, VideoColumns.SCRAPER_E_NAME);
@@ -231,8 +231,8 @@ public class TagsFactory {
     public static final String[] VIDEO_COLUMNS = {
         BaseColumns._ID,
         MediaColumns.DATA,
-        VideoColumns.ARCHOS_MEDIA_SCRAPER_ID,
-        VideoColumns.ARCHOS_MEDIA_SCRAPER_TYPE,
+        VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_ID,
+        VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_TYPE,
         VideoColumns.SCRAPER_TITLE,
         VideoColumns.SCRAPER_E_NAME,
         VideoColumns.SCRAPER_RATING,
@@ -300,8 +300,8 @@ public class TagsFactory {
     <pre>
     BaseColumns._ID,
     MediaColumns.DATA,
-    VideoColumns.ARCHOS_MEDIA_SCRAPER_ID,
-    VideoColumns.ARCHOS_MEDIA_SCRAPER_TYPE,
+    VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_ID,
+    VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_TYPE,
     VideoColumns.SCRAPER_TITLE,
     VideoColumns.SCRAPER_E_NAME,
     VideoColumns.SCRAPER_RATING,
@@ -761,9 +761,9 @@ public class TagsFactory {
                         VideoColumns.SCRAPER_POSTER_ID,         // 7
                         VideoColumns.SCRAPER_BACKDROP_ID,       // 8
                         VideoColumns.BOOKMARK,                  // 9
-                        VideoColumns.ARCHOS_BOOKMARK,           // 10
+                        VideoColumns.LEEROYFLIX_BOOKMARK,           // 10
                         VideoColumns.DURATION,                  // 11
-                        VideoColumns.ARCHOS_LAST_TIME_PLAYED,   // 12
+                        VideoColumns.LEEROYFLIX_LAST_TIME_PLAYED,   // 12
                         MediaColumns.DATA,                      // 13
                         BaseColumns._ID,                        // 14
                         VideoColumns.SCRAPER_C_ID,                  // 15
@@ -928,9 +928,9 @@ public class TagsFactory {
                         VideoColumns.SCRAPER_POSTER_ID,         // 7
                         VideoColumns.SCRAPER_BACKDROP_ID,       // 8
                         VideoColumns.BOOKMARK,                  // 9
-                        VideoColumns.ARCHOS_BOOKMARK,           // 10
+                        VideoColumns.LEEROYFLIX_BOOKMARK,           // 10
                         VideoColumns.DURATION,                  // 11
-                        VideoColumns.ARCHOS_LAST_TIME_PLAYED,   // 12
+                        VideoColumns.LEEROYFLIX_LAST_TIME_PLAYED,   // 12
                         MediaColumns.DATA,                      // 13
                         BaseColumns._ID,                        // 14
                         VideoColumns.SCRAPER_E_EPISODE,         // 15

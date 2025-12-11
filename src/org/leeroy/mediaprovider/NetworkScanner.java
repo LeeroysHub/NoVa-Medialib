@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediaprovider;
+package org.leeroy.mediaprovider;
 
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 
-import com.archos.environment.ArchosUtils;
+import org.leeroy.environment.LeeroyFlixUtils;
 
 public class NetworkScanner {
 
@@ -36,8 +36,8 @@ public class NetworkScanner {
     public static void scanVideos(Context context, Uri uri) {
         if (context != null && uri != null) {
             if (DBG) Log.d(TAG, "scanVideos uri:" + uri);
-            Intent intent = new Intent(ArchosMediaIntent.ACTION_VIDEO_SCANNER_SCAN_FILE, uri);
-            intent.setPackage(ArchosUtils.getGlobalContext().getPackageName());
+            Intent intent = new Intent(LeeroyFlixMediaIntent.ACTION_VIDEO_SCANNER_SCAN_FILE, uri);
+            intent.setPackage(LeeroyFlixUtils.getGlobalContext().getPackageName());
             context.sendBroadcast(intent);
         }
     }
@@ -54,8 +54,8 @@ public class NetworkScanner {
     public static void removeVideos(Context context, Uri uri) {
         if (context != null && uri != null) {
             if (DBG) Log.d(TAG, "removeVideos uri:" + uri);
-            Intent intent = new Intent(ArchosMediaIntent.ACTION_VIDEO_SCANNER_REMOVE_FILE, uri);
-            intent.setPackage(ArchosUtils.getGlobalContext().getPackageName());
+            Intent intent = new Intent(LeeroyFlixMediaIntent.ACTION_VIDEO_SCANNER_REMOVE_FILE, uri);
+            intent.setPackage(LeeroyFlixUtils.getGlobalContext().getPackageName());
             context.sendBroadcast(intent);
         }
     }

@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediascraper.themoviedb3;
+package org.leeroy.mediascraper.themoviedb3;
 
 import android.util.LruCache;
 //import android.util.Pair;
 
-import com.archos.mediascraper.ScrapeStatus;
-import com.archos.mediascraper.ShowUtils;
-import com.archos.mediascraper.preprocess.TvShowSearchInfo;
-import com.archos.mediascraper.xml.ShowScraper4;
+import org.leeroy.mediascraper.ScrapeStatus;
+import org.leeroy.mediascraper.ShowUtils;
+import org.leeroy.mediascraper.preprocess.TvShowSearchInfo;
+import org.leeroy.mediascraper.xml.ShowScraper4;
 import com.uwetrottmann.tmdb2.entities.TvShowResultsPage;
 
 import org.slf4j.Logger;
@@ -30,7 +30,7 @@ import java.io.IOException;
 
 import retrofit2.Response;
 
-import static com.archos.mediascraper.preprocess.ParseUtils.yearExtractor;
+import static org.leeroy.mediascraper.preprocess.ParseUtils.yearExtractor;
 
 // Search Show for name query for year in language (ISO 639-1 code)
 public class SearchShow {

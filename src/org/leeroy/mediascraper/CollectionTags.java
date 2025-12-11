@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediascraper;
+package org.leeroy.mediascraper;
 
 import android.content.ContentProviderOperation;
 import android.content.ContentProviderResult;
@@ -24,8 +24,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.RemoteException;
 
-import com.archos.mediaprovider.video.ScraperStore;
-import com.archos.mediascraper.themoviedb3.ImageConfiguration;
+import org.leeroy.mediaprovider.video.ScraperStore;
+import org.leeroy.mediascraper.themoviedb3.ImageConfiguration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediaprovider;
+package org.leeroy.mediaprovider;
 
 import android.database.Cursor;
 import android.database.CursorWrapper;
@@ -34,7 +34,7 @@ import android.util.Log;
  * expects the state of the initial query.
  */
 public class CustomCursorFactory implements CursorFactory {
-    protected static final String TAG = ArchosMediaCommon.TAG_PREFIX + CustomCursorFactory.class.getSimpleName();
+    protected static final String TAG = LeeroyFlixMediaCommon.TAG_PREFIX + CustomCursorFactory.class.getSimpleName();
 
     public static class CustomCursor extends CursorWrapper {
 

@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,26 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediascraper.saxhandler;
+package org.leeroy.mediascraper.saxhandler;
 
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
-import com.archos.mediascraper.MovieTags;
-import com.archos.mediascraper.NfoParser;
-import com.archos.mediascraper.ScraperImage;
-import com.archos.mediascraper.StringMatcher;
-import com.archos.mediascraper.themoviedb3.ImageConfiguration;
-import com.archos.mediascraper.themoviedb3.ImageConfiguration.BackdropSize;
-import com.archos.mediascraper.themoviedb3.ImageConfiguration.PosterSize;
+import org.leeroy.mediascraper.MovieTags;
+import org.leeroy.mediascraper.NfoParser;
+import org.leeroy.mediascraper.ScraperImage;
+import org.leeroy.mediascraper.StringMatcher;
+import org.leeroy.mediascraper.themoviedb3.ImageConfiguration;
+import org.leeroy.mediascraper.themoviedb3.ImageConfiguration.BackdropSize;
+import org.leeroy.mediascraper.themoviedb3.ImageConfiguration.PosterSize;
 
 import org.xml.sax.Attributes;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-import static com.archos.mediascraper.themoviedb3.MovieCollectionImages.downloadCollectionImage;
+import static org.leeroy.mediascraper.themoviedb3.MovieCollectionImages.downloadCollectionImage;
 
 /**
  * Parser for movie .nfo files as described in

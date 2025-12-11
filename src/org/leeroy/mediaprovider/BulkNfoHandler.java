@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
 // limitations under the License.
 
 
-package com.archos.mediaprovider;
+package org.leeroy.mediaprovider;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -22,15 +22,15 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.util.Log;
 
-import com.archos.mediaprovider.video.VideoStore;
-import com.archos.mediascraper.BaseTags;
-import com.archos.mediascraper.NfoParser;
-import com.archos.mediascraper.NfoParser.NfoFile;
+import org.leeroy.mediaprovider.video.VideoStore;
+import org.leeroy.mediascraper.BaseTags;
+import org.leeroy.mediascraper.NfoParser;
+import org.leeroy.mediascraper.NfoParser.NfoFile;
 
 import java.util.ArrayList;
 
 public class BulkNfoHandler {
-    private static final String TAG = ArchosMediaCommon.TAG_PREFIX
+    private static final String TAG = LeeroyFlixMediaCommon.TAG_PREFIX
             + BulkNfoHandler.class.getSimpleName();
 
     private static final boolean DBG = false;
@@ -121,7 +121,7 @@ public class BulkNfoHandler {
     }
 
     private static final String[] PROJECT_SCRAPER_ID = {
-        VideoStore.Video.VideoColumns.ARCHOS_MEDIA_SCRAPER_ID
+        VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_ID
     };
 
     private static boolean hasScraperInfo(String selection, String[] selectionArgs,

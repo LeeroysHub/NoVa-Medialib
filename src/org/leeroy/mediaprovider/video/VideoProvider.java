@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediaprovider.video;
+package org.leeroy.mediaprovider.video;
 
 import android.content.ContentProvider;
 import android.content.ContentProviderOperation;
@@ -49,24 +49,24 @@ import androidx.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
 
-import com.archos.environment.ArchosUtils;
-import com.archos.filecorelibrary.FileEditor;
-import com.archos.filecorelibrary.FileUtils;
-import com.archos.mediaprovider.video.LoaderUtils;
-import com.archos.mediacenter.filecoreextension.upnp2.FileEditorFactoryWithUpnp;
-import com.archos.mediacenter.filecoreextension.upnp2.UpnpServiceManager;
-import com.archos.medialib.IMediaMetadataRetriever;
-import com.archos.medialib.MediaFactory;
-import com.archos.mediaprovider.ArchosMediaCommon;
-import com.archos.mediaprovider.DbHolder;
-import com.archos.mediaprovider.IMediaThumbnailService;
-import com.archos.mediaprovider.MediaThumbnailService;
-import com.archos.environment.NetworkState;
-import com.archos.mediaprovider.VideoDb;
-import com.archos.mediaprovider.video.VideoStore.MediaColumns;
-import com.archos.mediaprovider.video.VideoStore.Video;
-import com.archos.mediaprovider.video.VideoStore.Files.FileColumns;
-import com.archos.mediaprovider.video.VideoStore.Video.VideoColumns;
+import org.leeroy.environment.LeeroyFlixUtils;
+import org.leeroy.filecorelibrary.FileEditor;
+import org.leeroy.filecorelibrary.FileUtils;
+import org.leeroy.mediaprovider.video.LoaderUtils;
+import org.leeroy.mediaplayer.filecoreextension.upnp2.FileEditorFactoryWithUpnp;
+import org.leeroy.mediaplayer.filecoreextension.upnp2.UpnpServiceManager;
+import org.leeroy.medialib.IMediaMetadataRetriever;
+import org.leeroy.medialib.MediaFactory;
+import org.leeroy.mediaprovider.LeeroyFlixMediaCommon;
+import org.leeroy.mediaprovider.DbHolder;
+import org.leeroy.mediaprovider.IMediaThumbnailService;
+import org.leeroy.mediaprovider.MediaThumbnailService;
+import org.leeroy.environment.NetworkState;
+import org.leeroy.mediaprovider.VideoDb;
+import org.leeroy.mediaprovider.video.VideoStore.MediaColumns;
+import org.leeroy.mediaprovider.video.VideoStore.Video;
+import org.leeroy.mediaprovider.video.VideoStore.Files.FileColumns;
+import org.leeroy.mediaprovider.video.VideoStore.Video.VideoColumns;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -110,7 +110,7 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
     private static final int THUMB_TRY_MAX = 10    ;
     private ContentResolver mCr;
 
-    private static final int LIGHT_INDEX_STORAGE_MIN_ID = ArchosMediaCommon.LIGHT_INDEX_MIN_STORAGE_ID;
+    private static final int LIGHT_INDEX_STORAGE_MIN_ID = LeeroyFlixMediaCommon.LIGHT_INDEX_MIN_STORAGE_ID;
 
     private static final String LIGHT_INDEX_STORAGE_QUERY = "SELECT " + BaseColumns._ID +
             " FROM files WHERE " + BaseColumns._ID + "=?";// AND storage_id<" + LIGHT_INDEX_STORAGE_MIN_ID;
@@ -310,11 +310,11 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
                     return null;
                 }
                 break;
-            case ARCHOS_SMB_SERVER_ID:
+            case LEEROYFLIX_SMB_SERVER_ID:
                 qb.appendWhere("_id=?");
                 prependArgs.add(uri.getPathSegments().get(2));
                 //$FALL-THROUGH$
-            case ARCHOS_SMB_SERVER:
+            case LEEROYFLIX_SMB_SERVER:
                 qb.setTables(VideoOpenHelper.SMB_SERVER_TABLE_NAME);
                 break;
             case SUBS_MEDIA_ID:
@@ -440,7 +440,7 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
                 }
                 break;
             }
-            case ARCHOS_SMB_SERVER: {
+            case LEEROYFLIX_SMB_SERVER: {
                 rowId = db.insert(VideoOpenHelper.SMB_SERVER_TABLE_NAME, BaseColumns._ID, values);
                 if (rowId > 0) {
                     newUri = VideoStore.SmbServer.getContentUri(rowId);
@@ -658,8 +658,8 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
             case VIDEO_MEDIA_ID:
             case VIDEO_THUMBNAILS:
             case VIDEO_THUMBNAILS_ID:
-            case ARCHOS_SMB_SERVER:
-            case ARCHOS_SMB_SERVER_ID:
+            case LEEROYFLIX_SMB_SERVER:
+            case LEEROYFLIX_SMB_SERVER_ID:
                 break; // continue below
             default:
                 throw new IllegalStateException("can't update Uri" + uri);
@@ -766,10 +766,10 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
                 out.table = VideoOpenHelper.VIDEOTHUMBNAIL_TABLE_NAME;
                 break;
 
-            case ARCHOS_SMB_SERVER_ID:
+            case LEEROYFLIX_SMB_SERVER_ID:
                 where = "_id=" + FileUtils.getName(uri);
                 //$FALL-THROUGH$
-            case ARCHOS_SMB_SERVER:
+            case LEEROYFLIX_SMB_SERVER:
                 out.table = VideoOpenHelper.SMB_SERVER_TABLE_NAME;
                 break;
 
@@ -885,7 +885,7 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
         String origId = FileUtils.getName(origUri);
         String[] whereArgs = new String[] { origId };
         Cursor c = query(origUri, new String[] { BaseColumns._ID, MediaColumns.DATA,
-                VideoColumns.MINI_THUMB_MAGIC, VideoColumns.ARCHOS_THUMB_TRY}, LIGHT_INDEX_STORAGE_QUERY, whereArgs , null);
+                VideoColumns.MINI_THUMB_MAGIC, VideoColumns.LEEROYFLIX_THUMB_TRY}, LIGHT_INDEX_STORAGE_QUERY, whereArgs , null);
         if (log.isDebugEnabled()) log.debug("is cursor null ? {}", String.valueOf(c==null));
         if (c == null) return false;
 
@@ -937,7 +937,7 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
                         c.close();
 
                         c = query(origUri, new String[] { VideoColumns.MINI_THUMB_MAGIC,
-                                VideoColumns.ARCHOS_THUMB_TRY}, null, null, null);
+                                VideoColumns.LEEROYFLIX_THUMB_TRY}, null, null, null);
                         if (c == null) return result;
                         if (c.moveToFirst()) {
                             nbTry = c.getInt(1) + 1;
@@ -945,7 +945,7 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
 
                             if (magic == 0) {
                                 ContentValues values = new ContentValues();
-                                values.put(VideoColumns.ARCHOS_THUMB_TRY, nbTry);
+                                values.put(VideoColumns.LEEROYFLIX_THUMB_TRY, nbTry);
                                 update(origUri, values, null, null);
                             }
                         }
@@ -1017,8 +1017,8 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
     private static final int FILES = 700;
     private static final int FILES_ID = 701;
 
-    private static final int ARCHOS_SMB_SERVER = 803;
-    private static final int ARCHOS_SMB_SERVER_ID = 804;
+    private static final int LEEROYFLIX_SMB_SERVER = 803;
+    private static final int LEEROYFLIX_SMB_SERVER_ID = 804;
 
     private static final int RAW = 900;
     private static final int RAWQUERY = 901;
@@ -1044,8 +1044,8 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
         URI_MATCHER.addURI(VideoStore.AUTHORITY, "*/file", FILES);
         URI_MATCHER.addURI(VideoStore.AUTHORITY, "*/file/#", FILES_ID);
 
-        URI_MATCHER.addURI(VideoStore.AUTHORITY, "*/smb_server/#", ARCHOS_SMB_SERVER_ID);
-        URI_MATCHER.addURI(VideoStore.AUTHORITY, "*/smb_server", ARCHOS_SMB_SERVER);
+        URI_MATCHER.addURI(VideoStore.AUTHORITY, "*/smb_server/#", LEEROYFLIX_SMB_SERVER_ID);
+        URI_MATCHER.addURI(VideoStore.AUTHORITY, "*/smb_server", LEEROYFLIX_SMB_SERVER);
 
         URI_MATCHER.addURI(VideoStore.AUTHORITY, "*/subtitles/media", SUBS_MEDIA);
         URI_MATCHER.addURI(VideoStore.AUTHORITY, "*/subtitles/media/#", SUBS_MEDIA_ID);
@@ -1129,7 +1129,7 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
      * it needs to (re)generate the thumbnails.
      */
     public static class MediaThumbRequest {
-        private static final String TAG = ArchosMediaCommon.TAG_PREFIX + "MediaThumbRequest";
+        private static final String TAG = LeeroyFlixMediaCommon.TAG_PREFIX + "MediaThumbRequest";
         private static final boolean DBG = false;
         static final int PRIORITY_LOW = 20;
         static final int PRIORITY_NORMAL = 10;
@@ -1231,7 +1231,7 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
 
             if (mPath != null) {
                 if (mIsVideo) {
-                    // ARCHOS: this uses libavos
+                    // LEEROYFLIX: this uses libavos
                     if (log.isDebugEnabled()) log.debug("is video");
 
                     bitmap = createVideoThumbnail(mContext, mPath,
@@ -1382,7 +1382,7 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
         }
         if (foreground) {
             if (log.isDebugEnabled()) log.debug("handleForeGround: app is foreground VideoStoreImportService.startService");
-            ArchosUtils.addBreadcrumb(SentryLevel.INFO, "handleForeGround", "app is foreground VideoStoreImportService.startService");
+            LeeroyFlixUtils.addBreadcrumb(SentryLevel.INFO, "handleForeGround", "app is foreground VideoStoreImportService.startService");
             VideoStoreImportService.startService(getContext());
             UpnpServiceManager.restartUpnpServiceIfWasStartedBefore();
             // force check

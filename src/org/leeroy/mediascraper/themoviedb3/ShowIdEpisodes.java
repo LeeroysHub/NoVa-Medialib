@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediascraper.themoviedb3;
+package org.leeroy.mediascraper.themoviedb3;
 
 import android.content.Context;
 import android.util.SparseArray;
 
-import com.archos.mediascraper.EpisodeTags;
-import com.archos.mediascraper.ScrapeStatus;
-import com.archos.mediascraper.ScraperImage;
-import com.archos.mediascraper.ShowTags;
+import org.leeroy.mediascraper.EpisodeTags;
+import org.leeroy.mediascraper.ScrapeStatus;
+import org.leeroy.mediascraper.ScraperImage;
+import org.leeroy.mediascraper.ShowTags;
 import com.uwetrottmann.tmdb2.entities.CastMember;
 import com.uwetrottmann.tmdb2.entities.CrewMember;
 import com.uwetrottmann.tmdb2.entities.TvEpisode;

@@ -1,4 +1,4 @@
-package com.archos.mediaprovider.video;
+package org.leeroy.mediaprovider.video;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;

@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediacenter.filecoreextension;
+package org.leeroy.mediaplayer.filecoreextension;
 
 import static org.apache.hc.core5.net.InetAddressUtils.isIPv4Address;
 import static org.apache.hc.core5.net.InetAddressUtils.isIPv6Address;
 
 import android.net.Uri;
 
-import com.archos.filecorelibrary.FileUtils;
+import org.leeroy.filecorelibrary.FileUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

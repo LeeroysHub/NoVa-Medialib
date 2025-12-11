@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediaprovider.video;
+package org.leeroy.mediaprovider.video;
 
 import android.app.job.JobParameters;
 import android.app.job.JobService;
@@ -23,7 +23,7 @@ import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ProcessLifecycleOwner;
 
-import com.archos.environment.ArchosUtils;
+import org.leeroy.environment.LeeroyFlixUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +46,7 @@ public class NetworkRefreshJob extends JobService implements DefaultLifecycleObs
         Context context = getApplicationContext();
         Intent intent = new Intent(context, NetworkAutoRefresh.class);
         intent.setAction(NetworkAutoRefresh.ACTION_RESCAN_INDEXED_FOLDERS);
-        intent.setPackage(ArchosUtils.getGlobalContext().getPackageName());
+        intent.setPackage(LeeroyFlixUtils.getGlobalContext().getPackageName());
         context.sendBroadcast(intent);
         // reschedule the job for next period
         NetworkScannerUtil.scheduleJob(getApplicationContext());

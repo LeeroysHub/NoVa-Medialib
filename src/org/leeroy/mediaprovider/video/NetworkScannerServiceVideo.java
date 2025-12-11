@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediaprovider.video;
+package org.leeroy.mediaprovider.video;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -46,25 +46,25 @@ import androidx.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.util.Pair;
 
-import com.archos.environment.ArchosUtils;
-import com.archos.filecorelibrary.FileUtils;
-import com.archos.filecorelibrary.MetaFile2;
-import com.archos.mediacenter.filecoreextension.UriUtils;
-import com.archos.mediacenter.filecoreextension.upnp2.MetaFileFactoryWithUpnp;
-import com.archos.mediacenter.filecoreextension.upnp2.UpnpFile2;
-import com.archos.mediacenter.filecoreextension.upnp2.UpnpServiceManager;
-import com.archos.medialib.R;
-import com.archos.mediaprovider.ArchosMediaCommon;
-import com.archos.mediaprovider.ArchosMediaFile;
-import com.archos.mediaprovider.ArchosMediaFile.MediaFileType;
-import com.archos.mediaprovider.ArchosMediaIntent;
-import com.archos.mediaprovider.BulkInserter;
-import com.archos.mediaprovider.CPOExecutor;
-import com.archos.mediaprovider.video.VideoStore.Files.FileColumns;
-import com.archos.mediaprovider.video.VideoStore.MediaColumns;
-import com.archos.mediaprovider.video.VideoStore.Video.VideoColumns;
-import com.archos.mediascraper.BaseTags;
-import com.archos.mediascraper.NfoParser;
+import org.leeroy.environment.LeeroyFlixUtils;
+import org.leeroy.filecorelibrary.FileUtils;
+import org.leeroy.filecorelibrary.MetaFile2;
+import org.leeroy.mediaplayer.filecoreextension.UriUtils;
+import org.leeroy.mediaplayer.filecoreextension.upnp2.MetaFileFactoryWithUpnp;
+import org.leeroy.mediaplayer.filecoreextension.upnp2.UpnpFile2;
+import org.leeroy.mediaplayer.filecoreextension.upnp2.UpnpServiceManager;
+import org.leeroy.medialib.R;
+import org.leeroy.mediaprovider.LeeroyFlixMediaCommon;
+import org.leeroy.mediaprovider.LeeroyFlixMediaFile;
+import org.leeroy.mediaprovider.LeeroyFlixMediaFile.MediaFileType;
+import org.leeroy.mediaprovider.LeeroyFlixMediaIntent;
+import org.leeroy.mediaprovider.BulkInserter;
+import org.leeroy.mediaprovider.CPOExecutor;
+import org.leeroy.mediaprovider.video.VideoStore.Files.FileColumns;
+import org.leeroy.mediaprovider.video.VideoStore.MediaColumns;
+import org.leeroy.mediaprovider.video.VideoStore.Video.VideoColumns;
+import org.leeroy.mediascraper.BaseTags;
+import org.leeroy.mediascraper.NfoParser;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -130,7 +130,7 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
         if (log.isDebugEnabled()) log.debug("startIfHandles");
         String action = broadcast.getAction();
         Uri data = broadcast.getData();
-        if ((ArchosMediaIntent.isVideoScanIntent(action) || ArchosMediaIntent.isVideoRemoveIntent(action))
+        if ((LeeroyFlixMediaIntent.isVideoScanIntent(action) || LeeroyFlixMediaIntent.isVideoRemoveIntent(action))
                 && willBeScanned(data)) {
             if (log.isDebugEnabled()) log.debug("startIfHandles is true: sending intent to NetworkScannerServiceVideo");
             Intent serviceIntent = new Intent(context, NetworkScannerServiceVideo.class);
@@ -142,7 +142,7 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
             }
             if(broadcast.getExtras()!=null)
                 serviceIntent.putExtras(broadcast.getExtras()); //in case we have an extra... such as "recordLogExtra"
-            int pendingScans = com.archos.mediascraper.AutoScrapeService.getNetworkScanCount();
+            int pendingScans = org.leeroy.mediascraper.AutoScrapeService.getNetworkScanCount();
             if (isForeground || pendingScans > 0) {
                 if (log.isDebugEnabled()) log.debug("startIfHandles: starting service (isForeground={}, pendingScans={})", isForeground, pendingScans);
                 context.startService(serviceIntent);
@@ -270,14 +270,14 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
         
         // forward events to background handler
         String action = intent.getAction();
-        if (ArchosMediaIntent.isVideoScanIntent(action)) {
+        if (LeeroyFlixMediaIntent.isVideoScanIntent(action)) {
             Uri data = intent.getData();
             String key = data.toString();
             if (mScanRequests.putIfAbsent(key, mDummy) == null) {
                 Message m = mHandler.obtainMessage(MESSAGE_DO_SCAN, startId, flags, data);
                 mHandler.sendMessage(m);
             } else if (log.isDebugEnabled()) log.debug("skip scanning {}, already in queue", key);
-        } else if (ArchosMediaIntent.isVideoRemoveIntent(action)) {
+        } else if (LeeroyFlixMediaIntent.isVideoRemoveIntent(action)) {
             Uri data = intent.getData();
             String key = data.toString();
             if (mUnScanRequests.putIfAbsent(key, mDummy) == null) {
@@ -306,7 +306,7 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
                 if (log.isDebugEnabled()) log.debug("handleMessage: MESSAGE_KILL");
                 if (msg.arg1 != -1) {
                     // Check if there are more pending scans
-                    int remainingScans = com.archos.mediascraper.AutoScrapeService.getNetworkScanCount();
+                    int remainingScans = org.leeroy.mediascraper.AutoScrapeService.getNetworkScanCount();
                     if (log.isDebugEnabled()) log.debug("handleMessage: MESSAGE_KILL, remainingScans={}, isForeground={}", remainingScans, isForeground);
 
                     if (remainingScans == 0) {
@@ -324,7 +324,7 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
                 uri = (Uri) msg.obj;
                 key = uri.toString();
                 if (log.isDebugEnabled()) log.debug("handleMessage: MESSAGE_DO_SCAN {}", uri);
-                int pendingScans = com.archos.mediascraper.AutoScrapeService.getNetworkScanCount();
+                int pendingScans = org.leeroy.mediascraper.AutoScrapeService.getNetworkScanCount();
                 if (isForeground || pendingScans > 0) {
                     if (log.isDebugEnabled()) log.debug("handleMessage: processing scan (isForeground={}, pendingScans={})", isForeground, pendingScans);
                     mScanThread = new Thread(() -> {
@@ -376,8 +376,8 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
         String path = data.toString();
         String[] selectionArgs = { path };
         // send out a sticky broadcast telling the world that we started scanning
-        Intent scannerIntent = new Intent(ArchosMediaIntent.ACTION_VIDEO_SCANNER_SCAN_STARTED, data);
-        scannerIntent.setPackage(ArchosUtils.getGlobalContext().getPackageName());
+        Intent scannerIntent = new Intent(LeeroyFlixMediaIntent.ACTION_VIDEO_SCANNER_SCAN_STARTED, data);
+        scannerIntent.setPackage(LeeroyFlixUtils.getGlobalContext().getPackageName());
         sendBroadcast(scannerIntent);
         // also show a notification.
         nm.notify(NOTIFICATION_ID, nb.setContentTitle(getString(R.string.network_unscan_msg)).setContentText(path).build());
@@ -386,8 +386,8 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
         if (log.isDebugEnabled()) log.debug("removed: {}", deleted);
 
         // send a "done" notification
-        Intent intent = new Intent(ArchosMediaIntent.ACTION_VIDEO_SCANNER_SCAN_FINISHED, data);
-        intent.setPackage(ArchosUtils.getGlobalContext().getPackageName());
+        Intent intent = new Intent(LeeroyFlixMediaIntent.ACTION_VIDEO_SCANNER_SCAN_FINISHED, data);
+        intent.setPackage(LeeroyFlixUtils.getGlobalContext().getPackageName());
         sendBroadcast(intent);
         
         // and cancel the Notification
@@ -440,15 +440,15 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
             ContentResolver cr = getContentResolver();
             WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
             if (wifiLock == null)
-                wifiLock = wifiManager.createWifiLock(WIFI_MODE_FULL_HIGH_PERF, "ArchosNetworkIndexer");
+                wifiLock = wifiManager.createWifiLock(WIFI_MODE_FULL_HIGH_PERF, "LeeroyFlixNetworkIndexer");
 
             try {
                 if (wifiLock != null && !wifiLock.isHeld()) {  // Check if the lock is already held
                     wifiLock.acquire();
                 }
                 // send out a sticky broadcast telling the world that we started scanning
-                Intent scannerIntent = new Intent(ArchosMediaIntent.ACTION_VIDEO_SCANNER_SCAN_STARTED, what);
-                scannerIntent.setPackage(ArchosUtils.getGlobalContext().getPackageName());
+                Intent scannerIntent = new Intent(LeeroyFlixMediaIntent.ACTION_VIDEO_SCANNER_SCAN_STARTED, what);
+                scannerIntent.setPackage(LeeroyFlixUtils.getGlobalContext().getPackageName());
                 sendBroadcast(scannerIntent);
                 // also show a notification.
                 nm.notify(NOTIFICATION_ID, nb.setContentTitle(getString(R.string.network_scan_msg)).setContentText(f.getUri().toString()).build());
@@ -526,8 +526,8 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
                 if (log.isDebugEnabled()) log.debug("added subtitles:{}", newSubs);
                 // send a "done" notification
                 WrapperChannelManager.refreshChannels(this);
-                Intent intent = new Intent(ArchosMediaIntent.ACTION_VIDEO_SCANNER_SCAN_FINISHED, what);
-                intent.setPackage(ArchosUtils.getGlobalContext().getPackageName());
+                Intent intent = new Intent(LeeroyFlixMediaIntent.ACTION_VIDEO_SCANNER_SCAN_FINISHED, what);
+                intent.setPackage(LeeroyFlixUtils.getGlobalContext().getPackageName());
                 sendBroadcast(intent);
 
                 // and cancel the Notification
@@ -547,17 +547,17 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
         }
 
         // Check if this is part of a multi-folder scan BEFORE decrementing
-        int scanCountBefore = com.archos.mediascraper.AutoScrapeService.getNetworkScanCount();
+        int scanCountBefore = org.leeroy.mediascraper.AutoScrapeService.getNetworkScanCount();
         boolean isMultiFolderScan = scanCountBefore > 0;
 
         // Decrement network scan counter for both success and failure paths
-        com.archos.mediascraper.AutoScrapeService.decrementNetworkScanCount();
+        org.leeroy.mediascraper.AutoScrapeService.decrementNetworkScanCount();
         if (log.isDebugEnabled()) log.debug("doScan: decremented network scan count, was multi-folder: {}", isMultiFolderScan);
 
         // If this was a standalone scan (not part of multi-folder), start AutoScrapeService
-        if (!isMultiFolderScan && f != null && com.archos.mediascraper.AutoScrapeService.isEnable(this)) {
+        if (!isMultiFolderScan && f != null && org.leeroy.mediascraper.AutoScrapeService.isEnable(this)) {
             if (log.isDebugEnabled()) log.debug("doScan: standalone scan completed, starting AutoScrapeService");
-            com.archos.mediascraper.AutoScrapeService.startService(this);
+            org.leeroy.mediascraper.AutoScrapeService.startService(this);
         }
 
         if (log.isDebugEnabled()) {
@@ -619,7 +619,7 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
         @Override
         public boolean onDirectory(MetaFile2 directory) {
             // hidden directories are not scanned
-            if (ArchosMediaFile.isHiddenFile(directory)) {
+            if (LeeroyFlixMediaFile.isHiddenFile(directory)) {
                 if (log.isDebugEnabled()) log.debug("skipping {}, .hidden!", (directory != null ? directory.getName() : "null"));
                 return false;
             }
@@ -639,7 +639,7 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
             mFoundFiles ++;
             int fileType = getFileType(file);
             if (!isValidType(fileType)) return;
-            if (ArchosMediaFile.isHiddenFile(file)) return;
+            if (LeeroyFlixMediaFile.isHiddenFile(file)) return;
             // shortcut for blacklist check for trailer/sample, full should be isBlacklisted
             if (mBlacklist.isFilenameBlacklisted(FileUtils.getName(file.getUri()))) return;
             if (log.isTraceEnabled()) log.trace("FileVisitListener.onFile: File {}", file.getUri().toString());
@@ -728,12 +728,12 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
         /** checks if the file should be scanned */
         private static boolean isValidType(int fileType) {
             if (!SCAN_MEDIA_ONLY) return true;
-            return ArchosMediaFile.isVideoFileType(fileType) || ArchosMediaFile.isSubtitleFileType(fileType);
+            return LeeroyFlixMediaFile.isVideoFileType(fileType) || LeeroyFlixMediaFile.isSubtitleFileType(fileType);
         }
 
-        /** gets the ArchosMediaFile fileType int */
+        /** gets the LeeroyFlixMediaFile fileType int */
         private static int getFileType(MetaFile2 f) {
-            MediaFileType mft = ArchosMediaFile.getFileType(f.getExtension());
+            MediaFileType mft = LeeroyFlixMediaFile.getFileType(f.getExtension());
             if (mft == null) {
                 return -1;
             }
@@ -743,22 +743,22 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
         private static int getStorageId(String path) {
             if (path.startsWith("smb://"))
                 // 0: EXTERNAL_SMB_PATH, 1: EXTERNAL_UPNP_PATH -> "smb://" = 2
-                return getStorageId(2 + ArchosMediaCommon.LIGHT_INDEX_STORAGE_ID_OFFSET);
+                return getStorageId(2 + LeeroyFlixMediaCommon.LIGHT_INDEX_STORAGE_ID_OFFSET);
             // note that below is not really needed because nobody checks this
             else if (path.startsWith("ftp://"))
-                return getStorageId(3 + ArchosMediaCommon.LIGHT_INDEX_STORAGE_ID_OFFSET);
+                return getStorageId(3 + LeeroyFlixMediaCommon.LIGHT_INDEX_STORAGE_ID_OFFSET);
             else if (path.startsWith("sftp://"))
-                return getStorageId(4 + ArchosMediaCommon.LIGHT_INDEX_STORAGE_ID_OFFSET);
+                return getStorageId(4 + LeeroyFlixMediaCommon.LIGHT_INDEX_STORAGE_ID_OFFSET);
             else if (path.startsWith("ftps://"))
-                return getStorageId(5 + ArchosMediaCommon.LIGHT_INDEX_STORAGE_ID_OFFSET);
+                return getStorageId(5 + LeeroyFlixMediaCommon.LIGHT_INDEX_STORAGE_ID_OFFSET);
             else if (path.startsWith("webdav://"))
-                return getStorageId(6 + ArchosMediaCommon.LIGHT_INDEX_STORAGE_ID_OFFSET);
+                return getStorageId(6 + LeeroyFlixMediaCommon.LIGHT_INDEX_STORAGE_ID_OFFSET);
             else if (path.startsWith("webdavs://"))
-                return getStorageId(7 + ArchosMediaCommon.LIGHT_INDEX_STORAGE_ID_OFFSET);
+                return getStorageId(7 + LeeroyFlixMediaCommon.LIGHT_INDEX_STORAGE_ID_OFFSET);
             else if (path.startsWith("smbj://"))
-                return getStorageId(8 + ArchosMediaCommon.LIGHT_INDEX_STORAGE_ID_OFFSET);
+                return getStorageId(8 + LeeroyFlixMediaCommon.LIGHT_INDEX_STORAGE_ID_OFFSET);
             else if (path.startsWith("sshj://"))
-                return getStorageId(9 + ArchosMediaCommon.LIGHT_INDEX_STORAGE_ID_OFFSET);
+                return getStorageId(9 + LeeroyFlixMediaCommon.LIGHT_INDEX_STORAGE_ID_OFFSET);
             else log.warn("path has no valid storage id: {}", path);
             return 0;
         }
@@ -813,7 +813,7 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
         public void addInsert(FileScanInfo insert, long serverId) {
             if (log.isDebugEnabled()) log.debug("addInsert: adding in VideoStore and calling executor {} for serverId={}", insert._data, serverId);
             ContentValues item = insert.toContentValues();
-            item.put(VideoStore.Files.FileColumns.ARCHOS_SMB_SERVER, serverId);
+            item.put(VideoStore.Files.FileColumns.LEEROYFLIX_SMB_SERVER, serverId);
             mInsertExecutor.add(item);
         }
 
@@ -843,7 +843,7 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
         public SubtitleInfo(long id, String accessPath, long size) {
             this.id = id;
             this.accessPath = accessPath;
-            this.nameNoExt = ArchosMediaFile.getFileTitle(accessPath);
+            this.nameNoExt = LeeroyFlixMediaFile.getFileTitle(accessPath);
             this.size = size;
         }
 
@@ -929,7 +929,7 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
                     // add videos & subtitles to their lists
                     switch (mediaType) {
                         case VideoStore.Files.FileColumns.MEDIA_TYPE_VIDEO:
-                            videos.add(Pair.create(ArchosMediaFile.getFileTitle(file), Long.valueOf(id)));
+                            videos.add(Pair.create(LeeroyFlixMediaFile.getFileTitle(file), Long.valueOf(id)));
                             break;
                         case VideoStore.Files.FileColumns.MEDIA_TYPE_SUBTITLE:
                             subs.add(new SubtitleInfo(id, file, size));
@@ -1054,7 +1054,7 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
             BaseColumns._ID,
             MediaColumns.DATA,
             MediaColumns.DATE_MODIFIED,
-            VideoStore.Video.VideoColumns.ARCHOS_UNIQUE_ID, //special for upnp
+            VideoStore.Video.VideoColumns.LEEROYFLIX_UNIQUE_ID, //special for upnp
         };
 
         public final long _id;
@@ -1120,7 +1120,7 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
             else
                 unique_id = "";
             _size = isDir ? 0 : f.length();
-            MediaFileType mft = isDir ? null : ArchosMediaFile.getFileType(f.getExtension());
+            MediaFileType mft = isDir ? null : LeeroyFlixMediaFile.getFileType(f.getExtension());
             mime_type = mft != null ? mft.mimeType : null;
             date_added = System.currentTimeMillis() / 1000L;
             // -1 if info not available, fallback to date_added, aka now
@@ -1133,15 +1133,15 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
             // do not want that - it's slow
             parent = -1;
             int fileType = mft != null ? mft.fileType : 0;
-            if (ArchosMediaFile.isAudioFileType(fileType)) {
+            if (LeeroyFlixMediaFile.isAudioFileType(fileType)) {
                 media_type = FileColumns.MEDIA_TYPE_AUDIO;
-            } else if (ArchosMediaFile.isVideoFileType(fileType)) {
+            } else if (LeeroyFlixMediaFile.isVideoFileType(fileType)) {
                 media_type = FileColumns.MEDIA_TYPE_VIDEO;
-            } else if (ArchosMediaFile.isImageFileType(fileType)) {
+            } else if (LeeroyFlixMediaFile.isImageFileType(fileType)) {
                 media_type = FileColumns.MEDIA_TYPE_IMAGE;
-            } else if (ArchosMediaFile.isPlayListFileType(fileType)) {
+            } else if (LeeroyFlixMediaFile.isPlayListFileType(fileType)) {
                 media_type = FileColumns.MEDIA_TYPE_PLAYLIST;
-            } else if (ArchosMediaFile.isSubtitleFileType(fileType)) {
+            } else if (LeeroyFlixMediaFile.isSubtitleFileType(fileType)) {
                 media_type = FileColumns.MEDIA_TYPE_SUBTITLE;
             } else {
                 media_type = 0;
@@ -1174,11 +1174,11 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
             cv.put(FileColumns.PARENT, String.valueOf(parent));
             cv.put(FileColumns.MEDIA_TYPE, String.valueOf(media_type));
             cv.put(FileColumns.STORAGE_ID, String.valueOf(storage_id));
-            cv.put(VideoColumns.ARCHOS_VIDEO_STEREO, String.valueOf(video_stereo));
-            cv.put(VideoColumns.ARCHOS_VIDEO_DEFINITION, String.valueOf(video_definition));
-            cv.put(VideoColumns.ARCHOS_UNIQUE_ID, String.valueOf(unique_id));
-            cv.put(VideoColumns.ARCHOS_GUESSED_VIDEO_FORMAT, videoFormat);
-            cv.put(VideoColumns.ARCHOS_GUESSED_AUDIO_FORMAT, audioFormat);
+            cv.put(VideoColumns.LEEROYFLIX_VIDEO_STEREO, String.valueOf(video_stereo));
+            cv.put(VideoColumns.LEEROYFLIX_VIDEO_DEFINITION, String.valueOf(video_definition));
+            cv.put(VideoColumns.LEEROYFLIX_UNIQUE_ID, String.valueOf(unique_id));
+            cv.put(VideoColumns.LEEROYFLIX_GUESSED_VIDEO_FORMAT, videoFormat);
+            cv.put(VideoColumns.LEEROYFLIX_GUESSED_AUDIO_FORMAT, audioFormat);
             return cv;
         }
     }
@@ -1208,7 +1208,7 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
     }
 
     private static final String WHERE_FILE = VideoStore.MediaColumns.DATA + "=?";
-    private static final String[] PROJECT_ID = { BaseColumns._ID, VideoStore.Video.VideoColumns.ARCHOS_MEDIA_SCRAPER_ID };
+    private static final String[] PROJECT_ID = { BaseColumns._ID, VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_ID };
     private static boolean hasScraperInfo(Uri video, ContentResolver cr) {
         boolean result = false;
         String[] selectionArgs = { video.toString() };
@@ -1262,7 +1262,7 @@ public class NetworkScannerServiceVideo extends Service implements Handler.Callb
     @Override
     public void onStop(LifecycleOwner owner) {
         // App in background
-        int pendingScans = com.archos.mediascraper.AutoScrapeService.getNetworkScanCount();
+        int pendingScans = org.leeroy.mediascraper.AutoScrapeService.getNetworkScanCount();
         if (log.isDebugEnabled()) log.debug("onStop: LifecycleOwner app in background, pendingScans={}", pendingScans);
         isForeground = false;
         // Only stop service if there are no pending network scans

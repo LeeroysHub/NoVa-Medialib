@@ -13,7 +13,7 @@
 // limitations under the License.
 
 
-package com.archos.mediascraper.xml;
+package org.leeroy.mediascraper.xml;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -24,33 +24,33 @@ import android.text.TextUtils;
 import android.util.LruCache;
 import android.util.SparseArray;
 
-import com.archos.medialib.R;
-import com.archos.mediaprovider.video.ScraperStore;
-import com.archos.mediascraper.EpisodeTags;
-import com.archos.mediascraper.ScrapeDetailResult;
-import com.archos.mediascraper.ScrapeSearchResult;
-import com.archos.mediascraper.ScrapeStatus;
-import com.archos.mediascraper.Scraper;
-import com.archos.mediascraper.ScraperCache;
-import com.archos.mediascraper.ScraperImage;
-import com.archos.mediascraper.SearchResult;
-import com.archos.mediascraper.ShowTags;
-import com.archos.mediascraper.ShowUtils;
-import com.archos.mediascraper.preprocess.SearchInfo;
-import com.archos.mediascraper.preprocess.TvShowSearchInfo;
-import com.archos.mediascraper.themoviedb3.MyTmdb;
-import com.archos.mediascraper.themoviedb3.SearchShow;
-import com.archos.mediascraper.themoviedb3.SearchShowResult;
-import com.archos.mediascraper.themoviedb3.ShowIdEpisodeSearch;
-import com.archos.mediascraper.themoviedb3.ShowIdEpisodeSearchResult;
-import com.archos.mediascraper.themoviedb3.ShowIdEpisodes;
-import com.archos.mediascraper.themoviedb3.ShowIdImagesParser;
-import com.archos.mediascraper.themoviedb3.ShowIdImagesResult;
-import com.archos.mediascraper.themoviedb3.ShowIdParser;
-import com.archos.mediascraper.themoviedb3.ShowIdSeasonSearch;
-import com.archos.mediascraper.themoviedb3.ShowIdSeasonSearchResult;
-import com.archos.mediascraper.themoviedb3.ShowIdTvSearch;
-import com.archos.mediascraper.themoviedb3.ShowIdTvSearchResult;
+import org.leeroy.medialib.R;
+import org.leeroy.mediaprovider.video.ScraperStore;
+import org.leeroy.mediascraper.EpisodeTags;
+import org.leeroy.mediascraper.ScrapeDetailResult;
+import org.leeroy.mediascraper.ScrapeSearchResult;
+import org.leeroy.mediascraper.ScrapeStatus;
+import org.leeroy.mediascraper.Scraper;
+import org.leeroy.mediascraper.ScraperCache;
+import org.leeroy.mediascraper.ScraperImage;
+import org.leeroy.mediascraper.SearchResult;
+import org.leeroy.mediascraper.ShowTags;
+import org.leeroy.mediascraper.ShowUtils;
+import org.leeroy.mediascraper.preprocess.SearchInfo;
+import org.leeroy.mediascraper.preprocess.TvShowSearchInfo;
+import org.leeroy.mediascraper.themoviedb3.MyTmdb;
+import org.leeroy.mediascraper.themoviedb3.SearchShow;
+import org.leeroy.mediascraper.themoviedb3.SearchShowResult;
+import org.leeroy.mediascraper.themoviedb3.ShowIdEpisodeSearch;
+import org.leeroy.mediascraper.themoviedb3.ShowIdEpisodeSearchResult;
+import org.leeroy.mediascraper.themoviedb3.ShowIdEpisodes;
+import org.leeroy.mediascraper.themoviedb3.ShowIdImagesParser;
+import org.leeroy.mediascraper.themoviedb3.ShowIdImagesResult;
+import org.leeroy.mediascraper.themoviedb3.ShowIdParser;
+import org.leeroy.mediascraper.themoviedb3.ShowIdSeasonSearch;
+import org.leeroy.mediascraper.themoviedb3.ShowIdSeasonSearchResult;
+import org.leeroy.mediascraper.themoviedb3.ShowIdTvSearch;
+import org.leeroy.mediascraper.themoviedb3.ShowIdTvSearchResult;
 import com.uwetrottmann.tmdb2.entities.TvEpisode;
 import com.uwetrottmann.tmdb2.entities.TvSeason;
 
@@ -71,7 +71,7 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.Cache;
 
-import static com.archos.mediascraper.TagsFactory.buildShowTagsOnlineId;
+import static org.leeroy.mediascraper.TagsFactory.buildShowTagsOnlineId;
 
 import androidx.preference.PreferenceManager;
 

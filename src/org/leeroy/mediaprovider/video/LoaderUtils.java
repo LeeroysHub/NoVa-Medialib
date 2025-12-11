@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediaprovider.video;
+package org.leeroy.mediaprovider.video;
 
-import com.archos.mediacenter.utils.trakt.Trakt;
+import org.leeroy.mediaplayer.utils.trakt.Trakt;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ProcessLifecycleOwner;
 
@@ -26,10 +26,10 @@ public class LoaderUtils {
     static public boolean mMustHideWatchedVideo = false;
     static public boolean mSmartRecentlyRows = false;
     static public boolean mScrapeInProgress = false;
-    public final static String HIDE_USER_HIDDEN_FILTER = VideoStore.Video.VideoColumns.ARCHOS_HIDDEN_BY_USER+"=0";
+    public final static String HIDE_USER_HIDDEN_FILTER = VideoStore.Video.VideoColumns.LEEROYFLIX_HIDDEN_BY_USER+"=0";
 
-    public final static String HIDE_WATCHED_FILTER = "("+VideoStore.Video.VideoColumns.ARCHOS_TRAKT_SEEN+" IS NULL OR "+
-            VideoStore.Video.VideoColumns.ARCHOS_TRAKT_SEEN + " != "+ Trakt.TRAKT_DB_MARKED +") AND "+
+    public final static String HIDE_WATCHED_FILTER = "("+VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_SEEN+" IS NULL OR "+
+            VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_SEEN + " != "+ Trakt.TRAKT_DB_MARKED +") AND "+
             "("+VideoStore.Video.VideoColumns.BOOKMARK+" IS NULL OR "+VideoStore.Video.VideoColumns.BOOKMARK+" != -2)";
     //most database helper won't return any video object if set to true
     static public boolean mustHideUserHiddenObjects() {

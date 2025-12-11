@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediaprovider.video;
+package org.leeroy.mediaprovider.video;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -21,14 +21,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
 import android.provider.MediaStore.Files.FileColumns;
 
-import com.archos.mediaprovider.ArchosMediaCommon;
-import com.archos.mediaprovider.CustomCursorFactory;
-import com.archos.mediaprovider.SQLiteUtils;
-import com.archos.mediaprovider.DeleteOnDowngradeSQLiteOpenHelper;
-import com.archos.mediaprovider.video.VideoStore.MediaColumns;
-import com.archos.mediaprovider.video.VideoStore.Video.VideoColumns;
-import com.archos.mediascraper.ScraperImage;
-import com.archos.mediascraper.ScraperImage.Type;
+import org.leeroy.mediaprovider.LeeroyFlixMediaCommon;
+import org.leeroy.mediaprovider.CustomCursorFactory;
+import org.leeroy.mediaprovider.SQLiteUtils;
+import org.leeroy.mediaprovider.DeleteOnDowngradeSQLiteOpenHelper;
+import org.leeroy.mediaprovider.video.VideoStore.MediaColumns;
+import org.leeroy.mediaprovider.video.VideoStore.Video.VideoColumns;
+import org.leeroy.mediascraper.ScraperImage;
+import org.leeroy.mediascraper.ScraperImage.Type;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +50,7 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
     private static final String DATABASE_NAME = "media.db";
 
     // (Integer.MAX_VALUE / 2) rounded to human readable form
-    /* package */ static final long SCANNED_ID_OFFSET = ArchosMediaCommon.SCANNED_ID_OFFSET;
+    /* package */ static final long SCANNED_ID_OFFSET = LeeroyFlixMediaCommon.SCANNED_ID_OFFSET;
 
     /* ---------------------------------------------------------------------- */
     /* --                 GENERAL files database part                         */
@@ -160,9 +160,9 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
             "    lfx_smbserver    INTEGER DEFAULT ( 0 ),\n" +
             "    lfx_videoStereo  INTEGER DEFAULT (0),\n" +
             "    lfx_videoDefinition INTEGER DEFAULT (0),\n" +
-            VideoColumns.ARCHOS_UNIQUE_ID + " STRING DEFAULT (''),\n" +
-            VideoColumns.ARCHOS_GUESSED_AUDIO_FORMAT + " STRING,\n" +
-            VideoColumns.ARCHOS_GUESSED_VIDEO_FORMAT +" STRING\n" +
+            VideoColumns.LEEROYFLIX_UNIQUE_ID + " STRING DEFAULT (''),\n" +
+            VideoColumns.LEEROYFLIX_GUESSED_AUDIO_FORMAT + " STRING,\n" +
+            VideoColumns.LEEROYFLIX_GUESSED_VIDEO_FORMAT +" STRING\n" +
             ")";
 
     // trigger to insert + update the corresponding entry in files after inserting
@@ -192,8 +192,8 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                 "lfx_smbserver = NEW.lfx_smbserver , \n" +
                 "lfx_videoStereo = NEW.lfx_videoStereo , \n" +
                 "lfx_videoDefinition = NEW.lfx_videoDefinition, \n" +
-                VideoColumns.ARCHOS_GUESSED_AUDIO_FORMAT+" = NEW."+VideoColumns.ARCHOS_GUESSED_AUDIO_FORMAT+", \n" + // new
-                VideoColumns.ARCHOS_GUESSED_VIDEO_FORMAT+" = NEW."+VideoColumns.ARCHOS_GUESSED_VIDEO_FORMAT+"\n" + // new
+                VideoColumns.LEEROYFLIX_GUESSED_AUDIO_FORMAT+" = NEW."+VideoColumns.LEEROYFLIX_GUESSED_AUDIO_FORMAT+", \n" + // new
+                VideoColumns.LEEROYFLIX_GUESSED_VIDEO_FORMAT+" = NEW."+VideoColumns.LEEROYFLIX_GUESSED_VIDEO_FORMAT+"\n" + // new
                 "WHERE remote_id=(NEW._id + " + SCANNED_ID_OFFSET + ");" +
             "END";
     // trigger to delete from files_extra if the corresponding id was deleted in files_scanned
@@ -291,10 +291,10 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
             "    lfx_videoDefinition INTEGER DEFAULT (0),\n" +
             "    lfx_traktResume INTEGER DEFAULT (0),\n" +
             "    lfx_hiddenByUser INTEGER DEFAULT (0),\n" +
-            VideoColumns.ARCHOS_CALCULATED_VIDEO_FORMAT + " STRING,\n" +
-            VideoColumns.ARCHOS_CALCULATED_BEST_AUDIOTRACK_FORMAT + " STRING,\n" +
-            VideoColumns.ARCHOS_GUESSED_AUDIO_FORMAT + " STRING,\n" +
-            VideoColumns.ARCHOS_GUESSED_VIDEO_FORMAT +" STRING\n" +
+            VideoColumns.LEEROYFLIX_CALCULATED_VIDEO_FORMAT + " STRING,\n" +
+            VideoColumns.LEEROYFLIX_CALCULATED_BEST_AUDIOTRACK_FORMAT + " STRING,\n" +
+            VideoColumns.LEEROYFLIX_GUESSED_AUDIO_FORMAT + " STRING,\n" +
+            VideoColumns.LEEROYFLIX_GUESSED_VIDEO_FORMAT +" STRING\n" +
             ")";
 
 
@@ -548,10 +548,10 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "    lfx_videoStereo,\n" +
                     "    lfx_videoDefinition,\n" +
                     "    lfx_traktResume,\n" +
-                    "    "+VideoColumns.ARCHOS_CALCULATED_VIDEO_FORMAT +",\n" +
-                    "    "+VideoColumns.ARCHOS_CALCULATED_BEST_AUDIOTRACK_FORMAT +",\n" +
-                    "    "+VideoColumns.ARCHOS_GUESSED_VIDEO_FORMAT+",\n" +
-                    "    "+VideoColumns.ARCHOS_GUESSED_AUDIO_FORMAT +",\n" +
+                    "    "+VideoColumns.LEEROYFLIX_CALCULATED_VIDEO_FORMAT +",\n" +
+                    "    "+VideoColumns.LEEROYFLIX_CALCULATED_BEST_AUDIOTRACK_FORMAT +",\n" +
+                    "    "+VideoColumns.LEEROYFLIX_GUESSED_VIDEO_FORMAT+",\n" +
+                    "    "+VideoColumns.LEEROYFLIX_GUESSED_AUDIO_FORMAT +",\n" +
                     "    "+ScraperStore.Episode.PICTURE+" AS "+ VideoColumns.SCRAPER_E_PICTURE+" \n"+
                     "FROM\n" +
                     "files AS f\n" +
@@ -721,10 +721,10 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
 					"    lfx_videoStereo,\n" +
 					"    lfx_videoDefinition,\n" +
 					"    lfx_traktResume,\n" +
-					"    "+VideoColumns.ARCHOS_CALCULATED_VIDEO_FORMAT +",\n" +
-					"    "+VideoColumns.ARCHOS_CALCULATED_BEST_AUDIOTRACK_FORMAT +",\n" +
-					"    "+VideoColumns.ARCHOS_GUESSED_VIDEO_FORMAT+",\n" +
-					"    "+VideoColumns.ARCHOS_GUESSED_AUDIO_FORMAT +",\n" +
+					"    "+VideoColumns.LEEROYFLIX_CALCULATED_VIDEO_FORMAT +",\n" +
+					"    "+VideoColumns.LEEROYFLIX_CALCULATED_BEST_AUDIOTRACK_FORMAT +",\n" +
+					"    "+VideoColumns.LEEROYFLIX_GUESSED_VIDEO_FORMAT+",\n" +
+					"    "+VideoColumns.LEEROYFLIX_GUESSED_AUDIO_FORMAT +",\n" +
 					"    "+ScraperStore.Episode.PICTURE+" AS "+ VideoColumns.SCRAPER_E_PICTURE+",\n"+
 					"    coalesce(m." + VideoColumns.NOVA_PINNED + ", s." + VideoColumns.NOVA_PINNED + ") AS " + VideoColumns.NOVA_PINNED + " \n" +
 					"FROM\n" +
@@ -896,10 +896,10 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "    lfx_videoStereo,\n" +
                     "    lfx_videoDefinition,\n" +
                     "    lfx_traktResume,\n" +
-                    "    "+VideoColumns.ARCHOS_CALCULATED_VIDEO_FORMAT +",\n" +
-                    "    "+VideoColumns.ARCHOS_CALCULATED_BEST_AUDIOTRACK_FORMAT +",\n" +
-                    "    "+VideoColumns.ARCHOS_GUESSED_VIDEO_FORMAT+",\n" +
-                    "    "+VideoColumns.ARCHOS_GUESSED_AUDIO_FORMAT +",\n" +
+                    "    "+VideoColumns.LEEROYFLIX_CALCULATED_VIDEO_FORMAT +",\n" +
+                    "    "+VideoColumns.LEEROYFLIX_CALCULATED_BEST_AUDIOTRACK_FORMAT +",\n" +
+                    "    "+VideoColumns.LEEROYFLIX_GUESSED_VIDEO_FORMAT+",\n" +
+                    "    "+VideoColumns.LEEROYFLIX_GUESSED_AUDIO_FORMAT +",\n" +
                     "    "+ScraperStore.Episode.PICTURE+" AS "+ VideoColumns.SCRAPER_E_PICTURE+",\n"+
                     "    coalesce(m." + VideoColumns.NOVA_PINNED + ", s." + VideoColumns.NOVA_PINNED + ") AS " + VideoColumns.NOVA_PINNED + ",\n" +
                     "    c.m_coll_id AS m_coll_id,\n" +
@@ -1088,10 +1088,10 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "    lfx_videoStereo,\n" +
                     "    lfx_videoDefinition,\n" +
                     "    lfx_traktResume,\n" +
-                    "    "+VideoColumns.ARCHOS_CALCULATED_VIDEO_FORMAT +",\n" +
-                    "    "+VideoColumns.ARCHOS_CALCULATED_BEST_AUDIOTRACK_FORMAT +",\n" +
-                    "    "+VideoColumns.ARCHOS_GUESSED_VIDEO_FORMAT+",\n" +
-                    "    "+VideoColumns.ARCHOS_GUESSED_AUDIO_FORMAT +",\n" +
+                    "    "+VideoColumns.LEEROYFLIX_CALCULATED_VIDEO_FORMAT +",\n" +
+                    "    "+VideoColumns.LEEROYFLIX_CALCULATED_BEST_AUDIOTRACK_FORMAT +",\n" +
+                    "    "+VideoColumns.LEEROYFLIX_GUESSED_VIDEO_FORMAT+",\n" +
+                    "    "+VideoColumns.LEEROYFLIX_GUESSED_AUDIO_FORMAT +",\n" +
                     "    "+ScraperStore.Episode.PICTURE+" AS "+ VideoColumns.SCRAPER_E_PICTURE+",\n"+
                     "    coalesce(m." + VideoColumns.NOVA_PINNED + ", s." + VideoColumns.NOVA_PINNED + ") AS " + VideoColumns.NOVA_PINNED + ",\n" +
                     "    c.m_coll_id AS m_coll_id,\n" +
@@ -1280,10 +1280,10 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "    lfx_videoStereo,\n" +
                     "    lfx_videoDefinition,\n" +
                     "    lfx_traktResume,\n" +
-                    "    "+VideoColumns.ARCHOS_CALCULATED_VIDEO_FORMAT +",\n" +
-                    "    "+VideoColumns.ARCHOS_CALCULATED_BEST_AUDIOTRACK_FORMAT +",\n" +
-                    "    "+VideoColumns.ARCHOS_GUESSED_VIDEO_FORMAT+",\n" +
-                    "    "+VideoColumns.ARCHOS_GUESSED_AUDIO_FORMAT +",\n" +
+                    "    "+VideoColumns.LEEROYFLIX_CALCULATED_VIDEO_FORMAT +",\n" +
+                    "    "+VideoColumns.LEEROYFLIX_CALCULATED_BEST_AUDIOTRACK_FORMAT +",\n" +
+                    "    "+VideoColumns.LEEROYFLIX_GUESSED_VIDEO_FORMAT+",\n" +
+                    "    "+VideoColumns.LEEROYFLIX_GUESSED_AUDIO_FORMAT +",\n" +
                     "    "+ScraperStore.Episode.PICTURE+" AS "+ VideoColumns.SCRAPER_E_PICTURE+",\n"+
                     "    coalesce(m." + VideoColumns.NOVA_PINNED + ", s." + VideoColumns.NOVA_PINNED + ") AS " + VideoColumns.NOVA_PINNED + ",\n" +
                     "    c.m_coll_id AS m_coll_id,\n" +
@@ -1473,10 +1473,10 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
                     "    lfx_videoStereo,\n" +
                     "    lfx_videoDefinition,\n" +
                     "    lfx_traktResume,\n" +
-                    "    "+VideoColumns.ARCHOS_CALCULATED_VIDEO_FORMAT +",\n" +
-                    "    "+VideoColumns.ARCHOS_CALCULATED_BEST_AUDIOTRACK_FORMAT +",\n" +
-                    "    "+VideoColumns.ARCHOS_GUESSED_VIDEO_FORMAT+",\n" +
-                    "    "+VideoColumns.ARCHOS_GUESSED_AUDIO_FORMAT +",\n" +
+                    "    "+VideoColumns.LEEROYFLIX_CALCULATED_VIDEO_FORMAT +",\n" +
+                    "    "+VideoColumns.LEEROYFLIX_CALCULATED_BEST_AUDIOTRACK_FORMAT +",\n" +
+                    "    "+VideoColumns.LEEROYFLIX_GUESSED_VIDEO_FORMAT+",\n" +
+                    "    "+VideoColumns.LEEROYFLIX_GUESSED_AUDIO_FORMAT +",\n" +
                     "    "+ScraperStore.Episode.PICTURE+" AS "+ VideoColumns.SCRAPER_E_PICTURE+",\n"+
                     "    coalesce(m." + VideoColumns.NOVA_PINNED + ", s." + VideoColumns.NOVA_PINNED + ") AS " + VideoColumns.NOVA_PINNED + ",\n" +
                     "    c.m_coll_id AS m_coll_id,\n" +
@@ -1884,13 +1884,13 @@ public class VideoOpenHelper extends DeleteOnDowngradeSQLiteOpenHelper {
 
     private static final String[] PROJECTION = {
         MediaColumns.DATA,                      //0
-        VideoColumns.ARCHOS_MEDIA_SCRAPER_ID,   //1
-        VideoColumns.ARCHOS_MEDIA_SCRAPER_TYPE, //2
+        VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_ID,   //1
+        VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_TYPE, //2
         VideoColumns.SCRAPER_S_NAME,            //3
         VideoColumns.SCRAPER_BACKDROP_URL,      //4
     };
     private static final String SELECTION = VideoColumns.SCRAPER_BACKDROP_URL + " IS NOT NULL AND " +
-            VideoColumns.ARCHOS_MEDIA_SCRAPER_ID + " > 0";
+            VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_ID + " > 0";
     private static final String SELECTION_ID = BaseColumns._ID + "=?";
 
     private static final String SHOW_LARGE = ScraperImage.TMPL;

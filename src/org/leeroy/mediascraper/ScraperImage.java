@@ -1,4 +1,4 @@
-// Copyright 2017 Archos SA
+// Copyright 2017 LeeroyFlix
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.archos.mediascraper;
+package org.leeroy.mediascraper;
 
 import android.content.ContentProviderOperation;
 import android.content.ContentUris;
@@ -25,8 +25,8 @@ import android.os.Environment;
 import android.provider.BaseColumns;
 import android.util.DisplayMetrics;
 
-import com.archos.filecorelibrary.FileUtils;
-import com.archos.mediaprovider.video.ScraperStore;
+import org.leeroy.filecorelibrary.FileUtils;
+import org.leeroy.mediaprovider.video.ScraperStore;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -538,7 +538,7 @@ public class ScraperImage {
             case SHOW_POSTER:
             case COLLECTION_POSTER:
                 // TODO those values should be taken from resources. Problem: this class is used by MediaCenter
-                // and ArchosWidget and we have no common resouces :/
+                // and LeeroyFlixWidget and we have no common resouces :/
                 maxWidth = POSTER_WIDTH;
                 maxHeight = POSTER_HEIGHT;
                 if (log.isTraceEnabled()) log.trace("saveSizedImage: target: Poster({},{})", maxWidth, maxHeight);
