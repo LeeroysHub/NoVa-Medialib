@@ -52,6 +52,7 @@ import android.text.TextUtils;
 import com.archos.environment.ArchosUtils;
 import com.archos.filecorelibrary.FileEditor;
 import com.archos.filecorelibrary.FileUtils;
+import com.archos.mediaprovider.video.LoaderUtils;
 import com.archos.mediacenter.filecoreextension.upnp2.FileEditorFactoryWithUpnp;
 import com.archos.mediacenter.filecoreextension.upnp2.UpnpServiceManager;
 import com.archos.medialib.IMediaMetadataRetriever;
@@ -694,33 +695,24 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
                     // if this is a request from MediaScanner, DATA should contains file path
                     // we only process update request from media scanner, otherwise the requests
                     // could be duplicate.
-                    if (count > 0 ) {
-                        Cursor c = db.query(table,
-                                READY_FLAG_PROJECTION, where,
-                                whereArgs, null, null, null);
-                        if (c != null) {
-                            try {
-                                while (c.moveToNext()) {
-                                    long videoId = c.getLong(0);
-                                    long magic = c.getLong(2);
-                                    String data = c.getString(1);
-                                    if (!FileUtils.isLocal(Uri.parse(data)) &&
-                                            !PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PREFERENCE_CREATE_REMOTE_THUMBS, false)) {
-                                        if (log.isDebugEnabled()) log.debug("Skipping remote thumbnail creation for {} (user preference)", data);
-                                        continue;
-                                    }
-                                    if (magic == 0 || !hasThumbnailEntry(videoId)) {
-                                        requestMediaThumbnail(data, videoId, uri,
-                                                MediaThumbRequest.PRIORITY_NORMAL);
-                                    } else {
-                                        if (log.isDebugEnabled()) log.debug("Skipping thumbnail request for {} (magic present and thumbnail entry exists)", videoId);
-                                    }
-                                }
-                            } finally {
-                                c.close();
-                            }
-                        }
-                    }
+                    //if (count > 0 ) {
+                        //Cursor c = db.query(table,
+                        //        READY_FLAG_PROJECTION, where,
+                        //        whereArgs, null, null, null);
+                        //if (c != null) {
+                         //   try {
+                         //       while (c.moveToNext()) {
+                         //           long magic = c.getLong(2);
+                         //           if (magic == 0) {
+ //                                       requestMediaThumbnail(c.getString(1),c.getLong(0), uri,
+  //                                              MediaThumbRequest.PRIORITY_NORMAL);
+                         //           }
+                          //      }
+                          //  } finally {
+                         //       c.close();
+                         //   }
+                      //  }
+                    //}
                 }
                 break;
                 default:
@@ -934,18 +926,9 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
 
             long magic = c.getLong(2);
             int nbTry = c.getInt(3);
-            if (magic != 0 && !hasThumbnailEntry(id)) {
-                if (log.isDebugEnabled()) log.debug("mini_thumb_magic set but thumbnail entry missing for {}, resetting to regenerate", path);
-                ContentValues resetValues = new ContentValues();
-                resetValues.put(VideoColumns.MINI_THUMB_MAGIC, 0);
-                resetValues.put(VideoColumns.ARCHOS_THUMB_TRY, 0);
-                mDbHolder.get().update(VideoOpenHelper.FILES_TABLE_NAME, resetValues, "_id=?", new String[]{origId});
-                magic = 0;
-                nbTry = 0;
-            }
             if (magic == 0 &&  nbTry >= THUMB_TRY_MAX|| !FileUtils.isLocal(Uri.parse(path))&&!PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean(PREFERENCE_CREATE_REMOTE_THUMBS, false)) {
                 // thumbnail creation failed more than one time: abort.
-                if (log.isDebugEnabled()) log.debug("thumbnail creation failed more than {} times: abort. ", THUMB_TRY_MAX);
+                log.debug("thumbnail creation failed more than {} times: abort. ", THUMB_TRY_MAX);
 
                 c.close();
                 return false;
@@ -956,7 +939,7 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
                 req = requestMediaThumbnail(path, id, origUri,
                         MediaThumbRequest.PRIORITY_HIGH);
             } /* else {
-                if (log.isDebugEnabled()) log.debug("Don't need to generate, we have a magic number {}", String.valueOf(magic));
+                log.debug("Don't need to generate, we have a magic number {}", String.valueOf(magic));
             } */
 
             if (req == null) {
@@ -1010,27 +993,6 @@ public class VideoProvider extends ContentProvider implements DefaultLifecycleOb
                 (cancelAllGroupId || req.mGroupId == gid) &&
                 (cancelAllOrigId || req.mOrigId == id) &&
                 (req.mIsVideo == isVideo);
-    }
-
-    private boolean hasThumbnailEntry(long videoId) {
-        Cursor cursor = null;
-        try {
-            cursor = mDbHolder.get().query(
-                    VideoOpenHelper.VIDEOTHUMBNAIL_TABLE_NAME,
-                    new String[] {BaseColumns._ID},
-                    "video_id=? AND _data IS NOT NULL AND trim(_data) != ''",
-                    new String[] {String.valueOf(videoId)},
-                    null,
-                    null,
-                    null,
-                    "1");
-            return cursor != null && cursor.moveToFirst();
-        } catch (Exception e) {
-            log.error("hasThumbnailEntry: failed for videoId {}", videoId, e);
-            return false;
-        } finally {
-            if (cursor != null) cursor.close();
-        }
     }
 
     private MediaThumbRequest requestMediaThumbnail(String path, long id, Uri uri, int priority) {
