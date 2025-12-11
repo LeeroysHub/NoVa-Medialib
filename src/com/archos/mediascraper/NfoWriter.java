@@ -290,6 +290,10 @@ public class NfoWriter {
         Uri exportTarget =  relocateNfoAppPublicDirForNfoJpgFiles(Uri.withAppendedPath(parent, videoName + NfoParser.CUSTOM_NFO_EXTENSION));
         try {
             FileEditor editor = FileEditorFactoryWithUpnp.getFileEditorForUrl(exportTarget, null);
+            // Delete existing file to avoid overwrite issue (end of previous content still there is the new content is shorter)
+            //if (editor.exists()) {
+            //    editor.delete();
+            //}
             BufferedWriter  writer = new BufferedWriter(new OutputStreamWriter(
                     editor.getOutputStream(), StringUtils.CHARSET_UTF8));
 
@@ -322,7 +326,11 @@ public class NfoWriter {
         Uri exportTarget =  relocateNfoAppPublicDirForNfoJpgFiles(Uri.withAppendedPath(parent, videoName + NfoParser.CUSTOM_NFO_EXTENSION));
         try {
             FileEditor editor = FileEditorFactoryWithUpnp.getFileEditorForUrl(exportTarget,null);
-            if (log.isTraceEnabled()) log.trace("exportInternal: {}", video);
+            // Delete existing file to avoid overwrite issue (end of previous content still there is the new content is shorter)
+            //if (editor.exists()) {
+            //    editor.delete();
+            //}
+            log.trace("exportInternal: {}", video);
             BufferedWriter  writer = new BufferedWriter(new OutputStreamWriter(
                     editor.getOutputStream(), StringUtils.CHARSET_UTF8));
 
@@ -355,9 +363,13 @@ public class NfoWriter {
         String showTitle = StringUtils.fileSystemEncode(tag.getTitle());
         // relocate uri for local files to writeable location to comply with API30
         Uri exportTarget =  relocateNfoAppPublicDirForNfoJpgFiles(Uri.withAppendedPath(parent, showTitle + NfoParser.CUSTOM_SHOW_NFO_EXTENSION));
-        if (log.isDebugEnabled()) log.debug("exportInternal: {} -> {}", video, exportTarget);
+        log.debug("exportInternal: {} -> {}", video, exportTarget);
         try {
             FileEditor editor = FileEditorFactoryWithUpnp.getFileEditorForUrl(exportTarget, null);
+            // Delete existing file to avoid overwrite issue (end of previous content still there is the new content is shorter)
+            //if (editor.exists()) {
+            //    editor.delete();
+            //}
             BufferedWriter  writer = new BufferedWriter(new OutputStreamWriter(
                     editor.getOutputStream(), StringUtils.CHARSET_UTF8));
 
