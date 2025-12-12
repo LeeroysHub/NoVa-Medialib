@@ -471,21 +471,20 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
 
                     //Global Scrape in Progress, so the browser can skip thumbs in scrape and not waste space in storage
                     LoaderUtils.setScrapeInProgress(true);
-                    boolean shouldRescrapAll = rescrapAlreadySearched;
 
-                    //log.debug("startScraping: startThread {}", (mThread==null || !mThread.isAlive()) );
-                    //if (log.isDebugEnabled()) {
-                    //    if (shouldRescrapAll && scrapeOnlyMovies)
-                    //        log.debug("startScraping: go for all movies");
-                    //    else if (shouldRescrapAll && onlyNotFound)
-                    //        log.debug("startScraping: go for scraped not found");
-                    //    else if (shouldRescrapAll)
-                    //        log.debug("startScraping: go for scrape all");
-                    //    else
-                    //        log.debug("startScraping: go for not scraped");
-                    //    log.debug("startScraping: isLocalNetworkConnected={}, isNetworkConnected={}", NetworkState.isLocalNetworkConnected(AutoScrapeService.this), NetworkState.isNetworkConnected(AutoScrapeService.this));
-                    //    log.debug("startScraping: is AutoScrapeService enabled? {}", isEnable(AutoScrapeService.this));
-                    //}
+                    //Init vars we need for the scrape.
+                    boolean shouldRescrapAll = rescrapAlreadySearched;
+                    Cursor cursor = null;
+                    NfoWriter.ExportContext exportContext = null;
+                    if (NfoWriter.isNfoAutoExportEnabled(AutoScrapeService.this))
+                        exportContext = new NfoWriter.ExportContext();
+
+                    //if (log.isDebugEnabled()) log.debug("startScraping: new batch fetching cursor from index 0, window {} entries <={}", window, numberOfRowsRemaining);
+                    cursor = getFileListCursor(shouldRescrapAll && onlyNotFound ? PARAM_SCRAPED_NOT_FOUND :
+                                    scrapeOnlyMovies ? PARAM_MOVIES :
+                                            shouldRescrapAll ? PARAM_ALL :
+                                                    PARAM_NOT_SCRAPED,
+                            BaseColumns._ID, null, null);
 
                     do {
                         mNetworkOrScrapErrors = 0;
@@ -493,262 +492,251 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                         sNumberOfFilesRemainingToProcess = 0;
                         sNumberOfFilesNotScraped = 0;
                         restartOnNextRound = false;
-                        // find all videos not scraped yet looking at VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_ID
-                        // and get the final count (it could change while scrape is in progress)
-                        Cursor cursor = getFileListCursor(shouldRescrapAll&&onlyNotFound ?PARAM_SCRAPED_NOT_FOUND:shouldRescrapAll?PARAM_ALL:PARAM_NOT_SCRAPED, null, null, null);
-                        int numberOfRows = cursor.getCount(); // total number of files to be processed
-                        sTotalNumberOfFilesRemainingToProcess = numberOfRows;
-                        cursor.close();
 
-                        //Why go through the rest of this if there are no rows remaining?
+                        //Get the number of rows remaining, and exit if nothing to do.
+                        int numberOfRows = cursor.getCount();
                         if (numberOfRows <= 0) {
                             LoaderUtils.setScrapeInProgress(false);
                             nm.cancel(NOTIFICATION_ID);
                             return;
                         }
+                        sNumberOfFilesRemainingToProcess = numberOfRows;
+                        sTotalNumberOfFilesRemainingToProcess = numberOfRows;
+                        while (cursor.moveToNext() && isEnable(AutoScrapeService.this) && (isForeground || isForceAfterNetworkScan) && !Thread.currentThread().isInterrupted()) {
+                            // stop if disconnected while scraping
+                            if (!NetworkState.isLocalNetworkConnected(AutoScrapeService.this) && !NetworkState.isNetworkConnected(AutoScrapeService.this)) {
+                                cursor.close();
+                                sNumberOfFilesRemainingToProcess = 0;
+                                log.debug("startScraping disconnected from network calling stopSelf");
+                                stopSelf();
 
-                        NfoWriter.ExportContext exportContext = null;
-                        if (NfoWriter.isNfoAutoExportEnabled(AutoScrapeService.this))
-                            exportContext = new NfoWriter.ExportContext();
-                        // now process the files to be scraped by batch of WINDOW_SIZE not to exceed the CursorWindow size limit and crash in case of large collection
-                        // note that since the db is modified during the scrape process removing non scraped entries fetching WINDOW_SIZE from index 0 is the good strategy
-                        int window = WINDOW_SIZE;
-                        int numberOfRowsRemaining = numberOfRows;
-                        do {
-                            if (window > numberOfRowsRemaining)
-                                window = numberOfRowsRemaining;
-                            //if (log.isDebugEnabled()) log.debug("startScraping: new batch fetching cursor from index 0, window {} entries <={}", window, numberOfRowsRemaining);
-                            cursor = getFileListCursor(shouldRescrapAll && onlyNotFound ? PARAM_SCRAPED_NOT_FOUND :
-                                            scrapeOnlyMovies ? PARAM_MOVIES :
-                                                    shouldRescrapAll ? PARAM_ALL :
-                                                            PARAM_NOT_SCRAPED,
-                                    BaseColumns._ID, null, window);
-                            //log.debug("startScraping: new batch cursor has size {}", cursor.getCount());
-                            //log.trace("startScraping: dump cursor {}", DatabaseUtils.dumpCursorToString(cursor));
+                                //Any place we return, we have to cancel the Notification.
+                                nm.cancel(NOTIFICATION_ID);
 
-                            sNumberOfFilesRemainingToProcess = window;
-                            while (cursor.moveToNext() && isEnable(AutoScrapeService.this) && (isForeground || isForceAfterNetworkScan) && !Thread.currentThread().isInterrupted()) {
-                                // stop if disconnected while scraping
-                                if (!NetworkState.isLocalNetworkConnected(AutoScrapeService.this) && !NetworkState.isNetworkConnected(AutoScrapeService.this)) {
-                                    cursor.close();
-                                    sNumberOfFilesRemainingToProcess = 0;
-                                    log.debug("startScraping disconnected from network calling stopSelf");
-                                    stopSelf();
-
-                                    //Any place we return, we have to cancel the Notification.
-                                    nm.cancel(NOTIFICATION_ID);
-
-                                    //Global Scrape in Progress, so the browser can skip thumbs in scrape and not waste space in storage
-                                    LoaderUtils.setScrapeInProgress(false);
-                                    return;
-                                }
-
-                                String title = cursor.getString(cursor.getColumnIndex(VideoStore.MediaColumns.TITLE));
-                                Uri fileUri = Uri.parse(cursor.getString(cursor.getColumnIndex(VideoStore.MediaColumns.DATA)));
-
-                                //This get the info to reparse for UPNP, and grab the correct details.
-                                boolean reparseInfo = fileUri.toString().toLowerCase().startsWith("upnp");
-
-                                Uri scrapUri = title == null || title.isEmpty() || title.equalsIgnoreCase("null") ? fileUri : Uri.parse("/" + title + ".mp4") ;
-                                long ID = cursor.getLong(cursor.getColumnIndex(BaseColumns._ID));
-
-                                // for now there is no error and file is not scraped
-                                notScraped = true;
-                                noScrapeError = !title.startsWith("VTS_");
-                                if (!noScrapeError) sNumberOfFilesNotScraped++;        //VTS Skip is a non-scrape!
-
-                                //log.trace("startScraping processing scrapUri {}, with ID {}, number of remaining files to be processed: {}", scrapUri, ID, sTotalNumberOfFilesRemainingToProcess);
-                                if (noScrapeError && NfoParser.isNetworkNfoParseEnabled(AutoScrapeService.this) && !fileUri.toString().toLowerCase().startsWith("upnp")) {
-
-                                    BaseTags tags = NfoParser.getTagForFile(fileUri, AutoScrapeService.this);
-                                    if (tags != null) {
-                                        //log.trace("startScraping: found NFO");
-                                        // if poster url are in nfo or in folder, download is automatic
-                                        // if no poster available, try to scrap with good title,
-                                        if (ID != -1) {
-                                            //log.trace("startScraping: NFO ID != -1 {}", ID);
-                                            // ugly but necessary to avoid poster delete when replacing tag
-                                            if (tags.getDefaultPoster() != null)
-                                                DeleteFileCallback.DO_NOT_DELETE.add(tags.getDefaultPoster().getLargeFile());
-
-                                            //Get title for notifcation while we are saving tags.
-                                            if (tags instanceof EpisodeTags) {
-                                                EpisodeTags episodeTags = (EpisodeTags) tags;
-                                                if (episodeTags.getEpisodePicture() != null) {
-                                                    DeleteFileCallback.DO_NOT_DELETE.add(episodeTags.getEpisodePicture().getLargeFile());
-                                                }
-                                                if (episodeTags.getShowTags() != null && episodeTags.getShowTags().getDefaultPoster() != null) {
-                                                    DeleteFileCallback.DO_NOT_DELETE.add(episodeTags.getShowTags().getDefaultPoster().getLargeFile());
-                                                }
-
-                                                //Use Title - Episode
-                                                title = episodeTags.getShowTags().getTitle() + " - " + episodeTags.getTitle();
-                                            } else {
-                                                //Use Title
-                                                title = ((MovieTags) tags).getTitle();
-                                            }
-
-                                            //log.trace("startScraping: NFO tags.save ID={}", ID);
-                                            tags.save(AutoScrapeService.this, ID);
-                                            DeleteFileCallback.DO_NOT_DELETE.clear();
-                                        } else {
-                                            //log.trace("startScraping: oh oh NFO ID = -1 ");
-                                        }
-                                        //found NFO thus still no error but scraped
-                                        notScraped = false;
-                                        sNumberOfFilesScraped++;
-                                        noScrapeError = true;
-                                        if (tags.getPosters() == null && tags.getDefaultPoster() == null &&
-                                                (!(tags instanceof EpisodeTags) || ((EpisodeTags) tags).getShowTags().getPosters() == null)) {//special case for episodes : check show
-                                            if (tags.getTitle() != null && !tags.getTitle().isEmpty()) { //if a title is specified in nfo, use it to scrap file
-                                                scrapUri = Uri.parse("/" + tags.getTitle() + ".mp4");
-                                                //log.trace("startScraping: no posters using title {}", tags.getTitle());
-                                            }
-                                            //log.trace("startScraping: no posters ");
-                                            //poster not found thus not scraped and no error
-                                            notScraped = true;
-                                            noScrapeError = true;
-                                        }
-                                        //log.trace("startScraping: NFO found, notScaped {}, noScrapeError {} for {}", notScraped, noScrapeError, fileUri);
-                                    }
-                                }
-                                if ((notScraped && noScrapeError) || (shouldRescrapAll & noScrapeError)) { //look for online details
-                                    //log.trace("startScraping: NFO NOT found");
-                                    ScrapeDetailResult result = null;
-                                    boolean searchOnline = true;
-                                    //log.trace("startScraping: rescraping all");
-                                    long videoID = cursor.getLong(cursor.getColumnIndex(VideoStore.Video.VideoColumns.SCRAPER_VIDEO_ONLINE_ID));
-                                    final int scraperType = cursor.getInt(cursor.getColumnIndex(VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_TYPE));
-
-                                    if (scraperType == BaseTags.TV_SHOW) {
-                                        // get the whole season
-                                        long season = cursor.getLong(cursor.getColumnIndex(VideoStore.Video.VideoColumns.SCRAPER_E_SEASON));
-                                        Bundle b = new Bundle();
-                                        b.putInt(Scraper.ITEM_REQUEST_SEASON, (int) season);
-                                        b.putInt(Scraper.ITEM_REQUEST_BASIC_VIDEO, 1);
-                                        b.putInt(Scraper.ITEM_REQUEST_SEASON, (int) season);
-                                        b.putInt(Scraper.ITEM_REQUEST_ALL_EPISODES, (int) season);
-
-                                        //log.trace("startScraping: rescraping episode for tvId {}, season {}", videoID, season);
-                                        SearchResult searchResult = new SearchResult(SearchResult.tvshow, title, (int) videoID);
-                                        searchResult.setFile(fileUri);
-                                        searchResult.setScraper(new ShowScraper4(AutoScrapeService.this));
-                                        result = ShowScraper4.getDetails(new SearchResult(SearchResult.tvshow, title, (int) videoID), b);
-                                    } else if (scraperType == BaseTags.MOVIE) {
-                                        //log.trace("startScraping: rescraping movie {}", videoID);
-                                        SearchResult searchResult = new SearchResult(SearchResult.movie, title, (int) videoID);
-                                        searchResult.setFile(fileUri);
-                                        searchResult.setScraper(new MovieScraper3(AutoScrapeService.this));
-                                        result = MovieScraper3.getDetails(searchResult, null);
-                                    } else {
-                                        //log.trace("startScraping: searching online " + title);
-                                        SearchInfo searchInfo = SearchPreprocessor.instance().parseFileBased(fileUri, scrapUri);
-                                        if (reparseInfo) searchInfo.setForceReParse(true);
-                                        Scraper scraper = new Scraper(AutoScrapeService.this);
-                                        result = scraper.getAutoDetails(searchInfo);                //SEARCH FOR MOVIE!
-                                        //log.trace("startScraping: {} {}", ((result.tag != null) ? result.tag.getTitle() : null), ((result.tag != null) ? result.tag.getOnlineId() : null));
-                                    }
-
-                                    //Don't get movies with the word (NULL), this means (NULL) movie wont scrape automatically by who cares?
-                                    if (result != null && result.tag != null && ID != -1 && !result.tag.getTitle().equals("(NULL)")) {
-                                        //IF the title is null, but we scraped OK, use Guessed Title.
-                                        if (result.tag.getTitle().isEmpty()) {
-                                            result.tag.setTitle(title);
-                                        } else {
-                                            if (result.isMovie)
-                                                title = result.tag.getTitle();
-                                            else
-                                                title = ((EpisodeTags) result.tag).getShowTags().getTitle() + " - " + result.tag.getTitle();
-                                        }
-                                        result.tag.setVideoId(ID);
-                                        //ugly but necessary to avoid poster delete when replacing tag
-                                        if (result.tag.getDefaultPoster() != null) {
-                                            DeleteFileCallback.DO_NOT_DELETE.add(result.tag.getDefaultPoster().getLargeFile());
-                                        }
-                                        if (result.tag instanceof EpisodeTags) {
-                                            if (((EpisodeTags) result.tag).getEpisodePicture() != null) {
-                                                DeleteFileCallback.DO_NOT_DELETE.add(((EpisodeTags) result.tag).getEpisodePicture().getLargeFile());
-                                            }
-                                            if (((EpisodeTags) result.tag).getShowTags() != null && ((EpisodeTags) result.tag).getShowTags().getDefaultPoster() != null) {
-                                                DeleteFileCallback.DO_NOT_DELETE.add(((EpisodeTags) result.tag).getShowTags().getDefaultPoster().getLargeFile());
-                                            }
-                                        }
-                                        //log.trace("startScraping: online result.tag.save ID={}", ID);
-
-                                        result.tag.save(AutoScrapeService.this, ID);
-                                        DeleteFileCallback.DO_NOT_DELETE.clear();
-                                        // result exists thus scraped and no error for now
-                                        notScraped = false;
-                                        sNumberOfFilesScraped++;
-                                        noScrapeError = true;
-                                        //if (result.tag.getTitle() != null)
-                                        //    log.trace("startScraping: info {}", result.tag.getTitle());
-
-                                        if (exportContext != null) {
-                                            // also auto-export all the data
-
-                                            if (fileUri != null) {
-                                                try {
-                                                    //log.trace("startScraping: exporting NFO");
-                                                    NfoWriter.export(fileUri, result.tag, exportContext);
-                                                } catch (IOException e) {
-                                                    log.error("Caught IOException: ", e);
-                                                }
-                                            }
-                                            //log.trace("startScraping: online info, notScaped {}, noScrapeError {} for {}", notScraped, noScrapeError, fileUri);
-                                        }
-                                    } else if (result != null) {
-                                        //not scraped, check for errors
-                                        // for tvshow if search returns ScrapeStatus.OKAY but in details it returns ScrapeStaus.ERROR_PARSER it is not counted as a scraping error
-                                        // this allows the video to be marked as not to be rescraped
-                                        notScraped = true;
-                                        noScrapeError = result.status != ScrapeStatus.ERROR && result.status != ScrapeStatus.ERROR_NETWORK && result.status != ScrapeStatus.ERROR_NO_NETWORK;
-                                        if (noScrapeError) {
-                                            sNumberOfFilesNotScraped++;
-                                        }
-                                        //log.trace("startScraping: file {} not scraped among {}", fileUri, sNumberOfFilesNotScraped);
-                                    }
-                                }
-
-                                //The notifications are at the end now, so we dont have 1 file left to process, we have 0 here at the end.
-                                sNumberOfFilesRemainingToProcess--;
-                                sTotalNumberOfFilesRemainingToProcess--;
-
-                                //OK, this has to be an OR, because my VTS override actually tests the logic!
-                                if (notScraped || !noScrapeError) { //in case of network error, don't go there, and don't save in case we are rescraping already scraped videos
-                                    //Show the error on the notification
-                                    //Using the file name stripped as the title here, the search suggestion used to scrape.
-                                    nm.notify(NOTIFICATION_ID, nb.setContentText(getString(R.string.remaining_videos_to_process) + " " + sTotalNumberOfFilesRemainingToProcess  + "\n" + getString(R.string.noresult_video_title) + " " + title).build());
-
-                                    // Failed => set the scraper fields to -1 so that we will be able
-                                    // to skip this file when launching the automated process again
-                                    //log.trace("startScraping: file {} not scraped without error -> mark it as not to be scraped again", fileUri);
-                                    ContentValues cv = new ContentValues(2);
-                                    cv.put(VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_ID, String.valueOf(-1));
-                                    cv.put(VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_TYPE, String.valueOf(-1));
-                                    getContentResolver().update(VideoStore.Video.Media.EXTERNAL_CONTENT_URI, cv, BaseColumns._ID + "=?", new String[]{Long.toString(ID)});
-                                    mNetworkOrScrapErrors++;
-                                } else {
-                                    //Show the user a pretty notification, with the Scraped Title.
-                                    nm.notify(NOTIFICATION_ID, nb.setContentText(getString(R.string.remaining_videos_to_process) + " " + sTotalNumberOfFilesRemainingToProcess  + "\n" + getString(R.string.current_video_title) + " " + title).build());
-                                }
-                                //log.debug("startScraping: #filesProcessed={}/{} ({}), #scrapOrNetworkErrors={}, #notScraped={}, current batch #filesToProcess={}/{}", sNumberOfFilesScraped, numberOfRows, sTotalNumberOfFilesRemainingToProcess, mNetworkOrScrapErrors, sNumberOfFilesNotScraped, sNumberOfFilesRemainingToProcess, window);
+                                //Global Scrape in Progress, so the browser can skip thumbs in scrape and not waste space in storage
+                                LoaderUtils.setScrapeInProgress(false);
+                                return;
                             }
-                            cursor.close();
-                            numberOfRowsRemaining -= window;
-                            totalNumberOfFilesScraped+= totalNumberOfFilesScraped;
-                        } while (numberOfRowsRemaining > 0 && (isForeground || isForceAfterNetworkScan) && !Thread.currentThread().isInterrupted());
 
-                        // final check if while scanning there was no more files to scrape added
-                        cursor = getFileListCursor(shouldRescrapAll && onlyNotFound ? PARAM_SCRAPED_NOT_FOUND : shouldRescrapAll ? PARAM_ALL : PARAM_NOT_SCRAPED, null, null, null);
-                        numberOfRows = cursor.getCount();
+                            // for now there is no error and file is not scraped
+                            notScraped = true;
+
+                            //Get the information we need about the current file, for use later in the scrape.
+                            String title = cursor.getString(cursor.getColumnIndex(VideoStore.MediaColumns.TITLE));
+                            Uri fileUri = Uri.parse(cursor.getString(cursor.getColumnIndex(VideoStore.MediaColumns.DATA)));
+                            Uri scrapUri = title == null || title.isEmpty() || title.equalsIgnoreCase("null") ? fileUri : Uri.parse("/" + title + ".mp4") ;
+                            long ID = cursor.getLong(cursor.getColumnIndex(BaseColumns._ID));
+
+                            //This get the info to reparse for UPNP, and grab the correct details.
+                            boolean reparseInfo = fileUri.toString().toLowerCase().startsWith("upnp");
+                            noScrapeError = !title.startsWith("VTS_");
+                            if (!noScrapeError) sNumberOfFilesNotScraped++;        //VTS Skip is a non-scrape!
+
+                            //Grab NFO Tags for the File if they exist, and skip the scrape.
+                            if (noScrapeError && NfoParser.isNetworkNfoParseEnabled(AutoScrapeService.this) && !fileUri.toString().toLowerCase().startsWith("upnp")) {
+                                BaseTags tags = NfoParser.getTagForFile(fileUri, AutoScrapeService.this);
+                                if (tags != null) {
+                                    //log.trace("startScraping: found NFO");
+                                    // if poster url are in nfo or in folder, download is automatic
+                                    // if no poster available, try to scrap with good title,
+                                    if (ID != -1) {
+                                        //log.trace("startScraping: NFO ID != -1 {}", ID);
+                                        // ugly but necessary to avoid poster delete when replacing tag
+                                        if (tags.getDefaultPoster() != null)
+                                            DeleteFileCallback.DO_NOT_DELETE.add(tags.getDefaultPoster().getLargeFile());
+
+                                        //Get title for notifcation while we are saving tags.
+                                        if (tags instanceof EpisodeTags) {
+                                            EpisodeTags episodeTags = (EpisodeTags) tags;
+                                            if (episodeTags.getEpisodePicture() != null) {
+                                                DeleteFileCallback.DO_NOT_DELETE.add(episodeTags.getEpisodePicture().getLargeFile());
+                                            }
+                                            if (episodeTags.getShowTags() != null && episodeTags.getShowTags().getDefaultPoster() != null) {
+                                                DeleteFileCallback.DO_NOT_DELETE.add(episodeTags.getShowTags().getDefaultPoster().getLargeFile());
+                                            }
+
+                                            //Use Title - Episode
+                                            title = episodeTags.getShowTags().getTitle() + " - " + episodeTags.getTitle();
+                                        } else {
+                                            //Use Title
+                                            title = ((MovieTags) tags).getTitle();
+                                        }
+
+                                        //log.trace("startScraping: NFO tags.save ID={}", ID);
+                                        tags.save(AutoScrapeService.this, ID);
+                                        DeleteFileCallback.DO_NOT_DELETE.clear();
+                                    } else {
+                                        //log.trace("startScraping: oh oh NFO ID = -1 ");
+                                    }
+                                    //found NFO thus still no error but scraped
+                                    notScraped = false;
+                                    sNumberOfFilesScraped++;
+                                    noScrapeError = true;
+                                    if (tags.getPosters() == null && tags.getDefaultPoster() == null &&
+                                            (!(tags instanceof EpisodeTags) || ((EpisodeTags) tags).getShowTags().getPosters() == null)) {//special case for episodes : check show
+                                        if (tags.getTitle() != null && !tags.getTitle().isEmpty()) { //if a title is specified in nfo, use it to scrap file
+                                            scrapUri = Uri.parse("/" + tags.getTitle() + ".mp4");
+                                            //log.trace("startScraping: no posters using title {}", tags.getTitle());
+                                        }
+                                        //log.trace("startScraping: no posters ");
+                                        //poster not found thus not scraped and no error
+                                        notScraped = true;
+                                        noScrapeError = true;
+                                    }
+                                    //log.trace("startScraping: NFO found, notScaped {}, noScrapeError {} for {}", notScraped, noScrapeError, fileUri);
+                                }
+                            }
+
+                            //No NFO Tags, we need to scrape.
+                            if ((notScraped && noScrapeError) || (shouldRescrapAll & noScrapeError)) { //look for online details
+                                //log.trace("startScraping: NFO NOT found");
+                                ScrapeDetailResult result = null;
+                                boolean searchOnline = true;
+                                //log.trace("startScraping: rescraping all");
+                                long videoID = cursor.getLong(cursor.getColumnIndex(VideoStore.Video.VideoColumns.SCRAPER_VIDEO_ONLINE_ID));
+                                final int scraperType = cursor.getInt(cursor.getColumnIndex(VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_TYPE));
+
+                                //This I have NEVER SEEN WORK! Always scrapes as an unknown, lets prove me wrong or this gets the chop too!
+                                if (scraperType == BaseTags.TV_SHOW) {
+                                    // get the whole season
+                                    long season = cursor.getLong(cursor.getColumnIndex(VideoStore.Video.VideoColumns.SCRAPER_E_SEASON));
+                                    Bundle b = new Bundle();
+                                    b.putInt(Scraper.ITEM_REQUEST_SEASON, (int) season);
+                                    b.putInt(Scraper.ITEM_REQUEST_BASIC_VIDEO, 1);
+                                    b.putInt(Scraper.ITEM_REQUEST_SEASON, (int) season);
+                                    b.putInt(Scraper.ITEM_REQUEST_ALL_EPISODES, (int) season);
+
+                                    //log.trace("startScraping: rescraping episode for tvId {}, season {}", videoID, season);
+                                    SearchResult searchResult = new SearchResult(SearchResult.tvshow, title, (int) videoID);
+                                    searchResult.setFile(fileUri);
+                                    searchResult.setScraper(new ShowScraper4(AutoScrapeService.this));
+                                    result = ShowScraper4.getDetails(new SearchResult(SearchResult.tvshow, title, (int) videoID), b);
+                                } else if (scraperType == BaseTags.MOVIE) {
+                                    //log.trace("startScraping: rescraping movie {}", videoID);
+                                    SearchResult searchResult = new SearchResult(SearchResult.movie, title, (int) videoID);
+                                    searchResult.setFile(fileUri);
+                                    searchResult.setScraper(new MovieScraper3(AutoScrapeService.this));
+                                    result = MovieScraper3.getDetails(searchResult, null);
+                                } else {
+                                    //log.trace("startScraping: searching online " + title);
+                                    SearchInfo searchInfo = SearchPreprocessor.instance().parseFileBased(fileUri, scrapUri);
+                                    if (reparseInfo) searchInfo.setForceReParse(true);
+                                    Scraper scraper = new Scraper(AutoScrapeService.this);
+                                    result = scraper.getAutoDetails(searchInfo);                //SEARCH FOR MOVIE!
+                                    //log.trace("startScraping: {} {}", ((result.tag != null) ? result.tag.getTitle() : null), ((result.tag != null) ? result.tag.getOnlineId() : null));
+                                }
+
+                                //HAVE WE GOT A SCRAPE OR AN NFO TAG?
+                                //Don't get movies with the word (NULL), this means (NULL) movie wont scrape automatically by who cares?
+                                if (result != null && result.tag != null && ID != -1 && !result.tag.getTitle().equals("(NULL)")) {
+                                    //IF the title is null, but we scraped OK, use Guessed Title.
+                                    if (result.tag.getTitle().isEmpty()) {
+                                        result.tag.setTitle(title);
+                                    } else {
+                                        if (result.isMovie)
+                                            title = result.tag.getTitle();
+                                        else
+                                            title = ((EpisodeTags) result.tag).getShowTags().getTitle() + " - " + result.tag.getTitle();
+                                    }
+
+                                    //Set the ID and Video Information.
+                                    result.tag.setVideoId(ID);
+                                    //ugly but necessary to avoid poster delete when replacing tag
+                                    if (result.tag.getDefaultPoster() != null) {
+                                        DeleteFileCallback.DO_NOT_DELETE.add(result.tag.getDefaultPoster().getLargeFile());
+                                    }
+                                    if (result.tag instanceof EpisodeTags) {
+                                        if (((EpisodeTags) result.tag).getEpisodePicture() != null) {
+                                            DeleteFileCallback.DO_NOT_DELETE.add(((EpisodeTags) result.tag).getEpisodePicture().getLargeFile());
+                                        }
+                                        if (((EpisodeTags) result.tag).getShowTags() != null && ((EpisodeTags) result.tag).getShowTags().getDefaultPoster() != null) {
+                                            DeleteFileCallback.DO_NOT_DELETE.add(((EpisodeTags) result.tag).getShowTags().getDefaultPoster().getLargeFile());
+                                        }
+                                    }
+                                    //log.trace("startScraping: online result.tag.save ID={}", ID);
+
+                                    //Save the tags to the database.
+                                    result.tag.save(AutoScrapeService.this, ID);
+                                    DeleteFileCallback.DO_NOT_DELETE.clear();
+                                    // result exists thus scraped and no error for now
+                                    notScraped = false;
+                                    sNumberOfFilesScraped++;
+                                    totalNumberOfFilesScraped++;
+                                    noScrapeError = true;
+                                    //if (result.tag.getTitle() != null)
+                                    //    log.trace("startScraping: info {}", result.tag.getTitle());
+
+                                    //Export the NFO tag if set in prefs (unless we got this from NFO!)
+                                    if (exportContext != null) {
+                                        // also auto-export all the data
+                                        if (fileUri != null) {
+                                            try {
+                                                //log.trace("startScraping: exporting NFO");
+                                                NfoWriter.export(fileUri, result.tag, exportContext);
+                                            } catch (IOException e) {
+                                                log.error("Caught IOException: ", e);
+                                            }
+                                        }
+                                        //log.trace("startScraping: online info, notScaped {}, noScrapeError {} for {}", notScraped, noScrapeError, fileUri);
+                                    }
+                                } else if (result != null) {
+                                    //not scraped, check for errors
+                                    // for tvshow if search returns ScrapeStatus.OKAY but in details it returns ScrapeStaus.ERROR_PARSER it is not counted as a scraping error
+                                    // this allows the video to be marked as not to be rescraped
+                                    notScraped = true;
+                                    noScrapeError = result.status != ScrapeStatus.ERROR && result.status != ScrapeStatus.ERROR_NETWORK && result.status != ScrapeStatus.ERROR_NO_NETWORK;
+                                    if (noScrapeError) {
+                                        sNumberOfFilesNotScraped++;
+                                    }
+                                    //log.trace("startScraping: file {} not scraped among {}", fileUri, sNumberOfFilesNotScraped);
+                                }
+                            }
+
+                            //The notifications are at the end now, so we dont have 1 file left to process, we have 0 here at the end.
+                            sNumberOfFilesRemainingToProcess--;
+                            sTotalNumberOfFilesRemainingToProcess--;
+
+                            //OK, this has to be an OR, because my VTS override actually tests the logic!
+                            if (notScraped || !noScrapeError) { //in case of network error, don't go there, and don't save in case we are rescraping already scraped videos
+                                //Show the error on the notification
+                                //Using the file name stripped as the title here, the search suggestion used to scrape.
+                                nm.notify(NOTIFICATION_ID, nb.setContentText(getString(R.string.remaining_videos_to_process) + " " + sTotalNumberOfFilesRemainingToProcess  + "\n" + getString(R.string.noresult_video_title) + " " + title).build());
+
+                                // Failed => set the scraper fields to -1 so that we will be able
+                                // to skip this file when launching the automated process again
+                                //log.trace("startScraping: file {} not scraped without error -> mark it as not to be scraped again", fileUri);
+                                ContentValues cv = new ContentValues(2);
+                                cv.put(VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_ID, String.valueOf(-1));
+                                cv.put(VideoStore.Video.VideoColumns.LEEROYFLIX_MEDIA_SCRAPER_TYPE, String.valueOf(-1));
+                                getContentResolver().update(VideoStore.Video.Media.EXTERNAL_CONTENT_URI, cv, BaseColumns._ID + "=?", new String[]{Long.toString(ID)});
+                                mNetworkOrScrapErrors++;
+                            } else {
+                                //Show the user a pretty notification, with the Scraped Title.
+                                nm.notify(NOTIFICATION_ID, nb.setContentText(getString(R.string.remaining_videos_to_process) + " " + sTotalNumberOfFilesRemainingToProcess  + "\n" + getString(R.string.current_video_title) + " " + title).build());
+                            }
+                            //log.debug("startScraping: #filesProcessed={}/{} ({}), #scrapOrNetworkErrors={}, #notScraped={}, current batch #filesToProcess={}/{}", sNumberOfFilesScraped, numberOfRows, sTotalNumberOfFilesRemainingToProcess, mNetworkOrScrapErrors, sNumberOfFilesNotScraped, sNumberOfFilesRemainingToProcess, window);
+                        }
+
+                        //Close sursor, and we will next open another one for the loop.
                         cursor.close();
 
-                        //Restart the scrape if we have more rows than scraped
-                        restartOnNextRound = (sNumberOfFilesScraped + sNumberOfFilesNotScraped < numberOfRows);
-                    } while(restartOnNextRound && (isForeground || isForceAfterNetworkScan) && !Thread.currentThread().isInterrupted()
-                            &&PreferenceManager.getDefaultSharedPreferences(AutoScrapeService.this).getBoolean(AutoScrapeService.KEY_ENABLE_AUTO_SCRAP, true)); //if we had something to do, we look for new videos
+                        // Load another cursor and get teh row count, but we will not close this cursor
+                        //That way, we are only loading ONE cursor, instead of THREE
+                        cursor = getFileListCursor(shouldRescrapAll && onlyNotFound ? PARAM_SCRAPED_NOT_FOUND :
+                                        scrapeOnlyMovies ? PARAM_MOVIES :
+                                                shouldRescrapAll ? PARAM_ALL :
+                                                        PARAM_NOT_SCRAPED,
+                                BaseColumns._ID, null, null);
+                        numberOfRows = cursor.getCount();
 
+                        //Restart the scrape if we have done exactly 1 window
+                        restartOnNextRound = (sNumberOfFilesScraped + sNumberOfFilesNotScraped != numberOfRows);
+                    } while ((restartOnNextRound || sNumberOfFilesRemainingToProcess > 0) && (isForeground || isForceAfterNetworkScan) && !Thread.currentThread().isInterrupted() && PreferenceManager.getDefaultSharedPreferences(AutoScrapeService.this).getBoolean(AutoScrapeService.KEY_ENABLE_AUTO_SCRAP,true));
+
+                    //Cleanup, close the cursor.
+                    cursor.close();
+
+                    //Refresh the Channels in the UI
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -756,6 +744,7 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                         }
                     });
 
+                    //Trakt Stuff
                     if (totalNumberOfFilesScraped > 0) {
                         // Save the last scraped timestamp in UTC seconds
                         long utcSeconds = System.currentTimeMillis() / 1000L;
