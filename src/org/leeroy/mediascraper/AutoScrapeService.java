@@ -570,14 +570,24 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                                             // ugly but necessary to avoid poster delete when replacing tag
                                             if (tags.getDefaultPoster() != null)
                                                 DeleteFileCallback.DO_NOT_DELETE.add(tags.getDefaultPoster().getLargeFile());
+
+                                            //Get title for notifcation while we are saving tags.
                                             if (tags instanceof EpisodeTags) {
-                                                if (((EpisodeTags) tags).getEpisodePicture() != null) {
-                                                    DeleteFileCallback.DO_NOT_DELETE.add(((EpisodeTags) tags).getEpisodePicture().getLargeFile());
+                                                EpisodeTags episodeTags = (EpisodeTags) tags;
+                                                if (episodeTags.getEpisodePicture() != null) {
+                                                    DeleteFileCallback.DO_NOT_DELETE.add(episodeTags.getEpisodePicture().getLargeFile());
                                                 }
-                                                if (((EpisodeTags) tags).getShowTags() != null && ((EpisodeTags) tags).getShowTags().getDefaultPoster() != null) {
-                                                    DeleteFileCallback.DO_NOT_DELETE.add(((EpisodeTags) tags).getShowTags().getDefaultPoster().getLargeFile());
+                                                if (episodeTags.getShowTags() != null && episodeTags.getShowTags().getDefaultPoster() != null) {
+                                                    DeleteFileCallback.DO_NOT_DELETE.add(episodeTags.getShowTags().getDefaultPoster().getLargeFile());
                                                 }
+
+                                                //Use Title - Episode
+                                                title = episodeTags.getShowTags().getTitle() + " - " + episodeTags.getTitle();
+                                            } else {
+                                                //Use Title
+                                                title = ((MovieTags) tags).getTitle();
                                             }
+
                                             //log.trace("startScraping: NFO tags.save ID={}", ID);
                                             tags.save(AutoScrapeService.this, ID);
                                             DeleteFileCallback.DO_NOT_DELETE.clear();
