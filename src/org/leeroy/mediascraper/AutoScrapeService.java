@@ -731,7 +731,7 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
 
                         //Restart the scrape if we have done exactly 1 window
                         restartOnNextRound = (sNumberOfFilesScraped + sNumberOfFilesNotScraped != numberOfRows);
-                    } while ((restartOnNextRound || sNumberOfFilesRemainingToProcess > 0) && (isForeground || isForceAfterNetworkScan) && !Thread.currentThread().isInterrupted() && PreferenceManager.getDefaultSharedPreferences(AutoScrapeService.this).getBoolean(AutoScrapeService.KEY_ENABLE_AUTO_SCRAP,true));
+                    } while (restartOnNextRound && (isForeground || isForceAfterNetworkScan) && !Thread.currentThread().isInterrupted() && PreferenceManager.getDefaultSharedPreferences(AutoScrapeService.this).getBoolean(AutoScrapeService.KEY_ENABLE_AUTO_SCRAP,true));
 
                     //Cleanup, close the cursor.
                     cursor.close();
