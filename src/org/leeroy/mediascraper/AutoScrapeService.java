@@ -546,8 +546,7 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                                             DeleteFileCallback.DO_NOT_DELETE.add(tags.getDefaultPoster().getLargeFile());
 
                                         //Get title for notifcation while we are saving tags.
-                                        if (tags instanceof EpisodeTags) {
-                                            EpisodeTags episodeTags = (EpisodeTags) tags;
+                                        if (tags instanceof EpisodeTags episodeTags) {
                                             if (episodeTags.getEpisodePicture() != null) {
                                                 DeleteFileCallback.DO_NOT_DELETE.add(episodeTags.getEpisodePicture().getLargeFile());
                                             }
@@ -555,7 +554,7 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                                                 DeleteFileCallback.DO_NOT_DELETE.add(episodeTags.getShowTags().getDefaultPoster().getLargeFile());
                                             }
 
-                                            //Use Title - Episode
+                                            //Use Title - Episode Name
                                             title = episodeTags.getShowTags().getTitle() + " - " + episodeTags.getTitle();
                                         } else {
                                             //Use Title
@@ -632,11 +631,6 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                                     //IF the title is null, but we scraped OK, use Guessed Title.
                                     if (result.tag.getTitle().isEmpty()) {
                                         result.tag.setTitle(title);
-                                    } else {
-                                        if (result.isMovie)
-                                            title = result.tag.getTitle();
-                                        else
-                                            title = ((EpisodeTags) result.tag).getShowTags().getTitle() + " - " + result.tag.getTitle();
                                     }
 
                                     //Set the ID and Video Information.
@@ -645,13 +639,18 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                                     if (result.tag.getDefaultPoster() != null) {
                                         DeleteFileCallback.DO_NOT_DELETE.add(result.tag.getDefaultPoster().getLargeFile());
                                     }
-                                    if (result.tag instanceof EpisodeTags) {
-                                        if (((EpisodeTags) result.tag).getEpisodePicture() != null) {
-                                            DeleteFileCallback.DO_NOT_DELETE.add(((EpisodeTags) result.tag).getEpisodePicture().getLargeFile());
+                                    if (result.tag instanceof EpisodeTags episodeTags) {
+                                        if (episodeTags.getEpisodePicture() != null) {
+                                            DeleteFileCallback.DO_NOT_DELETE.add(episodeTags.getEpisodePicture().getLargeFile());
                                         }
-                                        if (((EpisodeTags) result.tag).getShowTags() != null && ((EpisodeTags) result.tag).getShowTags().getDefaultPoster() != null) {
-                                            DeleteFileCallback.DO_NOT_DELETE.add(((EpisodeTags) result.tag).getShowTags().getDefaultPoster().getLargeFile());
+                                        if (episodeTags.getShowTags() != null && episodeTags.getShowTags().getDefaultPoster() != null) {
+                                            DeleteFileCallback.DO_NOT_DELETE.add(episodeTags.getShowTags().getDefaultPoster().getLargeFile());
                                         }
+                                        //Set the Episode title here, we don't have to do an extra isMovie check.
+                                        title = episodeTags.getShowTags().getTitle() + " - " + result.tag.getTitle();
+                                    } else {
+                                        //Set the Movie title.
+                                        title = result.tag.getTitle();
                                     }
                                     //log.trace("startScraping: online result.tag.save ID={}", ID);
 
