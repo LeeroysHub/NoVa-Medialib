@@ -468,11 +468,11 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                 public void run() {
                     //log.debug("startScraping: {}", String.valueOf(mThread == null || !mThread.isAlive()));
                     nb.setContentTitle(getString(R.string.scraping_in_progress));
-                    
+
                     //Global Scrape in Progress, so the browser can skip thumbs in scrape and not waste space in storage
                     LoaderUtils.setScrapeInProgress(true);
                     boolean shouldRescrapAll = rescrapAlreadySearched;
-                    
+
                     //log.debug("startScraping: startThread {}", (mThread==null || !mThread.isAlive()) );
                     //if (log.isDebugEnabled()) {
                     //    if (shouldRescrapAll && scrapeOnlyMovies)
@@ -520,14 +520,13 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                             //if (log.isDebugEnabled()) log.debug("startScraping: new batch fetching cursor from index 0, window {} entries <={}", window, numberOfRowsRemaining);
                             cursor = getFileListCursor(shouldRescrapAll && onlyNotFound ? PARAM_SCRAPED_NOT_FOUND :
                                             scrapeOnlyMovies ? PARAM_MOVIES :
-                                                shouldRescrapAll ? PARAM_ALL :
-                                                        PARAM_NOT_SCRAPED,
+                                                    shouldRescrapAll ? PARAM_ALL :
+                                                            PARAM_NOT_SCRAPED,
                                     BaseColumns._ID, null, window);
                             //log.debug("startScraping: new batch cursor has size {}", cursor.getCount());
                             //log.trace("startScraping: dump cursor {}", DatabaseUtils.dumpCursorToString(cursor));
 
                             sNumberOfFilesRemainingToProcess = window;
-                            restartOnNextRound = true;
                             while (cursor.moveToNext() && isEnable(AutoScrapeService.this) && (isForeground || isForceAfterNetworkScan) && !Thread.currentThread().isInterrupted()) {
                                 // stop if disconnected while scraping
                                 if (!NetworkState.isLocalNetworkConnected(AutoScrapeService.this) && !NetworkState.isNetworkConnected(AutoScrapeService.this)) {
@@ -535,9 +534,12 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                                     sNumberOfFilesRemainingToProcess = 0;
                                     log.debug("startScraping disconnected from network calling stopSelf");
                                     stopSelf();
-                    
+
+                                    //Any place we return, we have to cancel the Notification.
+                                    nm.cancel(NOTIFICATION_ID);
+
                                     //Global Scrape in Progress, so the browser can skip thumbs in scrape and not waste space in storage
-                                    LoaderUtils.setScrapeInProgress(false);                
+                                    LoaderUtils.setScrapeInProgress(false);
                                     return;
                                 }
 
@@ -553,6 +555,8 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                                 // for now there is no error and file is not scraped
                                 notScraped = true;
                                 noScrapeError = !title.startsWith("VTS_");
+                                if (!noScrapeError) sNumberOfFilesNotScraped++;        //VTS Skip is a non-scrape!
+
                                 //log.trace("startScraping processing scrapUri {}, with ID {}, number of remaining files to be processed: {}", scrapUri, ID, sTotalNumberOfFilesRemainingToProcess);
                                 if (noScrapeError && NfoParser.isNetworkNfoParseEnabled(AutoScrapeService.this) && !fileUri.toString().toLowerCase().startsWith("upnp")) {
 
@@ -598,7 +602,7 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                                         //log.trace("startScraping: NFO found, notScaped {}, noScrapeError {} for {}", notScraped, noScrapeError, fileUri);
                                     }
                                 }
-                                if ((notScraped && noScrapeError) || shouldRescrapAll) { //look for online details
+                                if ((notScraped && noScrapeError) || (shouldRescrapAll & noScrapeError)) { //look for online details
                                     //log.trace("startScraping: NFO NOT found");
                                     ScrapeDetailResult result = null;
                                     boolean searchOnline = true;
@@ -689,14 +693,16 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                                         // this allows the video to be marked as not to be rescraped
                                         notScraped = true;
                                         noScrapeError = result.status != ScrapeStatus.ERROR && result.status != ScrapeStatus.ERROR_NETWORK && result.status != ScrapeStatus.ERROR_NO_NETWORK;
-                                        if (!noScrapeError) {
-                                            log.trace("startScraping: file {} scrape error", fileUri);
-                                        } else {
+                                        if (noScrapeError) {
                                             sNumberOfFilesNotScraped++;
                                         }
                                         //log.trace("startScraping: file {} not scraped among {}", fileUri, sNumberOfFilesNotScraped);
                                     }
                                 }
+
+                                //The notifications are at the end now, so we dont have 1 file left to process, we have 0 here at the end.
+                                sNumberOfFilesRemainingToProcess--;
+                                sTotalNumberOfFilesRemainingToProcess--;
 
                                 //OK, this has to be an OR, because my VTS override actually tests the logic!
                                 if (notScraped || !noScrapeError) { //in case of network error, don't go there, and don't save in case we are rescraping already scraped videos
@@ -716,54 +722,44 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                                     //Show the user a pretty notification, with the Scraped Title.
                                     nm.notify(NOTIFICATION_ID, nb.setContentText(getString(R.string.remaining_videos_to_process) + " " + sTotalNumberOfFilesRemainingToProcess  + "\n" + getString(R.string.current_video_title) + " " + title).build());
                                 }
-                                sNumberOfFilesRemainingToProcess--;
-                                sTotalNumberOfFilesRemainingToProcess--;
                                 //log.debug("startScraping: #filesProcessed={}/{} ({}), #scrapOrNetworkErrors={}, #notScraped={}, current batch #filesToProcess={}/{}", sNumberOfFilesScraped, numberOfRows, sTotalNumberOfFilesRemainingToProcess, mNetworkOrScrapErrors, sNumberOfFilesNotScraped, sNumberOfFilesRemainingToProcess, window);
                             }
                             cursor.close();
                             numberOfRowsRemaining -= window;
                             totalNumberOfFilesScraped+= totalNumberOfFilesScraped;
                         } while (numberOfRowsRemaining > 0 && (isForeground || isForceAfterNetworkScan) && !Thread.currentThread().isInterrupted());
-                        if (numberOfRows == mNetworkOrScrapErrors) { //when as many errors, we assume we don't have the internet or that the scraper returns an error, do not loop
-                            restartOnNextRound = false;
-                            //log.debug("startScraping: no internet or scraper errors, stop iterating");
-                        } else {
-                            //do not restartOnNextRound if all files are processed i.e. notScraped and scraped, do it only if mNetworkOrScrapErrors
-                            if (sNumberOfFilesScraped + sNumberOfFilesNotScraped >= numberOfRows) restartOnNextRound = false;
-                            //log.debug("startScraping: numberOfRows != mNetworkOrScrapErrors, {}!={}, #Scraped={}, #NotScraped={}, restartOnNextRound ={}", numberOfRows, mNetworkOrScrapErrors, sNumberOfFilesScraped, sNumberOfFilesNotScraped, restartOnNextRound);
-                        }
-                        shouldRescrapAll = false; //to avoid rescraping on next round
+
                         // final check if while scanning there was no more files to scrape added
-                        cursor = getFileListCursor(shouldRescrapAll&&onlyNotFound ?PARAM_SCRAPED_NOT_FOUND:shouldRescrapAll?PARAM_ALL:PARAM_NOT_SCRAPED, null, null, null);
-                        if(cursor.getCount()>0) {
-                            restartOnNextRound = true;
-                            //log.debug("startScraping: new entries to scrape found most likely added during scrape process, restartOnNextRound");
-                        }
+                        cursor = getFileListCursor(shouldRescrapAll && onlyNotFound ? PARAM_SCRAPED_NOT_FOUND : shouldRescrapAll ? PARAM_ALL : PARAM_NOT_SCRAPED, null, null, null);
+                        numberOfRows = cursor.getCount();
                         cursor.close();
+
+                        //Restart the scrape if we have more rows than scraped
+                        restartOnNextRound = (sNumberOfFilesScraped + sNumberOfFilesNotScraped < numberOfRows);
                     } while(restartOnNextRound && (isForeground || isForceAfterNetworkScan) && !Thread.currentThread().isInterrupted()
                             &&PreferenceManager.getDefaultSharedPreferences(AutoScrapeService.this).getBoolean(AutoScrapeService.KEY_ENABLE_AUTO_SCRAP, true)); //if we had something to do, we look for new videos
-                   
+
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
                             WrapperChannelManager.refreshChannels(AutoScrapeService.this);
                         }
                     });
-                   
+
                     if (totalNumberOfFilesScraped > 0) {
                         // Save the last scraped timestamp in UTC seconds
                         long utcSeconds = System.currentTimeMillis() / 1000L;
                         PreferenceManager.getDefaultSharedPreferences(AutoScrapeService.this)
-                        .edit()
-                        .putLong(PREFERENCE_LAST_TIME_VIDEO_SCRAPED_UTC, utcSeconds).apply();
+                                .edit()
+                                .putLong(PREFERENCE_LAST_TIME_VIDEO_SCRAPED_UTC, utcSeconds).apply();
                         TraktService.onNewVideo(AutoScrapeService.this); // should be done only at the end to not resync in loop
                     }
-                   
+
                     //Kill notififaction.
                     nm.cancel(NOTIFICATION_ID);
-                    
+
                     //Global Scrape in Progress, so the browser can skip thumbs in scrape and not waste space in storage
-                    LoaderUtils.setScrapeInProgress(false);    
+                    LoaderUtils.setScrapeInProgress(false);
                 }
             };
             mThread.start();
