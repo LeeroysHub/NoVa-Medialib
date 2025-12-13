@@ -76,7 +76,7 @@ public class VideoStoreImportImpl {
 
     private static final String MediaColumnsDATA = MediaColumns.DATA;
 
-    private static final int WINDOW_SIZE = 2000;
+    private static final int WINDOW_SIZE = 2500;
     private static String BLACKLIST;
     private static String sdCardPath = "";
 
