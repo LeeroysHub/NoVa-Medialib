@@ -38,6 +38,7 @@ public abstract class SearchInfo {
     private String mSearchSuggestion;
     private String mUserInput;
     private boolean mForceReParse;
+    public boolean aggressiveScan = false;
 
     /** package private so outside can't construct these */
     protected SearchInfo(Uri uri) {

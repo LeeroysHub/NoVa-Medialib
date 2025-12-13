@@ -79,7 +79,7 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
     public static final String PREFERENCE_LAST_TIME_VIDEO_SCRAPED_UTC = "last_time_video_scraped_utc";
 
     // window size used to split queries to db
-    private final static int WINDOW_SIZE = 2000;
+    private final static int WINDOW_SIZE = 2500;
 
     static int sNumberOfFilesRemainingToProcess = 0;
     static int sTotalNumberOfFilesRemainingToProcess = 0;
@@ -625,6 +625,7 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                                     SearchInfo searchInfo = SearchPreprocessor.instance().parseFileBased(fileUri, scrapUri);
                                     if (reparseInfo) searchInfo.setForceReParse(true);
                                     Scraper scraper = new Scraper(AutoScrapeService.this);
+                                    searchInfo.aggressiveScan = onlyNotFound;
                                     result = scraper.getAutoDetails(searchInfo);                //SEARCH FOR MOVIE!
                                     //log.trace("startScraping: {} {}", ((result.tag != null) ? result.tag.getTitle() : null), ((result.tag != null) ? result.tag.getOnlineId() : null));
                                 }

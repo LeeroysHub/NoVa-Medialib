@@ -172,7 +172,7 @@ public class MovieScraper3 extends BaseScraper2 {
         //If the Query is 5 words or more, and for as long as it is, remove a word
         //BUT! Only remove and try 3 times (Aussie Logic, backwards as fuck but works!)
         SearchMovieResult searchResult = null;
-        for (int i = 0; i < 4; i++ ){
+        for (int i = 0; i < (searchInfo.aggressiveScan ? 4 : 1); i++ ){
             searchResult = SearchMovie2.search(searchQuery, language, year, maxItems, getSearchService(), adultScrape);
 
             //Check result and try again if we need to.
@@ -183,7 +183,7 @@ public class MovieScraper3 extends BaseScraper2 {
                     result.setFile(searchInfo.getFile());
                 }
                 break;
-            } else if (searchResult.status == ScrapeStatus.OKAY || searchResult.status == ScrapeStatus.NOT_FOUND) {
+            } else if (searchInfo.aggressiveScan && (searchResult.status == ScrapeStatus.OKAY || searchResult.status == ScrapeStatus.NOT_FOUND)) {
                 //Only if its over 3 words. (Stop false positives on small titles like "The")
                 if (searchQuery.split("[\\s\\-_.]+").length > 4) {
                     //Grab the one word off.
@@ -191,6 +191,7 @@ public class MovieScraper3 extends BaseScraper2 {
                     matcher = sepPattern.matcher(reversed);
                     if (matcher.find()) {
                         searchQuery = searchQuery.substring(0, searchQuery.length() - matcher.start() - 1).trim();
+                        reversed = new StringBuilder(searchQuery).reverse().toString();
                     }
                 } else
                     break;          //NOT OVER 3 WORDS. DONT SEARCH AGAIN
