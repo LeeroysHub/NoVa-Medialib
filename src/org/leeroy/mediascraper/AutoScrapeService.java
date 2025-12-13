@@ -503,8 +503,12 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                         sNumberOfFilesRemainingToProcess = numberOfRows;
                         sTotalNumberOfFilesRemainingToProcess = numberOfRows;
                         while (cursor.moveToNext() && isEnable(AutoScrapeService.this) && (isForeground || isForceAfterNetworkScan) && !Thread.currentThread().isInterrupted()) {
-                            // stop if disconnected while scraping
-                            if (!NetworkState.isLocalNetworkConnected(AutoScrapeService.this) && !NetworkState.isNetworkConnected(AutoScrapeService.this)) {
+                            // THIS IS THE HARD STOP, call setScrapeInProgress(false) from another place
+                            //in the app, like remove shortcut and I will stop the scrape for you.
+                            //Also checks network. We can scrape off 5G, but cant load local NFOs (obviously)
+                            //Question is, do we wait for NFO or just fallback to TMDB?
+                            // TODO: I think fallback is better, and was how NoVa worked previously.
+                            if (!LoaderUtils.getScrapeInProgress() || !NetworkState.isLocalNetworkConnected(AutoScrapeService.this) || !NetworkState.isNetworkConnected(AutoScrapeService.this)) {
                                 cursor.close();
                                 sNumberOfFilesRemainingToProcess = 0;
                                 log.debug("startScraping disconnected from network calling stopSelf");

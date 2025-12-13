@@ -25,7 +25,7 @@ public class LoaderUtils {
 
     static public boolean mMustHideWatchedVideo = false;
     static public boolean mSmartRecentlyRows = false;
-    static public boolean mScrapeInProgress = false;
+    static public volatile boolean mScrapeInProgress = false;
     public final static String HIDE_USER_HIDDEN_FILTER = VideoStore.Video.VideoColumns.LEEROYFLIX_HIDDEN_BY_USER+"=0";
 
     public final static String HIDE_WATCHED_FILTER = "("+VideoStore.Video.VideoColumns.LEEROYFLIX_TRAKT_SEEN+" IS NULL OR "+
