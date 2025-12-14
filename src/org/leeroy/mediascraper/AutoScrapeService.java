@@ -496,7 +496,9 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                         //Get the number of rows remaining, and exit if nothing to do.
                         int numberOfRows = cursor.getCount();
                         if (numberOfRows <= 0) {
+                            cursor.close();
                             LoaderUtils.setScrapeInProgress(false);
+                            stopSelf();
                             nm.cancel(NOTIFICATION_ID);
                             return;
                         }
