@@ -561,7 +561,7 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                                             }
 
                                             //Use Title - Episode Name
-                                            title = episodeTags.getShowTags().getTitle() + " - " + episodeTags.getTitle();
+                                            title = episodeTags.getShowTags().getTitle() + " - S" +  String.format("%02d", episodeTags.getSeason()) + "E" + String.format("%02d", episodeTags.getEpisode());
                                         } else {
                                             //Use Title
                                             title = ((MovieTags) tags).getTitle();
@@ -654,7 +654,7 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                                             DeleteFileCallback.DO_NOT_DELETE.add(episodeTags.getShowTags().getDefaultPoster().getLargeFile());
                                         }
                                         //Set the Episode title here, we don't have to do an extra isMovie check.
-                                        title = episodeTags.getShowTags().getTitle() + " - " + result.tag.getTitle();
+                                        title = episodeTags.getShowTags().getTitle() + " - S" +  String.format("%02d", episodeTags.getSeason()) + "E" + String.format("%02d", episodeTags.getEpisode());
                                     } else {
                                         //Set the Movie title.
                                         title = result.tag.getTitle();
