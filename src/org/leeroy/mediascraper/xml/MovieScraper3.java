@@ -46,8 +46,8 @@ import com.uwetrottmann.tmdb2.services.SearchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.Locale;
+//import java.util.HashMap;
+//import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.Calendar;
@@ -57,7 +57,7 @@ import okhttp3.Cache;
 import static org.leeroy.mediascraper.MovieTags.isCollectionAlreadyKnown;
 import static org.leeroy.mediascraper.themoviedb3.MovieCollectionImages.downloadCollectionImage;
 
-import androidx.preference.PreferenceManager;
+//import androidx.preference.PreferenceManager;
 
 
 public class MovieScraper3 extends BaseScraper2 {
