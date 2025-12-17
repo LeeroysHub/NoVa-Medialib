@@ -77,6 +77,16 @@ public class EpisodeTags extends BaseTags {
         super();
     }
 
+    public EpisodeTags(ShowTags showTags, int season, int episode) {
+        super();
+        mShowTags = showTags;
+        mEpisode = episode;
+        mSeason = season;
+        mShowId = showTags.showId;
+        mShowTitle = showTags.getTitle();
+        mTitle = showTags.getTitle() + " S" + season + "E" + episode;
+    }
+    
     public Date getAired() { return mAired; }
     public int getEpisode() { return mEpisode; }
     public int getSeason() { return mSeason; }

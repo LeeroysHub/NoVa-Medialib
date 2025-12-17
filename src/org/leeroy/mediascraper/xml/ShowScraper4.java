@@ -320,7 +320,7 @@ public class ShowScraper4 extends BaseScraper2 {
                         tvSeasons.put(showIdSeason.tvSeason.season_number, showIdSeason.tvSeason);
                 } else {
                     log.warn("getDetailsInternal: scrapeStatus for s" + requestedSeason + " is NOK!");
-                    return new ScrapeDetailResult(new EpisodeTags(), true, null, showIdSeason.status, showIdSeason.reason);
+                    return new ScrapeDetailResult(new EpisodeTags(showTags, requestedSeason, requestedEpisode), true, null, showIdSeason.status, showIdSeason.reason);
                 }
             
             } else {
