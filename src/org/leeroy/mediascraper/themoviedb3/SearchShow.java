@@ -94,8 +94,18 @@ public class SearchShow {
                 }
             }
 
-            //Grab the show name now, and do the TMDB seerch.
+            //Grab the show name, and strip the year off if its still there.
             String searchQueryString = searchInfo.getShowName();
+            if (year != null && searchQueryString.contains(year.toString())) {
+                //Strip the year
+                searchQueryString = searchQueryString.replace(year.toString(), "");
+
+                //CHeck we still have something, if not fall back to show name.
+                if (searchQueryString.isEmpty() || searchQueryString.length() < 2 )
+                    searchQueryString = searchInfo.getShowName();
+            }
+
+            //Do the TMDB seerch.
             showKey = ShowUtils.cleanUpName(searchQueryString.toLowerCase()) + "|" + language;
             //if (log.isDebugEnabled()) log.debug("SearchShowResult: cache showKey {}", showKey);
             response = showCache.get(showKey);
