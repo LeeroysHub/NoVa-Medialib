@@ -627,6 +627,7 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                                     SearchInfo searchInfo = SearchPreprocessor.instance().parseFileBased(fileUri, scrapUri);
                                     if (reparseInfo) searchInfo.setForceReParse(true);
                                     Scraper scraper = new Scraper(AutoScrapeService.this);
+                                    searchInfo.setOriginalUri(fileUri);
                                     searchInfo.aggressiveScan = onlyNotFound;
                                     result = scraper.getAutoDetails(searchInfo);                //SEARCH FOR MOVIE!
                                     //log.trace("startScraping: {} {}", ((result.tag != null) ? result.tag.getTitle() : null), ((result.tag != null) ? result.tag.getOnlineId() : null));

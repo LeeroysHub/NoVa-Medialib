@@ -39,6 +39,7 @@ public abstract class SearchInfo {
     private String mUserInput;
     private boolean mForceReParse;
     public boolean aggressiveScan = false;
+    private Uri mOriginalUri = null;
 
     /** package private so outside can't construct these */
     protected SearchInfo(Uri uri) {
@@ -93,4 +94,12 @@ public abstract class SearchInfo {
     }
 
     public abstract boolean isTvShow();
+    
+    public Uri getOriginalUri() {
+        return mOriginalUri;
+    }
+
+    public void setOriginalUri(Uri fileUri) {
+        mOriginalUri = fileUri;
+    }
 }

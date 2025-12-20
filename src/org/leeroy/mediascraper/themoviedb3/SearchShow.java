@@ -17,6 +17,7 @@ package org.leeroy.mediascraper.themoviedb3;
 import android.util.LruCache;
 //import android.util.Pair;
 
+import org.leeroy.filecorelibrary.FileUtils;
 import org.leeroy.mediascraper.ScrapeStatus;
 import org.leeroy.mediascraper.ShowUtils;
 import org.leeroy.mediascraper.preprocess.TvShowSearchInfo;
@@ -27,6 +28,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import retrofit2.Response;
 
@@ -51,6 +55,7 @@ public class SearchShow {
         String name;
         //if (log.isDebugEnabled()) log.debug("search: quering tmdb for {} year {} in {}, resultLimit={}", searchInfo.getShowName(), searchInfo.getFirstAiredYear(), language, resultLimit);
         try {
+            //Get the Year from the Show name, if we have it (not likely!)
             Integer year = null;
             if (searchInfo.getFirstAiredYear() != null) {
                 try {
@@ -60,6 +65,36 @@ public class SearchShow {
                 }
             }
 
+            //Get the Parent Folder, and check for a year.
+            if (searchInfo.getOriginalUri() != null ) {
+                String parentPath = FileUtils.getName(FileUtils.getParentUrl(FileUtils.getParentUrl(searchInfo.getOriginalUri())));
+
+                //Look for any years in the Parent Folder
+                String reversed = new StringBuilder(parentPath).reverse().toString();
+                Pattern yearPattern = Pattern.compile("\\b(\\d{4})\\b");
+                Matcher matcher = yearPattern.matcher(reversed);
+
+                // Current Calendar year.
+                int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+
+                //Loop backwards through the string until we have a plausible year,
+                //Make sure we have at least a 2 DIGIT word left (IF Movie!)
+                while (matcher.find()) {
+                    String candidateYear = new StringBuilder(matcher.group(1)).reverse().toString();
+                    int parsedYear = Integer.parseInt(candidateYear);
+
+                    if (parsedYear >= 1900 && parsedYear <= currentYear) {
+                        int cutIndex = parentPath.length() - matcher.start() - 4;
+                        if (cutIndex >= 2) {
+                            parentPath = parentPath.substring(0, cutIndex).trim();
+                            year = Integer.parseInt(candidateYear);
+                        }
+                        break;
+                    }
+                }
+            }
+
+            //Grab the show name now, and do the TMDB seerch.
             String searchQueryString = searchInfo.getShowName();
             showKey = ShowUtils.cleanUpName(searchQueryString.toLowerCase()) + "|" + language;
             //if (log.isDebugEnabled()) log.debug("SearchShowResult: cache showKey {}", showKey);
