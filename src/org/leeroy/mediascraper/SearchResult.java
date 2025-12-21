@@ -46,6 +46,7 @@ public class SearchResult implements Parcelable {
     private int mOriginSearchSeason, mOriginSearchEpisode;
 
     private String mOriginalTitle;
+    public boolean fromDB = false;
 
     public SearchResult() {
     }

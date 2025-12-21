@@ -22,16 +22,18 @@ import android.content.Context;
 import android.content.OperationApplicationException;
 import android.content.ContentProviderOperation.Builder;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
+//import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.RemoteException;
+//import android.provider.MediaStore;
 import android.text.TextUtils;
 
 import org.leeroy.mediaprovider.video.ScraperStore;
 import org.leeroy.mediascraper.ScraperImage.Type;
 
+import org.leeroy.mediascraper.themoviedb3.SearchShowResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +43,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 public class ShowTags extends VideoTags {
@@ -635,5 +638,49 @@ public class ShowTags extends VideoTags {
             }
             cursor.close();
         }
+    }
+
+    public static SearchShowResult getEpisodeResultIfAlreadyKnown(Context context, String searchQuery, String season, String episode, Uri fileUri) {
+        ContentResolver contentResolver = context.getContentResolver();
+        String[] baseProjection = {ScraperStore.EpisodeShowCombined.SCRAPER_ID, ScraperStore.EpisodeShowCombined.SHOW_NAME,ScraperStore.EpisodeShowCombined.EPISODE_NAME}  ;
+
+        //No Slash on the Query, i AM NOT tmdb!
+        if (searchQuery.startsWith("/"))
+            searchQuery = searchQuery.substring(1);
+
+        //Query the databbase.
+        Uri mediaUri = ScraperStore.EpisodeShowCombined.URI.ALL;
+        Cursor cursor = contentResolver.query(mediaUri ,
+                baseProjection, "REPLACE(REPLACE(REPLACE(" + ScraperStore.Show.NAME+",'''',''),'.',''),':','') LIKE ? COLLATE NOCASE AND " + ScraperStore.EpisodeShowCombined.EPISODE_SEASON + " LIKE ? AND " + ScraperStore.EpisodeShowCombined.EPISODE_NUMBER + " LIKE ?" , new String[] { searchQuery+"%", season, episode },null);
+
+        //Check cursor count and return if positive.
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                //Get the columns, so we can grab the data.
+                int idxVideoId = cursor.getColumnIndexOrThrow(ScraperStore.EpisodeShowCombined.SCRAPER_ID);
+                int idxName = cursor.getColumnIndexOrThrow(ScraperStore.EpisodeShowCombined.EPISODE_NAME);
+
+                //Create a Search Result and populate it.
+                SearchShowResult myResult = new SearchShowResult();
+                SearchResult result = new SearchResult();
+                result.setTvShow();
+                result.setFile(fileUri);
+                result.setId((int) cursor.getLong(idxVideoId));
+                result.setOriginalTitle( cursor.getString(idxName));
+                result.setTitle(cursor.getString(idxName));
+                result.setOriginSearchEpisode(Integer.parseInt(episode));
+                result.setOriginSearchSeason(Integer.parseInt(season));
+                result.fromDB = true;
+
+                //Add the resut to a list, to pass back.
+                myResult.result = new LinkedList<>();
+                myResult.result.add(result);
+                myResult.status = ScrapeStatus.OKAY;
+                return myResult;
+            }
+
+            cursor.close();
+        }
+        return null;
     }
 }

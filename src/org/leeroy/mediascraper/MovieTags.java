@@ -34,11 +34,14 @@ import org.leeroy.mediaprovider.video.VideoStore;
 import org.leeroy.mediascraper.ScraperImage.Type;
 
 
+import org.leeroy.mediascraper.themoviedb3.SearchMovieResult;
+import org.leeroy.mediascraper.themoviedb3.SearchParserResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class MovieTags extends VideoTags {
@@ -210,7 +213,7 @@ public class MovieTags extends VideoTags {
             allOperations.add(cop.build());
         }
 
-        if (mCollectionId != -1) {
+        if (mCollectionId > 0) {
             // Check if this Movie Collection is already referenced in the scraperDB
             if (! isCollectionAlreadyKnown(mCollectionId, context)) {
                 //if (log.isDebugEnabled()) log.debug("save: collection {} does not exist, saving it", mCollectionId);
@@ -456,5 +459,44 @@ public class MovieTags extends VideoTags {
         image.setThumbUrl(ScraperImage.TMBT + path);
         image.generateFileNames(context);
         addDefaultBackdrop(image);
+    }
+
+    public static SearchMovieResult getMovieResultIfAlreadyKnown(Context context, String searchQuery, String year, Uri fileUri) {
+        ContentResolver contentResolver = context.getContentResolver();
+        String[] baseProjection = {ScraperStore.Movie.ID, ScraperStore.Movie.NAME}  ;
+
+        //Query the databbase.
+        if (year == null) year = "";
+        Cursor cursor = contentResolver.query(ScraperStore.Movie.URI.ALL ,
+                baseProjection,  "TRIM(REPLACE(REPLACE(REPLACE(REPLACE(name_movie, ':', ''), '-', ' '), '.', ' '), '& ', '')) LIKE ? AND " + ScraperStore.Movie.YEAR + " LIKE ?" , new String[] { "%" + searchQuery.trim() + "%", year + "%" }, null);
+
+        //Check cursor count and return if positive.
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                //Get the columns, so we can grab the data.
+                int idxVideoId = cursor.getColumnIndexOrThrow(ScraperStore.Movie.ID);
+                int idxName = cursor.getColumnIndexOrThrow(ScraperStore.Movie.NAME);
+
+                //Create a Search Result and populate it.
+                SearchMovieResult myResult = new SearchMovieResult();
+                SearchResult result = new SearchResult();
+                result.setMovie();
+                result.setFile(fileUri);
+                result.setId((int) cursor.getLong(idxVideoId));
+                result.setOriginalTitle( cursor.getString(idxName));
+                result.setTitle(cursor.getString(idxName));
+                result.setYear(year);
+                result.fromDB = true;
+
+                //Add the resut to a list, to pass back.
+                myResult.result = new LinkedList<>();
+                myResult.result.add(result);
+                myResult.status = ScrapeStatus.OKAY;
+                return myResult;
+            }
+
+            cursor.close();
+        }
+        return null;
     }
 }

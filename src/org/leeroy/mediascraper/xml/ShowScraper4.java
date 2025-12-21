@@ -36,6 +36,7 @@ import org.leeroy.mediascraper.ScraperImage;
 import org.leeroy.mediascraper.SearchResult;
 import org.leeroy.mediascraper.ShowTags;
 import org.leeroy.mediascraper.ShowUtils;
+import org.leeroy.mediascraper.TagsFactory;
 import org.leeroy.mediascraper.preprocess.SearchInfo;
 import org.leeroy.mediascraper.preprocess.TvShowSearchInfo;
 import org.leeroy.mediascraper.themoviedb3.MyTmdb;
@@ -61,13 +62,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-//import java.util.Locale;
 import java.util.Map;
-//import java.util.concurrent.Callable;
-//import java.util.concurrent.ExecutorService;
-//import java.util.concurrent.Executors;
-//import java.util.concurrent.Future;
-//import java.util.concurrent.TimeUnit;
 
 import okhttp3.Cache;
 
@@ -144,7 +139,17 @@ public class ShowScraper4 extends BaseScraper2 {
         //if (log.isDebugEnabled()) log.debug("getMatches2: tvshow search:{} s:{} e:{}, maxItems={}, language={}",
                 //searchInfo.getShowName(), searchInfo.getSeason(), searchInfo.getEpisode(), maxItems, language);
 
-        SearchShowResult searchResult = SearchShow.search(searchInfo, language, maxItems, adultScrape,this, getTmdb());
+        //Check the Database for this Movie, we may have scraped it already on a different URI.
+        SearchShowResult searchResult = ShowTags.getEpisodeResultIfAlreadyKnown(mContext, searchInfo.getShowName(), String.valueOf(searchInfo.getSeason()), String.valueOf(searchInfo.getEpisode()),searchInfo.getOriginalUri());
+        if (searchResult != null) {
+            for (SearchResult result : searchResult.result) {
+                result.setScraper(this);
+                result.setFile(searchInfo.getFile());
+            }
+            return new ScrapeSearchResult(searchResult.result, false, searchResult.status, searchResult.reason);
+        }
+
+        searchResult = SearchShow.search(searchInfo, language, maxItems, adultScrape,this, getTmdb());
         //if (log.isDebugEnabled()) if (searchResult.result.size() > 0) log.debug("getMatches2: match found {} id {}", searchResult.result.get(0).getTitle(), searchResult.result.get(0).getId());
         return new ScrapeSearchResult(searchResult.result, false, searchResult.status, searchResult.reason);
     }
@@ -180,9 +185,15 @@ public class ShowScraper4 extends BaseScraper2 {
 
         //Save the Show ID and Cleanup the Name now for the Cache Keys.
         int showId = result.getId();
-        String cleanShowName = ShowUtils.cleanUpName(result.getOriginalTitle().toLowerCase());
+
+        //If we got this result from the database, grab the tags from there and return them instead of going to TMDB.
+        if (result.fromDB){
+            EpisodeTags tag = TagsFactory.buildEpisodeTags(mContext, showId);
+            return new ScrapeDetailResult(tag, false, null, ScrapeStatus.OKAY, null);
+        }
 
         //Build the Show and Episode keys.
+        String cleanShowName = ShowUtils.cleanUpName(result.getOriginalTitle().toLowerCase());
         String showKey = cleanShowName + "|" + resultLanguage;
         String seasonKey =  cleanShowName + "|" + (season != -1 ? season : "")  + "|all|" + resultLanguage;
         String episodeKey = showId + "|"  + (season != -1 ? season : "") + "|" +  (episode != -1 ? episode : "") + "|" + resultLanguage;
