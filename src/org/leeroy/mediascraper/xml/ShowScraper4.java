@@ -139,14 +139,18 @@ public class ShowScraper4 extends BaseScraper2 {
         //if (log.isDebugEnabled()) log.debug("getMatches2: tvshow search:{} s:{} e:{}, maxItems={}, language={}",
                 //searchInfo.getShowName(), searchInfo.getSeason(), searchInfo.getEpisode(), maxItems, language);
 
-        //Check the Database for this Movie, we may have scraped it already on a different URI.
-        SearchShowResult searchResult = ShowTags.getEpisodeResultIfAlreadyKnown(mContext, searchInfo.getShowName(), String.valueOf(searchInfo.getSeason()), String.valueOf(searchInfo.getEpisode()),searchInfo.getOriginalUri());
-        if (searchResult != null) {
-            for (SearchResult result : searchResult.result) {
-                result.setScraper(this);
-                result.setFile(searchInfo.getFile());
+        //Make sure the presference is enabled.
+        SearchShowResult searchResult = null;
+        if (searchInfo.scrapeFromDB) {
+            //Check the Database for this Movie, we may have scraped it already on a different URI.
+            searchResult = ShowTags.getEpisodeResultIfAlreadyKnown(mContext, searchInfo.getShowName(), String.valueOf(searchInfo.getSeason()), String.valueOf(searchInfo.getEpisode()), searchInfo.getOriginalUri());
+            if (searchResult != null) {
+                for (SearchResult result : searchResult.result) {
+                    result.setScraper(this);
+                    result.setFile(searchInfo.getFile());
+                }
+                return new ScrapeSearchResult(searchResult.result, false, searchResult.status, searchResult.reason);
             }
-            return new ScrapeSearchResult(searchResult.result, false, searchResult.status, searchResult.reason);
         }
 
         searchResult = SearchShow.search(searchInfo, language, maxItems, adultScrape,this, getTmdb());

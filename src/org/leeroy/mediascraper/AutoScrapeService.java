@@ -86,6 +86,7 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
     static int sNumberOfFilesScraped = 0;
     static int sNumberOfFilesNotScraped = 0;
     public static String KEY_ENABLE_AUTO_SCRAP ="enable_auto_scrap_key";
+    public static String KEY_SCRAPE_FROM_DB ="scrape_from_database_key";
     private final static String[] SCRAPER_ACTIVITY_COLS = {
             // Columns needed by the activity
             BaseColumns._ID,
@@ -474,6 +475,7 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
 
                     //Init vars we need for the scrape.
                     boolean shouldRescrapAll = rescrapAlreadySearched;
+                    boolean shouldScrapeFromDB = PreferenceManager.getDefaultSharedPreferences(AutoScrapeService.this).getBoolean(AutoScrapeService.KEY_SCRAPE_FROM_DB,true);
                     Cursor cursor = null;
                     NfoWriter.ExportContext exportContext = null;
                     if (NfoWriter.isNfoAutoExportEnabled(AutoScrapeService.this))
@@ -629,6 +631,7 @@ public class AutoScrapeService extends Service implements DefaultLifecycleObserv
                                     Scraper scraper = new Scraper(AutoScrapeService.this);
                                     searchInfo.setOriginalUri(fileUri);
                                     searchInfo.aggressiveScan = onlyNotFound;
+                                    searchInfo.scrapeFromDB = shouldScrapeFromDB;
                                     result = scraper.getAutoDetails(searchInfo);                //SEARCH FOR MOVIE!
                                     //log.trace("startScraping: {} {}", ((result.tag != null) ? result.tag.getTitle() : null), ((result.tag != null) ? result.tag.getOnlineId() : null));
                                 }

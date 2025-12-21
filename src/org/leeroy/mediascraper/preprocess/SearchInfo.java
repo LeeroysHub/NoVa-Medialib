@@ -39,6 +39,7 @@ public abstract class SearchInfo {
     private String mUserInput;
     private boolean mForceReParse;
     public boolean aggressiveScan = false;
+    public boolean scrapeFromDB = false;
     private Uri mOriginalUri = null;
 
     /** package private so outside can't construct these */

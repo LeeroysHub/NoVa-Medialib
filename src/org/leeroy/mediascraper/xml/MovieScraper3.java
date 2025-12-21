@@ -173,14 +173,18 @@ public class MovieScraper3 extends BaseScraper2 {
             year = searchInfo.getYear();
         }
 
-        //Check the Database for this Movie, we may have scraped it already on a different URI.
-        SearchMovieResult searchResult = MovieTags.getMovieResultIfAlreadyKnown(mContext, searchQuery, year, searchInfo.getOriginalUri());
-        if (searchResult != null) {
-            for (SearchResult result : searchResult.result) {
-                result.setScraper(this);
-                result.setFile(searchInfo.getFile());
+        //Make sure the presference is enabled.
+        SearchMovieResult searchResult = null;
+        if (searchInfo.scrapeFromDB) {
+            //Check the Database for this Movie, we may have scraped it already on a different URI.
+            searchResult = MovieTags.getMovieResultIfAlreadyKnown(mContext, searchQuery, year, searchInfo.getOriginalUri());
+            if (searchResult != null) {
+                for (SearchResult result : searchResult.result) {
+                    result.setScraper(this);
+                    result.setFile(searchInfo.getFile());
+                }
+                return new ScrapeSearchResult(searchResult.result, true, searchResult.status, searchResult.reason);
             }
-            return new ScrapeSearchResult(searchResult.result, true, searchResult.status, searchResult.reason);
         }
 
         //SEARCH TMDB FOR THE MOVIE!
@@ -227,7 +231,7 @@ public class MovieScraper3 extends BaseScraper2 {
         Uri searchFile = result.getFile();
 
         //If we got this result from the database, grab the tags from there and return them instead of going to TMDB.
-        if (result.fromDB){
+        if (result.fromDB) {
             MovieTags tag = TagsFactory.buildMovieTags(mContext, movieId);
             return new ScrapeDetailResult(tag, true, null, ScrapeStatus.OKAY, null);
         }
