@@ -153,9 +153,9 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:5.3.2'
     // stick with 2.10.0 since errors are showing up in sentry when using 2.11.0
     implementation 'com.uwetrottmann.tmdb2:tmdb-java:2.13.0'
-    api 'org.jupnp:org.jupnp:3.0.3'
-    api 'org.jupnp:org.jupnp.support:3.0.3'
-    api 'org.jupnp:org.jupnp.android:3.0.3'
+    api 'org.jupnp:org.jupnp:3.0.4'
+    api 'org.jupnp:org.jupnp.support:3.0.4'
+    api 'org.jupnp:org.jupnp.android:3.0.4'
     implementation 'javax.servlet:javax.servlet-api:4.0.1'
     // jetty 9.2.x for Android API 23 compatibility (LongAdder not available until API 24)
     implementation ('org.eclipse.jetty:jetty-server:9.2.30.v20200428') {
