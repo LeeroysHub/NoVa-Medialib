@@ -102,7 +102,17 @@ public class Scraper {
             return new ScrapeDetailResult(null, true, null, ScrapeStatus.ERROR, null);
         }
 
+        //Save the flags, and update them again in the new SearchInfo Object.
+        boolean aggressiveScan = info.aggressiveScan;
+        boolean scrapeFromDB = info.scrapeFromDB;
+
+        //Re-parse the information, clean it up.
         info = SearchPreprocessor.instance().reParseInfo(info);
+
+        //Restore the flags.
+        info.aggressiveScan = aggressiveScan;
+        info.scrapeFromDB = scrapeFromDB;
+
         if (info.isTvShow() && !isMovieURI(info))
             return mShowScraper.search(info);
         return mMovieScraper.search(info);
